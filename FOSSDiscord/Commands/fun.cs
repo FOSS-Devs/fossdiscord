@@ -75,7 +75,7 @@ namespace FOSSDiscord.Commands
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = "Cat Picture",
+                Title = "Dog Picture",
                 ImageUrl = dogpic,
                 Color = new DiscordColor(0x0080FF)
             };
