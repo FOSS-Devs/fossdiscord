@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FOSSDiscord.Commands
 {
-    public class fun : BaseCommandModule
+    public class Fun : BaseCommandModule
     {
         [Command("rate")]
         public async Task RateCommand(CommandContext ctx, [RemainingText] string thing)
