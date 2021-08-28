@@ -49,7 +49,6 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(embed);
             }
         }
-        // TODO: Fix this command
         [Command("unban")]
         public async Task UnbanCommand(CommandContext ctx, ulong memberid)
         {
