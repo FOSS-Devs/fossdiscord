@@ -1,1 +1,1 @@
-# fossdiscord-v2
+# FOSSDiscord
