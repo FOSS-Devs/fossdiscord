@@ -100,6 +100,17 @@ namespace FOSSDiscord.Commands
             streamReader.Close();
             JObject jsonData = JObject.Parse(responseData);
             string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
+            if (pageID == "-1")
+            {
+                var errEmbed = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "The page you've requested might not exist.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(errEmbed);
+                return;
+            }
             var pageTitle = jsonData["query"]["pages"][pageID]["title"];
             string resultURL = $"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&pageids={pageID}";
             wrREQUEST = WebRequest.Create(resultURL);
