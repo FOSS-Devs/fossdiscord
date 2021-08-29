@@ -123,7 +123,7 @@ namespace FOSSDiscord.Commands
                 };
                 await ctx.RespondAsync(embed);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 var errEmbed = new DiscordEmbedBuilder
                 {

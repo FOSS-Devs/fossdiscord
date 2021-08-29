@@ -12,6 +12,9 @@ namespace FOSSDiscord.Commands
 {
     public class Utils : BaseCommandModule
     {
+        // For the uptime command
+        DateTimeOffset StartTime = DateTime.Now;
+
         [Command("ping")]
         public async Task PingCommand(CommandContext ctx)
         {
@@ -99,6 +102,72 @@ namespace FOSSDiscord.Commands
                 embed.AddField("Account Created", membercreation);
                 await ctx.RespondAsync(embed);
             }
+        }
+
+        [Command("serverinfo")]
+        public async Task ServerinfoCommand(CommandContext ctx)
+        {
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(0x0080FF)
+            };
+            embed.WithThumbnail(ctx.Guild.IconUrl);
+            embed.WithAuthor(ctx.Guild.Name, null, ctx.Guild.IconUrl);
+            embed.AddField("Owner", $"{ctx.Guild.Owner.Username}#{ctx.Guild.Owner.Discriminator}");
+            embed.AddField("Server ID", ctx.Guild.Id.ToString());
+            string guildcreation = ctx.Guild.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
+            embed.AddField("Server Created", guildcreation);
+            embed.AddField("Number of Members", ctx.Guild.MemberCount.ToString());
+            int guildrolescount = -1;
+            foreach(KeyValuePair<ulong, DiscordRole> kvp in ctx.Guild.Roles)
+            {
+                guildrolescount = guildrolescount + 1;
+            }
+            embed.AddField("Number of Roles", guildrolescount.ToString());
+            await ctx.RespondAsync(embed);
+        }
+
+        [Command("emoji")]
+        public async Task EmojiCommand(CommandContext ctx, DiscordEmoji emoji = null)
+        {
+            if(emoji == null)
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Missing argument",
+                    Description = $"Usage:\n{ctx.Prefix}emoji <emoji>",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(embed);
+            }
+            else
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor(0x0080FF)
+                };
+                embed.WithAuthor(emoji.Name, null, emoji.Url);
+                embed.WithThumbnail(emoji.Url);
+                embed.AddField("ID", emoji.Id.ToString());
+                string emojicreation = emoji.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
+                embed.AddField("Created on", emojicreation);
+                embed.AddField("URL", emoji.Url);
+                await ctx.RespondAsync(embed);
+            }
+        }
+
+        [Command("uptime")]
+        public async Task UptimeCommand(CommandContext ctx)
+        {
+            var uptime = (DateTime.Now - StartTime);
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = "Uptime",
+                Description = $"{uptime.Days.ToString()} days, {uptime.Minutes.ToString()} minutes and {uptime.Seconds.ToString()} seconds",
+                Color = new DiscordColor(0x0080FF)
+            };
+            await ctx.RespondAsync(embed);
         }
     }
 }
