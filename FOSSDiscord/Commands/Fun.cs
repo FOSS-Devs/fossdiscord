@@ -43,6 +43,7 @@ namespace FOSSDiscord.Commands
             WebResponse response = wrREQUEST.GetResponse();
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             string responseData = streamReader.ReadToEnd();
+            streamReader.Close();
 
             JArray jsonData = JArray.Parse(responseData);
             var caturl = jsonData[0]["url"];
@@ -70,6 +71,7 @@ namespace FOSSDiscord.Commands
             WebResponse response = wrREQUEST.GetResponse();
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             string responseData = streamReader.ReadToEnd();
+            streamReader.Close();
 
             JArray jsonData = JArray.Parse(responseData);
             var dogurl = jsonData[0]["url"];
