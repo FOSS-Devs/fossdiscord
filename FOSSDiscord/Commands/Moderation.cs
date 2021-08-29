@@ -14,6 +14,17 @@ namespace FOSSDiscord.Commands
         [Command("kick"), RequirePermissions(DSharpPlus.Permissions.KickMembers)]
         public async Task KickCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "no reason given")
         {
+            if (member.Id == ctx.Member.Id)
+            {
+                var fstEM = new DiscordEmbedBuilder
+                {
+                    Title = "You cannot kick yourself.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(fstEM);
+                return;
+            }
+
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"Kicked {member.Username}#{member.Discriminator}",
@@ -28,7 +39,17 @@ namespace FOSSDiscord.Commands
         public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays, [RemainingText] string reason = "no reason given")
         {
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            if(banlist.Any(x => x.User.Id == member.Id))
+            if (member.Id == ctx.Member.Id)
+            {
+                var fstEM = new DiscordEmbedBuilder
+                {
+                    Title = "You cannot ban yourself.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(fstEM);
+                return;
+            }
+            if (banlist.Any(x => x.User.Id == member.Id))
             {
                 var embed = new DiscordEmbedBuilder
                 {
@@ -53,6 +74,17 @@ namespace FOSSDiscord.Commands
         [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays, [RemainingText] string reason = "no reason given")
         {
+            if (member.Id == ctx.Member.Id)
+            {
+                var fstEM = new DiscordEmbedBuilder
+                {
+                    Title = "You cannot softban yourself.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(fstEM);
+                return;
+            }
+
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"Sofbanned {member.Username}#{member.Discriminator}",
