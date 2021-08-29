@@ -112,15 +112,28 @@ namespace FOSSDiscord.Commands
             streamReader.Close();
             var pageData = jsonData["query"]["pages"][pageID]["extract"];
             string newString = (string)pageData;
-            string brief = newString.Substring(0, 250);
-            
-            var embed = new DiscordEmbedBuilder
+            try
             {
-                Title = $"{pageTitle}",
-                Description = $"{brief}...",
-                Color = new DiscordColor(0x0080FF)
-            };
-            await ctx.RespondAsync(embed);
+                string brief = newString.Substring(0, 250);
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"{pageTitle}",
+                    Description = $"{brief}...",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.RespondAsync(embed);
+            }
+            catch(Exception e)
+            {
+                var errEmbed = new DiscordEmbedBuilder
+                {
+                    Title = "Oops",
+                    Description = $"`{e}`",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.RespondAsync(errEmbed);
+            }
+                
         }
     }
 }
