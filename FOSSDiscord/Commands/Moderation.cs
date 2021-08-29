@@ -41,12 +41,12 @@ namespace FOSSDiscord.Commands
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (member.Id == ctx.Member.Id)
             {
-                var fstEM = new DiscordEmbedBuilder
+                var embed = new DiscordEmbedBuilder
                 {
                     Title = "You cannot ban yourself.",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(fstEM);
+                await ctx.RespondAsync(embed);
                 return;
             }
             if (banlist.Any(x => x.User.Id == member.Id))
@@ -76,24 +76,26 @@ namespace FOSSDiscord.Commands
         {
             if (member.Id == ctx.Member.Id)
             {
-                var fstEM = new DiscordEmbedBuilder
+                var embed = new DiscordEmbedBuilder
                 {
                     Title = "You cannot softban yourself.",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(fstEM);
+                await ctx.RespondAsync(embed);
                 return;
             }
-
-            var embed = new DiscordEmbedBuilder
+            else
             {
-                Title = $"Sofbanned {member.Username}#{member.Discriminator}",
-                Color = new DiscordColor(0xFFA500)
-            };
-            embed.AddField("Reason", reason);
-            await member.BanAsync(deletemessagedays, reason);
-            await ctx.Guild.UnbanMemberAsync(member.Id);
-            await ctx.RespondAsync(embed);
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Sofbanned {member.Username}#{member.Discriminator}",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                embed.AddField("Reason", reason);
+                await member.BanAsync(deletemessagedays, reason);
+                await ctx.Guild.UnbanMemberAsync(member.Id);
+                await ctx.RespondAsync(embed);
+            }
         }
 
         [Command("unban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]

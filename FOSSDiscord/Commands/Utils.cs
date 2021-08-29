@@ -26,7 +26,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("avatar")]
+        [Command("avatar"), Aliases("pfp")]
         public async Task AvatarCommand(CommandContext ctx, DiscordMember member = null)
         {
             if(member == null)
@@ -35,6 +35,7 @@ namespace FOSSDiscord.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{member.DisplayName}'s avatar",
+                    Description = $"[WebP]({member.GetAvatarUrl(DSharpPlus.ImageFormat.WebP)}) | [PNG]({member.GetAvatarUrl(DSharpPlus.ImageFormat.Png)}) | [JPG]({member.GetAvatarUrl(DSharpPlus.ImageFormat.Jpeg)})",
                     ImageUrl = member.AvatarUrl,
                     Color = new DiscordColor(0x0080FF)
                 };
