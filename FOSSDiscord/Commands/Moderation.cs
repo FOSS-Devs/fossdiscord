@@ -18,7 +18,7 @@ namespace FOSSDiscord.Commands
             {
                 var fstEM = new DiscordEmbedBuilder
                 {
-                    Title = "You cannot kick yourself.",
+                    Title = "You cannot kick yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(fstEM);
@@ -43,7 +43,7 @@ namespace FOSSDiscord.Commands
             {
                 var embed = new DiscordEmbedBuilder
                 {
-                    Title = "You cannot ban yourself.",
+                    Title = "You cannot ban yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(embed);
@@ -78,7 +78,7 @@ namespace FOSSDiscord.Commands
             {
                 var embed = new DiscordEmbedBuilder
                 {
-                    Title = "You cannot softban yourself.",
+                    Title = "You cannot softban yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(embed);
