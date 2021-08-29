@@ -87,8 +87,8 @@ namespace FOSSDiscord.Commands
         [Command("wikipedia"), Aliases("wiki")]
         public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
         {
-            string URL = $"https://en.wikipedia.org/w/api.php?action=query&format=json&list=&titles={query}&redirects=1";
-
+            //string URL = $"https://en.wikipedia.org/w/api.php?action=query&format=json&list=&titles={query}&redirects=1";
+            string URL = $"https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
             WebRequest wrREQUEST;
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
@@ -112,7 +112,8 @@ namespace FOSSDiscord.Commands
                 return;
             }
             var pageTitle = jsonData["query"]["pages"][pageID]["title"];
-            string resultURL = $"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&pageids={pageID}";
+            string resultURL = $"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=&pageids={pageID}";
+            
             wrREQUEST = WebRequest.Create(resultURL);
             wrREQUEST.Proxy = null;
             wrREQUEST.Method = "GET";
@@ -125,7 +126,7 @@ namespace FOSSDiscord.Commands
             string newString = (string)pageData;
             try
             {
-                string brief = newString.Substring(0, 250);
+                string brief = newString.Substring(0, 260);
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{pageTitle}",
@@ -134,12 +135,12 @@ namespace FOSSDiscord.Commands
                 };
                 await ctx.RespondAsync(embed);
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 var errEmbed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "The page you've requested might not exist.",
+                    Description = $"{e}",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errEmbed);
