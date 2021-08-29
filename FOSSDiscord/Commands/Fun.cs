@@ -10,6 +10,8 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.Json;
+
 
 namespace FOSSDiscord.Commands
 {
@@ -77,6 +79,29 @@ namespace FOSSDiscord.Commands
             {
                 Title = "Dog Picture",
                 ImageUrl = dogpic,
+                Color = new DiscordColor(0x0080FF)
+            };
+            await ctx.RespondAsync(embed);
+        }
+        [Command("wikipedia"), Aliases("wiki")]
+        public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
+        {
+            string URL = $"https://en.wikipedia.org/w/api.php?action=query&format=json&list=&titles={query}&redirects=1";
+            WebRequest wrREQUEST;
+            wrREQUEST = WebRequest.Create(URL);
+            wrREQUEST.Proxy = null;
+            wrREQUEST.Method = "GET";
+            WebResponse response = wrREQUEST.GetResponse();
+            StreamReader streamReader = new StreamReader(response.GetResponseStream());
+            string responseData = streamReader.ReadToEnd();
+
+            JObject jsonData = JObject.Parse(responseData);
+            var jsonQuery = jsonData["query"];
+            string pageID = (string)jsonQuery;
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = "Test",
+                Description = pageID,
                 Color = new DiscordColor(0x0080FF)
             };
             await ctx.RespondAsync(embed);
