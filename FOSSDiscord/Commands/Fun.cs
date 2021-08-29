@@ -83,25 +83,39 @@ namespace FOSSDiscord.Commands
             };
             await ctx.RespondAsync(embed);
         }
+        
         [Command("wikipedia"), Aliases("wiki")]
         public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
         {
             string URL = $"https://en.wikipedia.org/w/api.php?action=query&format=json&list=&titles={query}&redirects=1";
+
             WebRequest wrREQUEST;
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
             wrREQUEST.Method = "GET";
+
             WebResponse response = wrREQUEST.GetResponse();
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             string responseData = streamReader.ReadToEnd();
-
+            streamReader.Close();
             JObject jsonData = JObject.Parse(responseData);
-            var jsonQuery = jsonData["query"];
-            string pageID = (string)jsonQuery;
+            string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
+            string resultURL = $"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&pageids={pageID}";
+            wrREQUEST = WebRequest.Create(resultURL);
+            wrREQUEST.Proxy = null;
+            wrREQUEST.Method = "GET";
+            response = wrREQUEST.GetResponse();
+            streamReader = new StreamReader(response.GetResponseStream());
+            responseData = streamReader.ReadToEnd();
+            jsonData = JObject.Parse(responseData);
+            streamReader.Close();
+            var pageData = jsonData["query"]["pages"][pageID]["extract"];
+            string newString = (string)pageData;
+            string brief = newString.Substring(0, 250);
             var embed = new DiscordEmbedBuilder
             {
-                Title = "Test",
-                Description = pageID,
+                Title = "Testing",
+                Description = brief,
                 Color = new DiscordColor(0x0080FF)
             };
             await ctx.RespondAsync(embed);
