@@ -100,6 +100,7 @@ namespace FOSSDiscord.Commands
             streamReader.Close();
             JObject jsonData = JObject.Parse(responseData);
             string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
+            var pageTitle = jsonData["query"]["pages"][pageID]["title"];
             string resultURL = $"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&pageids={pageID}";
             wrREQUEST = WebRequest.Create(resultURL);
             wrREQUEST.Proxy = null;
@@ -112,10 +113,11 @@ namespace FOSSDiscord.Commands
             var pageData = jsonData["query"]["pages"][pageID]["extract"];
             string newString = (string)pageData;
             string brief = newString.Substring(0, 250);
+            
             var embed = new DiscordEmbedBuilder
             {
-                Title = "Testing",
-                Description = brief,
+                Title = $"{pageTitle}",
+                Description = $"{brief}...",
                 Color = new DiscordColor(0x0080FF)
             };
             await ctx.RespondAsync(embed);
