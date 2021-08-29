@@ -127,9 +127,9 @@ namespace FOSSDiscord.Commands
             {
                 var errEmbed = new DiscordEmbedBuilder
                 {
-                    Title = "Oops",
-                    Description = $"`{e}`",
-                    Color = new DiscordColor(0x0080FF)
+                    Title = "Oops...",
+                    Description = "The page you've requsted might not exist.",
+                    Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errEmbed);
             }
