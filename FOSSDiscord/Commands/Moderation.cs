@@ -11,7 +11,7 @@ namespace FOSSDiscord.Commands
 {
     public class Moderation : BaseCommandModule
     {
-        [Command("kick")]
+        [Command("kick"), RequirePermissions(DSharpPlus.Permissions.KickMembers)]
         public async Task KickCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "no reason given")
         {
             var embed = new DiscordEmbedBuilder
@@ -24,7 +24,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("ban")]
+        [Command("ban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays, [RemainingText] string reason = "no reason given")
         {
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
@@ -50,7 +50,7 @@ namespace FOSSDiscord.Commands
             }
         }
 
-        [Command("softban")]
+        [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays, [RemainingText] string reason = "no reason given")
         {
             var embed = new DiscordEmbedBuilder
@@ -64,7 +64,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("unban")]
+        [Command("unban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task UnbanCommand(CommandContext ctx, ulong memberid)
         {
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
@@ -89,7 +89,7 @@ namespace FOSSDiscord.Commands
             }
         }
 
-        [Command("purge")]
+        [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
         public async Task PurgeCommands(CommandContext ctx, int amount = 10)
         {
             var messages = await ctx.Channel.GetMessagesAsync(amount+1);
