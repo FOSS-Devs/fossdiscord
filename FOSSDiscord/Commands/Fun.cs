@@ -93,32 +93,45 @@ namespace FOSSDiscord.Commands
             string responseData = streamReader.ReadToEnd();
             streamReader.Close();
             JObject jsonData = JObject.Parse(responseData);
-            string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
-            if (pageID == "-1")
+            try
+            {
+                string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
+                if (pageID == "-1")
+                {
+                    var errEmbed = new DiscordEmbedBuilder
+                    {
+                        Title = "Oops...",
+                        Description = "The page you've requested might not exist.",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.RespondAsync(errEmbed);
+                    return;
+                }
+                else
+                {
+                    string pageTitle = (string)jsonData["query"]["pages"][pageID]["title"];
+                    string extract = (string)jsonData["query"]["pages"][pageID]["extract"];
+                    string brief = extract.Substring(0, 260);
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Title = $"{pageTitle}",
+                        Description = $"{brief}...",
+                        Color = new DiscordColor(0x0080FF)
+                    };
+                    await ctx.RespondAsync(embed);
+                }
+            }
+            catch (Exception)
             {
                 var errEmbed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "The page you've requested might not exist.",
+                    Description = "Page does not exist",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errEmbed);
                 return;
             }
-            else
-            {
-                string pageTitle = (string)jsonData["query"]["pages"][pageID]["title"];
-                string extract = (string)jsonData["query"]["pages"][pageID]["extract"];
-                string brief = extract.Substring(0, 260);
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = $"{pageTitle}",
-                    Description = $"{brief}...",
-                    Color = new DiscordColor(0x0080FF)
-                };
-                await ctx.RespondAsync(embed);
-            };
-                
         }
     }
 }
