@@ -20,7 +20,8 @@ namespace FOSSDiscord.Commands
             {
                 var perEM = new DiscordEmbedBuilder
                 {
-                    Title = "Sorry, you cannot kick someone who is with higher permission.",
+                    Title = "Oops...",
+                    Description = "Your permission is not high enough.",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(perEM);
@@ -56,7 +57,8 @@ namespace FOSSDiscord.Commands
             {
                 var perEM = new DiscordEmbedBuilder
                 {
-                    Title = "Sorry, you cannot ban someone who is with higher permission.",
+                    Title = "Oops...",
+                    Description = "Your permission is not high enough.",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(perEM);
@@ -104,7 +106,8 @@ namespace FOSSDiscord.Commands
             { 
                 var perEM = new DiscordEmbedBuilder
                 {
-                    Title = "Sorry, you cannot softban someone who is with higher permission.",
+                    Title = "Oops...",
+                    Description = "Your permission is not high enough.",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(perEM);
