@@ -92,7 +92,7 @@ namespace FOSSDiscord
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Member joined",
-                    Color = new DiscordColor(0xFFA500),
+                    Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Member.JoinedAt
                 };
                 ulong loggingchannelid = 848826372390518805;
@@ -123,18 +123,75 @@ namespace FOSSDiscord
             {
                 var embed = new DiscordEmbedBuilder
                 {
-                    Title = $"Member left",
-                    Color = new DiscordColor(0xFF0000),
+                    Title = $"Channel created",
+                    Description = e.Channel.Mention,
+                    Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Channel.CreationTimestamp
                 };
                 ulong loggingchannelid = 848826372390518805;
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                embed.WithAuthor($"{e.Channel.}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
-                embed.AddField("ID", e.Member.Id.ToString());
-                long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
-                embed.AddField("Joined Guild", $"<t:{memberjoinedat}:F>");
+                embed.AddField("Type", e.Channel.Type.ToString());
+                embed.AddField("ID", e.Channel.Id.ToString());
                 await loggingchannel.SendMessageAsync(embed);
             };
+            discord.ChannelUpdated += async (s, e) =>
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Channel updated",
+                    Description = e.ChannelAfter.Mention,
+                    Color = new DiscordColor(0x2ECC70),
+                    Timestamp = DateTime.Now
+                };
+                ulong loggingchannelid = 848826372390518805;
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                if(e.ChannelBefore.Name != e.ChannelAfter.Name)
+                {
+                    embed.AddField("Name", $"**Before**: {e.ChannelBefore.Name}\n**After**: {e.ChannelAfter.Name}");
+                }
+                if(e.ChannelAfter.Type == ChannelType.Text && e.ChannelBefore.Topic != e.ChannelAfter.Topic)
+                {
+                    if(e.ChannelBefore.Topic == null)
+                    {
+                        embed.AddField("Topic", $"**Before**: <none>\n**After**: `{e.ChannelAfter.Topic}`");
+                    }
+                    else if(e.ChannelAfter.Topic == null)
+                    {
+                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: <none>");
+                    }
+                    else
+                    {
+                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: `{e.ChannelAfter.Topic}`");
+                    }
+                }
+                long channelcreation = e.ChannelBefore.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Type", e.ChannelAfter.Type.ToString());
+                embed.AddField("Creation date", $"<t:{channelcreation}:F>");
+                embed.AddField("ID", e.ChannelAfter.Id.ToString());
+                await loggingchannel.SendMessageAsync(embed);
+            };
+            discord.ChannelDeleted += async (s, e) =>
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Channel deleted",
+                    Color = new DiscordColor(0xFF0000),
+                    Timestamp = DateTime.Now
+                };
+                ulong loggingchannelid = 848826372390518805;
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Name", e.Channel.Name.ToString());
+                if(e.Channel.Type == ChannelType.Text && e.Channel.Topic != null)
+                {
+                    embed.AddField("Topic", e.Channel.Topic);
+                }
+                embed.AddField("Type", e.Channel.Type.ToString());
+                embed.AddField("Creation date", $"<t:{channelcreation}:F>");
+                embed.AddField("ID", e.Channel.Id.ToString());
+                await loggingchannel.SendMessageAsync(embed);
+            };
+
 
             DiscordActivity discordActivity = new DiscordActivity
             {
