@@ -119,12 +119,7 @@ namespace FOSSDiscord.Commands
             string guildcreation = ctx.Guild.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
             embed.AddField("Server Created", guildcreation);
             embed.AddField("Number of Members", ctx.Guild.MemberCount.ToString());
-            int guildrolescount = -1;
-            foreach(KeyValuePair<ulong, DiscordRole> kvp in ctx.Guild.Roles)
-            {
-                guildrolescount = guildrolescount + 1;
-            }
-            embed.AddField("Number of Roles", guildrolescount.ToString());
+            embed.AddField("Number of Roles", ctx.Guild.Roles.Count.ToString());
             await ctx.RespondAsync(embed);
         }
 
