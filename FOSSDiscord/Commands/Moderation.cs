@@ -16,23 +16,23 @@ namespace FOSSDiscord.Commands
         {
             if (member.Id == ctx.Member.Id)
             {
-                var fstEM = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = "You cannot kick yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(fstEM);
+                await ctx.RespondAsync(errembed);
                 return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
-                var embed = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.RespondAsync(errembed);
                 return;
             }
 
@@ -51,34 +51,34 @@ namespace FOSSDiscord.Commands
         {
             if (member.Id == ctx.Member.Id)
             {
-                var fstEM = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = "You cannot ban yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(fstEM);
+                await ctx.RespondAsync(errembed);
                 return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
-                var embed = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.RespondAsync(errembed);
                 return;
             }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (banlist.Any(x => x.User.Id == member.Id))
             {
-                var embed = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = $"{member.Username}#{member.Discriminator} is already banned",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.RespondAsync(errembed);
             }
             else
             {
@@ -100,23 +100,23 @@ namespace FOSSDiscord.Commands
             int authorPerms = ctx.Member.Hierarchy;
             if (member.Id == ctx.Member.Id)
             {
-                var fstEM = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = "You cannot softban yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(fstEM);
+                await ctx.RespondAsync(errembed);
                 return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
-                var embed = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.RespondAsync(errembed);
                 return;
             }
             else
@@ -149,12 +149,12 @@ namespace FOSSDiscord.Commands
             }
             else
             {
-                var embed = new DiscordEmbedBuilder
+                var errembed = new DiscordEmbedBuilder
                 {
                     Title = $"{memberid} is not banned",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.RespondAsync(errembed);
             }
         }
 
