@@ -89,8 +89,8 @@ namespace FOSSDiscord.Commands
         [Command("wikipedia"), Aliases("wiki")]
         public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
         {
-            //string URL = $"https://en.wikipedia.org/w/api.php?action=query&format=json&list=&titles={query}&redirects=1";
-            string URL = $"https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
+            //string URL = $"https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
+            string URL = $"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
             WebRequest wrREQUEST;
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
@@ -113,22 +113,11 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(errEmbed);
                 return;
             }
-            var pageTitle = jsonData["query"]["pages"][pageID]["title"];
-            string resultURL = $"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=&pageids={pageID}";
-            
-            wrREQUEST = WebRequest.Create(resultURL);
-            wrREQUEST.Proxy = null;
-            wrREQUEST.Method = "GET";
-            response = wrREQUEST.GetResponse();
-            streamReader = new StreamReader(response.GetResponseStream());
-            responseData = streamReader.ReadToEnd();
-            jsonData = JObject.Parse(responseData);
-            streamReader.Close();
-            var pageData = jsonData["query"]["pages"][pageID]["extract"];
-            string newString = (string)pageData;
-            try
+            else
             {
-                string brief = newString.Substring(0, 260);
+                string pageTitle = (string)jsonData["query"]["pages"][pageID]["title"];
+                string extract = (string)jsonData["query"]["pages"][pageID]["extract"];
+                string brief = extract.Substring(0, 260);
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{pageTitle}",
@@ -136,17 +125,7 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
-            }
-            catch(Exception e)
-            {
-                var errEmbed = new DiscordEmbedBuilder
-                {
-                    Title = "Oops...",
-                    Description = $"{e}",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.RespondAsync(errEmbed);
-            }
+            };
                 
         }
     }
