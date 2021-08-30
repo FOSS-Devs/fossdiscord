@@ -14,6 +14,18 @@ namespace FOSSDiscord.Commands
         [Command("kick"), RequirePermissions(DSharpPlus.Permissions.KickMembers)]
         public async Task KickCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "no reason given")
         {
+            int userPerms = member.Hierarchy;
+            int authorPerms = ctx.Member.Hierarchy;
+            if (authorPerms <= userPerms)
+            {
+                var perEM = new DiscordEmbedBuilder
+                {
+                    Title = "Sorry, you cannot kick someone who is with higher permission.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(perEM);
+                return;
+            }
             if (member.Id == ctx.Member.Id)
             {
                 var fstEM = new DiscordEmbedBuilder
@@ -38,6 +50,18 @@ namespace FOSSDiscord.Commands
         [Command("ban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays, [RemainingText] string reason = "no reason given")
         {
+            int userPerms = member.Hierarchy;
+            int authorPerms = ctx.Member.Hierarchy;
+            if (authorPerms <= userPerms)
+            {
+                var perEM = new DiscordEmbedBuilder
+                {
+                    Title = "Sorry, you cannot ban someone who is with higher permission.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(perEM);
+                return;
+            }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (member.Id == ctx.Member.Id)
             {
@@ -72,8 +96,20 @@ namespace FOSSDiscord.Commands
         }
 
         [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
-        public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays, [RemainingText] string reason = "no reason given")
+        public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
         {
+            int userPerms = member.Hierarchy;
+            int authorPerms = ctx.Member.Hierarchy;
+            if (authorPerms <= userPerms)
+            { 
+                var perEM = new DiscordEmbedBuilder
+                {
+                    Title = "Sorry, you cannot softban someone who is with higher permission.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(perEM);
+                return;
+            }
             if (member.Id == ctx.Member.Id)
             {
                 var fstEM = new DiscordEmbedBuilder
