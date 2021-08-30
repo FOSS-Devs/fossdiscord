@@ -122,7 +122,7 @@ namespace FOSSDiscord
 
             DiscordActivity discordActivity = new DiscordActivity
             {
-                Name = $"{cfgjson.CommandPrefix}help | FOSSDiscord Dev",
+                Name = $"{cfgjson.CommandPrefix}help | v1.0-Dev",
                 ActivityType = ActivityType.Playing
             };
 
