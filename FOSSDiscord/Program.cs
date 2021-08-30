@@ -65,20 +65,27 @@ namespace FOSSDiscord
             };
             discord.MessageUpdated += async (s, e) =>
             {
-                var embed = new DiscordEmbedBuilder
+                if(e.MessageBefore.Content == e.Message.Content)
                 {
-                    Title = $"Message edited in #{e.Channel.Name}",
-                    Description = $"[Jump To Message]({e.Message.JumpLink})",
-                    Color = new DiscordColor(0xFFA500),
-                    Timestamp = e.Message.Timestamp
-                };
-                ulong loggingchannelid = 848826372390518805;
-                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
-                embed.AddField("Before", e.MessageBefore.Content);
-                embed.AddField("After", e.Message.Content);
-                embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
-                await loggingchannel.SendMessageAsync(embed);
+                    return;
+                }
+                else
+                {
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Message edited in #{e.Channel.Name}",
+                        Description = $"[Jump To Message]({e.Message.JumpLink})",
+                        Color = new DiscordColor(0xFFA500),
+                        Timestamp = e.Message.Timestamp
+                    };
+                    ulong loggingchannelid = 848826372390518805;
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
+                    embed.AddField("Before", e.MessageBefore.Content);
+                    embed.AddField("After", e.Message.Content);
+                    embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
+                    await loggingchannel.SendMessageAsync(embed);
+                }
             };
             discord.GuildMemberAdded += async (s, e) =>
             {
