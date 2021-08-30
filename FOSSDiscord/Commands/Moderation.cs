@@ -14,19 +14,6 @@ namespace FOSSDiscord.Commands
         [Command("kick"), RequirePermissions(DSharpPlus.Permissions.KickMembers)]
         public async Task KickCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "no reason given")
         {
-            int userPerms = member.Hierarchy;
-            int authorPerms = ctx.Member.Hierarchy;
-            if (authorPerms <= userPerms)
-            {
-                var perEM = new DiscordEmbedBuilder
-                {
-                    Title = "Oops...",
-                    Description = "Your permission is not high enough.",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.RespondAsync(perEM);
-                return;
-            }
             if (member.Id == ctx.Member.Id)
             {
                 var fstEM = new DiscordEmbedBuilder
@@ -35,6 +22,17 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(fstEM);
+                return;
+            }
+            else if (ctx.Member.Hierarchy <= member.Hierarchy)
+            {
+                var perEM = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Your permission is not high enough.",
+                    Color = new DiscordColor(0xFF0000),
+                };
+                await ctx.RespondAsync(perEM);
                 return;
             }
 
@@ -49,32 +47,30 @@ namespace FOSSDiscord.Commands
         }
 
         [Command("ban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
-        public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays, [RemainingText] string reason = "no reason given")
+        public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
         {
-            int userPerms = member.Hierarchy;
-            int authorPerms = ctx.Member.Hierarchy;
-            if (authorPerms <= userPerms)
+            if (member.Id == ctx.Member.Id)
+            {
+                var fstEM = new DiscordEmbedBuilder
+                {
+                    Title = "You cannot ban yourself",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(fstEM);
+                return;
+            }
+            else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
                 var perEM = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
                     Description = "Your permission is not high enough.",
-                    Color = new DiscordColor(0xFF0000)
+                    Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.RespondAsync(perEM);
                 return;
             }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            if (member.Id == ctx.Member.Id)
-            {
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = "You cannot ban yourself",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.RespondAsync(embed);
-                return;
-            }
             if (banlist.Any(x => x.User.Id == member.Id))
             {
                 var embed = new DiscordEmbedBuilder
@@ -102,25 +98,25 @@ namespace FOSSDiscord.Commands
         {
             int userPerms = member.Hierarchy;
             int authorPerms = ctx.Member.Hierarchy;
-            if (authorPerms <= userPerms)
-            { 
-                var perEM = new DiscordEmbedBuilder
-                {
-                    Title = "Oops...",
-                    Description = "Your permission is not high enough.",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.RespondAsync(perEM);
-                return;
-            }
             if (member.Id == ctx.Member.Id)
             {
-                var embed = new DiscordEmbedBuilder
+                var fstEM = new DiscordEmbedBuilder
                 {
                     Title = "You cannot softban yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.RespondAsync(fstEM);
+                return;
+            }
+            else if (ctx.Member.Hierarchy <= member.Hierarchy)
+            {
+                var perEM = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Your permission is not high enough.",
+                    Color = new DiscordColor(0xFF0000),
+                };
+                await ctx.RespondAsync(perEM);
                 return;
             }
             else
