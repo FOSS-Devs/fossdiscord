@@ -39,16 +39,13 @@ namespace FOSSDiscord.Commands
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
             wrREQUEST.Method = "GET";
-            //wrREQUEST.ContentType = "application/json";
             WebResponse response = wrREQUEST.GetResponse();
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             string responseData = streamReader.ReadToEnd();
             streamReader.Close();
-
             JArray jsonData = JArray.Parse(responseData);
             var caturl = jsonData[0]["url"];
             string catpic = (string)caturl;
-
             var embed = new DiscordEmbedBuilder
             {
                 Title = "Cat Picture",
@@ -67,16 +64,13 @@ namespace FOSSDiscord.Commands
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
             wrREQUEST.Method = "GET";
-            //wrREQUEST.ContentType = "application/json";
             WebResponse response = wrREQUEST.GetResponse();
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             string responseData = streamReader.ReadToEnd();
             streamReader.Close();
-
             JArray jsonData = JArray.Parse(responseData);
             var dogurl = jsonData[0]["url"];
             string dogpic = (string)dogurl;
-
             var embed = new DiscordEmbedBuilder
             {
                 Title = "Dog Picture",
@@ -85,7 +79,7 @@ namespace FOSSDiscord.Commands
             };
             await ctx.RespondAsync(embed);
         }
-        
+
         [Command("wikipedia"), Aliases("wiki")]
         public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
         {
@@ -94,7 +88,6 @@ namespace FOSSDiscord.Commands
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
             wrREQUEST.Method = "GET";
-
             WebResponse response = wrREQUEST.GetResponse();
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             string responseData = streamReader.ReadToEnd();
