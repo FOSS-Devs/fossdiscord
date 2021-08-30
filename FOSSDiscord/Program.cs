@@ -120,7 +120,13 @@ namespace FOSSDiscord
                 await loggingchannel.SendMessageAsync(embed);
             };
 
-            await discord.ConnectAsync();
+            DiscordActivity discordActivity = new DiscordActivity
+            {
+                Name = $"{cfgjson.CommandPrefix}help | FOSSDiscord Dev",
+                ActivityType = ActivityType.Playing
+            };
+
+            await discord.ConnectAsync(discordActivity);
             await Task.Delay(-1);
         }
 
