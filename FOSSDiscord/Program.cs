@@ -65,7 +65,7 @@ namespace FOSSDiscord
             };
             discord.MessageUpdated += async (s, e) =>
             {
-                if(e.MessageBefore.Content == e.Message.Content)
+                if(e.Message.IsEdited == false)
                 {
                     return;
                 }
@@ -114,6 +114,22 @@ namespace FOSSDiscord
                 ulong loggingchannelid = 848826372390518805;
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
+                embed.AddField("ID", e.Member.Id.ToString());
+                long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
+                embed.AddField("Joined Guild", $"<t:{memberjoinedat}:F>");
+                await loggingchannel.SendMessageAsync(embed);
+            };
+            discord.ChannelCreated += async (s, e) =>
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Member left",
+                    Color = new DiscordColor(0xFF0000),
+                    Timestamp = e.Channel.CreationTimestamp
+                };
+                ulong loggingchannelid = 848826372390518805;
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                embed.WithAuthor($"{e.Channel.}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
                 long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
                 embed.AddField("Joined Guild", $"<t:{memberjoinedat}:F>");
