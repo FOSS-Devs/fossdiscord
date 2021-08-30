@@ -12,7 +12,7 @@ namespace FOSSDiscord.Commands
     public class Moderation : BaseCommandModule
     {
         [Command("kick"), RequirePermissions(DSharpPlus.Permissions.KickMembers)]
-        public async Task KickCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = null)
+        public async Task KickCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "no reason given")
         {
             if (member.Id == ctx.Member.Id)
             {
@@ -42,19 +42,12 @@ namespace FOSSDiscord.Commands
                 Color = new DiscordColor(0xFFA500)
             };
             embed.AddField("Reason", reason);
-            if(reason == null)
-            {
-                await member.RemoveAsync();
-            }
-            else
-            {
-                await member.RemoveAsync(reason);
-            }
+            await member.RemoveAsync(reason);
             await ctx.RespondAsync(embed);
         }
 
         [Command("ban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
-        public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = null)
+        public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
         {
             if (member.Id == ctx.Member.Id)
             {
@@ -93,20 +86,13 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 embed.AddField("Reason", reason);
-                if(reason == null)
-                {
-                    await member.BanAsync(deletemessagedays);
-                }
-                else
-                {
-                    await member.BanAsync(deletemessagedays, reason);
-                }
+                await member.BanAsync(deletemessagedays, reason);
                 await ctx.RespondAsync(embed);
             }
         }
 
         [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
-        public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = null)
+        public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
         {
             int userPerms = member.Hierarchy;
             int authorPerms = ctx.Member.Hierarchy;
@@ -137,14 +123,7 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 embed.AddField("Reason", reason);
-                if(reason == null)
-                {
-                    await member.BanAsync(deletemessagedays);
-                }
-                else
-                {
-                    await member.BanAsync(deletemessagedays, reason);
-                }
+                await member.BanAsync(deletemessagedays, reason);
                 await ctx.Guild.UnbanMemberAsync(member.Id);
                 await ctx.RespondAsync(embed);
             }
