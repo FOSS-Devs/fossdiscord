@@ -26,13 +26,13 @@ namespace FOSSDiscord.Commands
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
-                var perEM = new DiscordEmbedBuilder
+                var embed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "Your permission is not high enough.",
+                    Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(perEM);
+                await ctx.RespondAsync(embed);
                 return;
             }
 
@@ -61,13 +61,13 @@ namespace FOSSDiscord.Commands
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
-                var perEM = new DiscordEmbedBuilder
+                var embed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "Your permission is not high enough.",
+                    Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(perEM);
+                await ctx.RespondAsync(embed);
                 return;
             }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
@@ -110,13 +110,13 @@ namespace FOSSDiscord.Commands
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
-                var perEM = new DiscordEmbedBuilder
+                var embed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "Your permission is not high enough.",
+                    Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(perEM);
+                await ctx.RespondAsync(embed);
                 return;
             }
             else
