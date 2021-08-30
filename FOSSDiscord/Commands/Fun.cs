@@ -89,7 +89,6 @@ namespace FOSSDiscord.Commands
         [Command("wikipedia"), Aliases("wiki")]
         public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
         {
-            //string URL = $"https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
             string URL = $"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
             WebRequest wrREQUEST;
             wrREQUEST = WebRequest.Create(URL);
