@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace FOSSDiscord
 {
@@ -56,15 +57,18 @@ namespace FOSSDiscord
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = e.Message.Timestamp
                 };
-                DiscordChannel loggingchannel = null;
-                if(FOSSDiscord.Properties.Settings.Default.loggingchannelid != 0)
-                {
-                    loggingchannel = e.Guild.GetChannel(FOSSDiscord.Properties.Settings.Default.loggingchannelid);
-                }
-                else
+                Directory.CreateDirectory(@"Settings/");
+                if(!File.Exists($"Settings/Loggingsettings-{e.Guild.Id}.json"))
                 {
                     return;
                 }
+                JObject jsonData = JObject.Parse(File.ReadAllText($"Settings/Loggingsettings-{e.Guild.Id}.json"));
+                if(jsonData["Loggingchannelid"].ToString() == "0")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
                 embed.AddField("Content", e.Message.Content);
                 embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
@@ -85,15 +89,18 @@ namespace FOSSDiscord
                         Color = new DiscordColor(0xFFA500),
                         Timestamp = e.Message.Timestamp
                     };
-                    DiscordChannel loggingchannel = null;
-                    if (FOSSDiscord.Properties.Settings.Default.loggingchannelid != 0)
-                    {
-                        loggingchannel = e.Guild.GetChannel(FOSSDiscord.Properties.Settings.Default.loggingchannelid);
-                    }
-                    else
+                    Directory.CreateDirectory(@"Settings/");
+                    if (!File.Exists($"Settings/Loggingsettings-{e.Guild.Id}.json"))
                     {
                         return;
                     }
+                    JObject jsonData = JObject.Parse(File.ReadAllText($"Settings/Loggingsettings-{e.Guild.Id}.json"));
+                    if (jsonData["Loggingchannelid"].ToString() == "0")
+                    {
+                        return;
+                    }
+                    ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
                     embed.AddField("Before", e.MessageBefore.Content);
                     embed.AddField("After", e.Message.Content);
@@ -109,15 +116,18 @@ namespace FOSSDiscord
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Member.JoinedAt
                 };
-                DiscordChannel loggingchannel = null;
-                if (FOSSDiscord.Properties.Settings.Default.loggingchannelid != 0)
-                {
-                    loggingchannel = e.Guild.GetChannel(FOSSDiscord.Properties.Settings.Default.loggingchannelid);
-                }
-                else
+                Directory.CreateDirectory(@"Settings/");
+                if (!File.Exists($"Settings/Loggingsettings-{e.Guild.Id}.json"))
                 {
                     return;
                 }
+                JObject jsonData = JObject.Parse(File.ReadAllText($"Settings/Loggingsettings-{e.Guild.Id}.json"));
+                if (jsonData["Loggingchannelid"].ToString() == "0")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
                 long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
@@ -132,15 +142,18 @@ namespace FOSSDiscord
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = DateTime.Now
                 };
-                DiscordChannel loggingchannel = null;
-                if (FOSSDiscord.Properties.Settings.Default.loggingchannelid != 0)
-                {
-                    loggingchannel = e.Guild.GetChannel(FOSSDiscord.Properties.Settings.Default.loggingchannelid);
-                }
-                else
+                Directory.CreateDirectory(@"Settings/");
+                if (!File.Exists($"Settings/Loggingsettings-{e.Guild.Id}.json"))
                 {
                     return;
                 }
+                JObject jsonData = JObject.Parse(File.ReadAllText($"Settings/Loggingsettings-{e.Guild.Id}.json"));
+                if (jsonData["Loggingchannelid"].ToString() == "0")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
                 long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
@@ -156,15 +169,18 @@ namespace FOSSDiscord
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Channel.CreationTimestamp
                 };
-                DiscordChannel loggingchannel = null;
-                if (FOSSDiscord.Properties.Settings.Default.loggingchannelid != 0)
-                {
-                    loggingchannel = e.Guild.GetChannel(FOSSDiscord.Properties.Settings.Default.loggingchannelid);
-                }
-                else
+                Directory.CreateDirectory(@"Settings/");
+                if (!File.Exists($"Settings/Loggingsettings-{e.Guild.Id}.json"))
                 {
                     return;
                 }
+                JObject jsonData = JObject.Parse(File.ReadAllText($"Settings/Loggingsettings-{e.Guild.Id}.json"));
+                if (jsonData["Loggingchannelid"].ToString() == "0")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.AddField("Type", e.Channel.Type.ToString());
                 embed.AddField("ID", e.Channel.Id.ToString());
                 await loggingchannel.SendMessageAsync(embed);
@@ -178,16 +194,18 @@ namespace FOSSDiscord
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = DateTime.Now
                 };
-                DiscordChannel loggingchannel = null;
-                if (FOSSDiscord.Properties.Settings.Default.loggingchannelid != 0)
-                {
-                    loggingchannel = e.Guild.GetChannel(FOSSDiscord.Properties.Settings.Default.loggingchannelid);
-                }
-                else
+                Directory.CreateDirectory(@"Settings/");
+                if (!File.Exists($"Settings/Loggingsettings-{e.Guild.Id}.json"))
                 {
                     return;
                 }
-
+                JObject jsonData = JObject.Parse(File.ReadAllText($"Settings/Loggingsettings-{e.Guild.Id}.json"));
+                if (jsonData["Loggingchannelid"].ToString() == "0")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 if(e.ChannelBefore.Name != e.ChannelAfter.Name)
                 {
                     embed.AddField("Name", $"**Before**: {e.ChannelBefore.Name}\n**After**: {e.ChannelAfter.Name}");
@@ -221,15 +239,18 @@ namespace FOSSDiscord
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = DateTime.Now
                 };
-                DiscordChannel loggingchannel = null;
-                if (FOSSDiscord.Properties.Settings.Default.loggingchannelid != 0)
-                {
-                    loggingchannel = e.Guild.GetChannel(FOSSDiscord.Properties.Settings.Default.loggingchannelid);
-                }
-                else
+                Directory.CreateDirectory(@"Settings/");
+                if (!File.Exists($"Settings/Loggingsettings-{e.Guild.Id}.json"))
                 {
                     return;
                 }
+                JObject jsonData = JObject.Parse(File.ReadAllText($"Settings/Loggingsettings-{e.Guild.Id}.json"));
+                if (jsonData["Loggingchannelid"].ToString() == "0")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
                 embed.AddField("Name", e.Channel.Name.ToString());
                 if(e.Channel.Type == ChannelType.Text && e.Channel.Topic != null)

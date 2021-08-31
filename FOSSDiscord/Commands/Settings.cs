@@ -37,19 +37,38 @@ namespace FOSSDiscord.Commands
             {
                 if (loggingchannel == null)
                 {
-                    FOSSDiscord.Properties.Settings.Default.loggingchannelid = 0;
-                    var rmembed = new DiscordEmbedBuilder
+                    JObject disabledata = new JObject(
+                        new JProperty($"Loggingchannelid", "0")
+                        );
+
+                    string disablejson = JsonConvert.SerializeObject(disabledata);
+                    Directory.CreateDirectory(@"Settings/");
+                    string disablepath = $"Settings/Loggingsettings-{ctx.Guild.Id}.json";
+                    using (TextWriter tw = new StreamWriter(disablepath))
+                    {
+                        tw.WriteLine(disablejson);
+                    };
+
+                    var disableembed = new DiscordEmbedBuilder
                     {
                         Title = $"Disabled logging",
                         Color = new DiscordColor(0x2ECC70)
                     };
-                    await ctx.RespondAsync(rmembed);
+                    await ctx.RespondAsync(disableembed);
                     return;
                 }
-                else
+                JObject data = new JObject(
+                    new JProperty($"Loggingchannelid", $"{loggingchannel.Id}")
+                    );
+
+                string json = JsonConvert.SerializeObject(data);
+                Directory.CreateDirectory(@"Settings/");
+                string path = $"Settings/Loggingsettings-{ctx.Guild.Id}.json";
+                using (TextWriter tw = new StreamWriter(path))
                 {
-                    FOSSDiscord.Properties.Settings.Default.loggingchannelid = loggingchannel.Id;
-                }
+                    tw.WriteLine(json);
+                };
+
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Set #{loggingchannel.Name} as the logging channel",

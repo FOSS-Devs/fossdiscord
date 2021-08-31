@@ -57,6 +57,7 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errembed);
+                return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
@@ -67,6 +68,7 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.RespondAsync(errembed);
+                return;
             }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (banlist.Any(x => x.User.Id == member.Id))
@@ -77,6 +79,7 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errembed);
+                return;
             }
             else
             {
@@ -104,6 +107,7 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errembed);
+                return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
@@ -114,6 +118,7 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.RespondAsync(errembed);
+                return;
             }
             else
             {
