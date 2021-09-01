@@ -57,6 +57,17 @@ namespace FOSSDiscord.Commands
                     await ctx.RespondAsync(disableembed);
                     return;
                 }
+                else if (loggingchannel.GuildId != ctx.Guild.Id)
+                {
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Oops...",
+                        Description = "The channel is not from this server",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.RespondAsync(em);
+                    return;
+                }
                 JObject data = new JObject(
                     new JProperty($"Loggingchannelid", $"{loggingchannel.Id}")
                     );
