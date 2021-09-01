@@ -62,7 +62,7 @@ namespace FOSSDiscord.Commands
                     var em = new DiscordEmbedBuilder
                     {
                         Title = $"Oops...",
-                        Description = "The channel is not from this server",
+                        Description = "That channel is not in this server",
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.RespondAsync(em);
