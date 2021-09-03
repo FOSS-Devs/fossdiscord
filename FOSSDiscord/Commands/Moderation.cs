@@ -220,6 +220,11 @@ namespace FOSSDiscord.Commands
                         {
                             return;
                         }
+                        else 
+                        {
+                            await Task.Delay(1000);
+                            continue;
+                        }
                     }
                 }
             }
