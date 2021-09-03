@@ -269,7 +269,10 @@ namespace FOSSDiscord
                 Name = $"{cfgjson.CommandPrefix}help | v1.0-Dev",
                 ActivityType = ActivityType.Playing
             };
-
+            if (Directory.Exists(@"Settings/lck/"))
+            {
+                Directory.Delete("Settings/lck/", true);
+            }
             await discord.ConnectAsync(discordActivity);
             Console.WriteLine("--------------------");
             Console.WriteLine("Connected!");

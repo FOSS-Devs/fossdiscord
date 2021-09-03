@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -97,8 +98,6 @@ namespace FOSSDiscord.Commands
         [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
         {
-            int userPerms = member.Hierarchy;
-            int authorPerms = ctx.Member.Hierarchy;
             if (member.Id == ctx.Member.Id)
             {
                 var errembed = new DiscordEmbedBuilder
@@ -162,6 +161,16 @@ namespace FOSSDiscord.Commands
         [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
         public async Task PurgeCommands(CommandContext ctx, int amount = 10)
         {
+            if (amount > 50) 
+            {
+                var errembed = new DiscordEmbedBuilder
+                {
+                    Title = "Cannot purge more than 100 messages",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(errembed);
+                return;
+            }
             var messages = await ctx.Channel.GetMessagesAsync(amount+1);
             await ctx.Channel.DeleteMessagesAsync(messages);
 
@@ -173,6 +182,100 @@ namespace FOSSDiscord.Commands
             var responsemsg = await ctx.RespondAsync(embed);
             await Task.Delay(5000);
             await responsemsg.DeleteAsync();
+        }
+
+        [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
+        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, String time = "1")
+        {
+            if (ctx.Guild.Id != channel.GuildId)
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel is not in this server",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
+            if (!Directory.Exists(@"Settings/"))
+            {
+                Directory.CreateDirectory(@"Settings/");
+            }
+            else 
+            {
+                if (!Directory.Exists(@"Settings/lck/"))
+                {
+                    Directory.CreateDirectory(@"Settings/lck/");
+                }
+            }
+            if (time == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
+            {
+                File.Delete($"Settings/lck/{channel.Id}.lck");
+                return;
+            }
+            else if (Int16.Parse(time) >= 1 && File.Exists($"Settings/lck/{channel.Id}.lck"))
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel already configured to auto delete messages",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
+            else if (time == "off" && !File.Exists($"Settings/lck/{channel.Id}.lck")) 
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel is not configured to auto delete messages",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
+            if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
+            {
+                if (time != "off" && Int16.Parse(time) >= 1)
+                {
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Oops...",
+                        Description = $"That {channel.Name} is now configured to auto delete messages every {time} hour(s)",
+                        Color = new DiscordColor(0x2ECC70)
+                    };
+                    await ctx.RespondAsync(em);
+                    File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
+                    while (File.Exists($"Settings/lck/{channel.Id}.lck"))
+                    {
+                        var messages = await channel.GetMessagesAsync();
+                        foreach (var message in messages)
+                        {
+                            var msgTime = message.Timestamp.UtcDateTime;
+                            var sysTime = System.DateTime.UtcNow;
+                            if (sysTime.Subtract(msgTime).TotalHours > Int16.Parse(time) && sysTime.Subtract(msgTime).TotalHours < 336)
+                            {
+                                await channel.DeleteMessageAsync(message);
+                                await Task.Delay(3000);
+                            }
+                        }
+                        await Task.Delay(1000);
+                    }
+                }
+                else
+                {
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Oops...",
+                        Description = "You comand syntax is not right",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.RespondAsync(em);
+                }
+            }
+            return;
         }
     }
 }
