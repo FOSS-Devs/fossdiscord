@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -173,6 +174,60 @@ namespace FOSSDiscord.Commands
             var responsemsg = await ctx.RespondAsync(embed);
             await Task.Delay(5000);
             await responsemsg.DeleteAsync();
+        }
+
+        [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, int time = 1)
+        {
+            if (ctx.Guild.Id != channel.GuildId)
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel is not in this server",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
+            if (!Directory.Exists(@"Settings"))
+            {
+                Directory.CreateDirectory(@"Settings/");
+            }
+            if (!Directory.Exists(@"Settings/lck/"))
+            {
+                Directory.CreateDirectory(@"Settings/lck");
+            }
+            if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
+                File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
+            else if (File.Exists($"Settings/lck/{channel.Id}.lck"))
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel already configured to auto delete message.",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
+            while (true) {
+                var messages = await channel.GetMessagesAsync();
+                foreach (var message in messages)
+                {
+                    var msgTime = message.Timestamp.UtcDateTime;
+                    var sysTime = System.DateTime.UtcNow;
+                        if (sysTime.Subtract(msgTime).TotalHours > time)
+                        {
+                            await channel.DeleteMessageAsync(message);
+                            await Task.Delay(2000);
+                        }
+                        else if(!File.Exists($"Settings/lck/{channel.Id}.lck"))
+                        {
+                            break;
+                        }
+                }
+            }
         }
     }
 }
