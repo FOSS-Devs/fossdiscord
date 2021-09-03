@@ -214,7 +214,7 @@ namespace FOSSDiscord.Commands
                         if (sysTime.Subtract(msgTime).TotalHours > time)
                         {
                             await channel.DeleteMessageAsync(message);
-                            await Task.Delay(2000);
+                            await Task.Delay(3000);
                         }
                         else if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
                         {
@@ -222,10 +222,10 @@ namespace FOSSDiscord.Commands
                         }
                         else 
                         {
-                            await Task.Delay(1000);
-                            continue;
+                            await Task.Delay(100);
                         }
                     }
+                    await Task.Delay(5000);
                 }
             }
             else if (File.Exists($"Settings/lck/{channel.Id}.lck"))
