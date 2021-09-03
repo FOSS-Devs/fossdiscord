@@ -193,40 +193,43 @@ namespace FOSSDiscord.Commands
             if (!Directory.Exists(@"Settings"))
             {
                 Directory.CreateDirectory(@"Settings/");
-            }
-            if (!Directory.Exists(@"Settings/lck/"))
-            {
-                Directory.CreateDirectory(@"Settings/lck");
+                if (!Directory.Exists(@"Settings/lck/"))
+                {
+                    Directory.CreateDirectory(@"Settings/lck");
+                }
             }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
-                File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
-            else if (File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
-                var em = new DiscordEmbedBuilder
+                File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
+                while (true)
                 {
-                    Title = $"Oops...",
-                    Description = "That channel already configured to auto delete message.",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.RespondAsync(em);
-                return;
-            }
-            while (true) {
-                var messages = await channel.GetMessagesAsync();
-                foreach (var message in messages)
-                {
-                    var msgTime = message.Timestamp.UtcDateTime;
-                    var sysTime = System.DateTime.UtcNow;
+                    var messages = await channel.GetMessagesAsync();
+                    foreach (var message in messages)
+                    {
+                        var msgTime = message.Timestamp.UtcDateTime;
+                        var sysTime = System.DateTime.UtcNow;
                         if (sysTime.Subtract(msgTime).TotalHours > time)
                         {
                             await channel.DeleteMessageAsync(message);
                             await Task.Delay(2000);
                         }
-                        else if(!File.Exists($"Settings/lck/{channel.Id}.lck"))
+                        else if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
                         {
                             return;
                         }
+                    }
                 }
+            }
+            else if (File.Exists($"Settings/lck/{channel.Id}.lck"))
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel already configured to auto delete messages",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
             }
         }
     }
