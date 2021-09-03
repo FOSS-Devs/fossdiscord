@@ -271,6 +271,10 @@ namespace FOSSDiscord
             };
 
             await discord.ConnectAsync(discordActivity);
+            Console.WriteLine("--------------------");
+            Console.WriteLine("Connected!");
+            Console.WriteLine($"Please use {cfgjson.CommandPrefix}shutdown to properly shut down the bot");
+            Console.WriteLine("--------------------");
             await Task.Delay(-1);
         }
 
