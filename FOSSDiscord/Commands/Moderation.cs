@@ -224,7 +224,7 @@ namespace FOSSDiscord.Commands
                         }
                         else if(!File.Exists($"Settings/lck/{channel.Id}.lck"))
                         {
-                            break;
+                            return;
                         }
                 }
             }
