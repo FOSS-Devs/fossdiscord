@@ -161,6 +161,16 @@ namespace FOSSDiscord.Commands
         [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
         public async Task PurgeCommands(CommandContext ctx, int amount = 10)
         {
+            if (amount > 100) 
+            {
+                var errembed = new DiscordEmbedBuilder
+                {
+                    Title = "Cannot purge more than 100 messages",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(errembed);
+                return;
+            }
             var messages = await ctx.Channel.GetMessagesAsync(amount+1);
             await ctx.Channel.DeleteMessagesAsync(messages);
 
@@ -245,7 +255,7 @@ namespace FOSSDiscord.Commands
                         {
                             var msgTime = message.Timestamp.UtcDateTime;
                             var sysTime = System.DateTime.UtcNow;
-                            if (sysTime.Subtract(msgTime).TotalHours > Int16.Parse(time))
+                            if (sysTime.Subtract(msgTime).TotalHours > Int16.Parse(time) && sysTime.Subtract(msgTime).TotalHours < 336)
                             {
                                 await channel.DeleteMessageAsync(message);
                                 await Task.Delay(3000);

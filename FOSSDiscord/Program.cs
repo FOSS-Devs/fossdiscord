@@ -271,7 +271,7 @@ namespace FOSSDiscord
             };
             if (Directory.Exists(@"Settings/lck/"))
             {
-                Directory.Delete("Settings/lck/");
+                Directory.Delete("Settings/lck/", true);
             }
             await discord.ConnectAsync(discordActivity);
             await Task.Delay(-1);
