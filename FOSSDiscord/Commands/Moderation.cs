@@ -225,7 +225,7 @@ namespace FOSSDiscord.Commands
                             await Task.Delay(100);
                         }
                     }
-                    await Task.Delay(5000);
+                    await Task.Delay(3000);
                 }
             }
             else if (File.Exists($"Settings/lck/{channel.Id}.lck"))
