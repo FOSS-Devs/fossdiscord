@@ -177,7 +177,7 @@ namespace FOSSDiscord.Commands
         }
 
         [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, int time = 1, string option = "any")
+        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, String time = "1")
         {
             if (ctx.Guild.Id != channel.GuildId)
             {
@@ -201,12 +201,12 @@ namespace FOSSDiscord.Commands
                     Directory.CreateDirectory(@"Settings/lck/");
                 }
             }
-            if (option.ToLower() == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
+            if (time == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
-                File.Delete(path);
+                File.Delete($"Settings/lck/{channel.Id}.lck");
                 return;
             }
-            else if (option == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
+            else if (time == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 var em = new DiscordEmbedBuilder
                 {
@@ -219,7 +219,7 @@ namespace FOSSDiscord.Commands
             }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
-                if (option == "any")
+                if (time != "off" && Int16.Parse(time) >= 1)
                 {
 
                     File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
@@ -230,7 +230,7 @@ namespace FOSSDiscord.Commands
                         {
                             var msgTime = message.Timestamp.UtcDateTime;
                             var sysTime = System.DateTime.UtcNow;
-                            if (sysTime.Subtract(msgTime).TotalHours > time)
+                            if (sysTime.Subtract(msgTime).TotalHours > Int16.Parse(time))
                             {
                                 await channel.DeleteMessageAsync(message);
                                 await Task.Delay(3000);
