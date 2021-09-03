@@ -161,7 +161,7 @@ namespace FOSSDiscord.Commands
         [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
         public async Task PurgeCommands(CommandContext ctx, int amount = 10)
         {
-            if (amount > 100) 
+            if (amount > 50) 
             {
                 var errembed = new DiscordEmbedBuilder
                 {
