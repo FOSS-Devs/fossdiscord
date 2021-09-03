@@ -98,8 +98,6 @@ namespace FOSSDiscord.Commands
         [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
         {
-            int userPerms = member.Hierarchy;
-            int authorPerms = ctx.Member.Hierarchy;
             if (member.Id == ctx.Member.Id)
             {
                 var errembed = new DiscordEmbedBuilder
@@ -206,7 +204,7 @@ namespace FOSSDiscord.Commands
                 File.Delete($"Settings/lck/{channel.Id}.lck");
                 return;
             }
-            else if (time == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
+            else if (Int16.Parse(time) >= 1 && File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 var em = new DiscordEmbedBuilder
                 {
@@ -217,11 +215,28 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(em);
                 return;
             }
+            else if (time == "off" && !File.Exists($"Settings/lck/{channel.Id}.lck")) 
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel is not configured to auto delete messages",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 if (time != "off" && Int16.Parse(time) >= 1)
                 {
-
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Oops...",
+                        Description = $"That {channel.Name} is now configured to auto delete messages every {time} hour(s)",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.RespondAsync(em);
                     File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
                     while (File.Exists($"Settings/lck/{channel.Id}.lck"))
                     {
@@ -238,6 +253,16 @@ namespace FOSSDiscord.Commands
                         }
                         await Task.Delay(1000);
                     }
+                }
+                else
+                {
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Oops...",
+                        Description = "You comand syntax is not right",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.RespondAsync(em);
                 }
             }
             return;
