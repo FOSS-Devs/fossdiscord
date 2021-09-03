@@ -204,7 +204,7 @@ namespace FOSSDiscord.Commands
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
-                while (true)
+                while (File.Exists($"Settings/lck/{channel.Id}.lck"))
                 {
                     var messages = await channel.GetMessagesAsync();
                     foreach (var message in messages)
@@ -216,16 +216,8 @@ namespace FOSSDiscord.Commands
                             await channel.DeleteMessageAsync(message);
                             await Task.Delay(3000);
                         }
-                        else if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
-                        {
-                            return;
-                        }
-                        else 
-                        {
-                            await Task.Delay(100);
-                        }
                     }
-                    await Task.Delay(3000);
+                    await Task.Delay(1000);
                 }
             }
             else if (File.Exists($"Settings/lck/{channel.Id}.lck"))
