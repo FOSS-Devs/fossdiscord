@@ -193,9 +193,12 @@ namespace FOSSDiscord.Commands
             if (!Directory.Exists(@"Settings"))
             {
                 Directory.CreateDirectory(@"Settings/");
+            }
+            else 
+            {
                 if (!Directory.Exists(@"Settings/lck/"))
                 {
-                    Directory.CreateDirectory(@"Settings/lck");
+                    Directory.CreateDirectory(@"Settings/lck/");
                 }
             }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
