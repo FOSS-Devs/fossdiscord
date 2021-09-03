@@ -234,7 +234,7 @@ namespace FOSSDiscord.Commands
                     {
                         Title = $"Oops...",
                         Description = $"That {channel.Name} is now configured to auto delete messages every {time} hour(s)",
-                        Color = new DiscordColor(0xFF0000)
+                        Color = new DiscordColor(0x2ECC70)
                     };
                     await ctx.RespondAsync(em);
                     File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
