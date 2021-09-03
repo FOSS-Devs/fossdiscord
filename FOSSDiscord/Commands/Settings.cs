@@ -17,7 +17,7 @@ namespace FOSSDiscord.Commands
 {
     public class Settings : BaseCommandModule
     {
-        [Group("settings"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        [Group("settings"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
         public class SettingsGroup : BaseCommandModule
         {
             [GroupCommand]
@@ -32,7 +32,7 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(embed);
             }
 
-            [Command("loggingchannel"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+            [Command("loggingchannel"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
             public async Task LoggingchannelCommand(CommandContext ctx, DiscordChannel loggingchannel = null)
             {
                 if (loggingchannel == null)

@@ -176,7 +176,7 @@ namespace FOSSDiscord.Commands
             await responsemsg.DeleteAsync();
         }
 
-        [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
         public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, int time = 1)
         {
             if (ctx.Guild.Id != channel.GuildId)
