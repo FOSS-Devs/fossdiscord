@@ -177,7 +177,7 @@ namespace FOSSDiscord.Commands
         }
 
         [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, int time = 1, string option = null)
+        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, int time = 1, string option = "any")
         {
             if (ctx.Guild.Id != channel.GuildId)
             {
@@ -190,7 +190,7 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(em);
                 return;
             }
-            if (!Directory.Exists(@"Settings"))
+            if (!Directory.Exists(@"Settings/"))
             {
                 Directory.CreateDirectory(@"Settings/");
             }
@@ -201,9 +201,25 @@ namespace FOSSDiscord.Commands
                     Directory.CreateDirectory(@"Settings/lck/");
                 }
             }
+            if (option.ToLower() == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
+            {
+                File.Delete(path);
+                return;
+            }
+            else if (option == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That channel already configured to auto delete messages",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
-                if (option == null)
+                if (option == "any")
                 {
 
                     File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
@@ -223,20 +239,6 @@ namespace FOSSDiscord.Commands
                         await Task.Delay(1000);
                     }
                 }
-            }
-            else if (option.ToLower() == "off" && File.Exists($"Settings/lck/{channel.Id}.lck")) 
-            {
-                File.Delete($"Settings/lck/{channel.Id}.lck");
-            }
-            else if (option == null && File.Exists($"Settings/lck/{channel.Id}.lck"))
-            {
-                var em = new DiscordEmbedBuilder
-                {
-                    Title = $"Oops...",
-                    Description = "That channel already configured to auto delete messages",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.RespondAsync(em);
             }
             return;
         }
