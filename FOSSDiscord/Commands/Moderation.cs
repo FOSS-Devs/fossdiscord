@@ -177,7 +177,7 @@ namespace FOSSDiscord.Commands
         }
 
         [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, int time = 1)
+        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, int time = 1, string option = null)
         {
             if (ctx.Guild.Id != channel.GuildId)
             {
@@ -203,24 +203,32 @@ namespace FOSSDiscord.Commands
             }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
-                File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
-                while (File.Exists($"Settings/lck/{channel.Id}.lck"))
+                if (option == null)
                 {
-                    var messages = await channel.GetMessagesAsync();
-                    foreach (var message in messages)
+
+                    File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
+                    while (File.Exists($"Settings/lck/{channel.Id}.lck"))
                     {
-                        var msgTime = message.Timestamp.UtcDateTime;
-                        var sysTime = System.DateTime.UtcNow;
-                        if (sysTime.Subtract(msgTime).TotalHours > time)
+                        var messages = await channel.GetMessagesAsync();
+                        foreach (var message in messages)
                         {
-                            await channel.DeleteMessageAsync(message);
-                            await Task.Delay(3000);
+                            var msgTime = message.Timestamp.UtcDateTime;
+                            var sysTime = System.DateTime.UtcNow;
+                            if (sysTime.Subtract(msgTime).TotalHours > time)
+                            {
+                                await channel.DeleteMessageAsync(message);
+                                await Task.Delay(3000);
+                            }
                         }
+                        await Task.Delay(1000);
                     }
-                    await Task.Delay(1000);
                 }
             }
-            else if (File.Exists($"Settings/lck/{channel.Id}.lck"))
+            else if (option.ToLower() == "off" && File.Exists($"Settings/lck/{channel.Id}.lck")) 
+            {
+                File.Delete($"Settings/lck/{channel.Id}.lck");
+            }
+            else if (option == null && File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 var em = new DiscordEmbedBuilder
                 {
@@ -229,8 +237,8 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(em);
-                return;
             }
+            return;
         }
     }
 }
