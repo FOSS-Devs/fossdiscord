@@ -74,10 +74,10 @@ namespace FOSSDiscord.Commands
                 {
                     embed.AddField("Nickname", member.Nickname);
                 }
-                string memberjoinedat = member.JoinedAt.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
-                embed.AddField("Joined Server", memberjoinedat, false);
-                string membercreation = member.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
-                embed.AddField("Account Created", membercreation);
+                long memberjoinedat = ctx.Member.JoinedAt.ToUnixTimeSeconds();
+                embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
+                long membercreation = ctx.Member.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Registered", $"<t:{membercreation}:F>");
                 await ctx.RespondAsync(embed);
             }
             else

@@ -40,7 +40,7 @@ namespace FOSSDiscord.Commands
             }
             string[] guildsarray = guildslist.ToArray();
             string guildsstring = String.Join(" ", guildsarray);
-            string connectedguilds = guildsstring.Replace(" Guild ", "\n").Replace("Guild ", "");
+            string connectedguilds = guildsstring.Replace(" Guild ", "\nID: ").Replace("Guild ", "ID: ").Replace("; ", " Name: ");
 
             var embed = new DiscordEmbedBuilder
             {

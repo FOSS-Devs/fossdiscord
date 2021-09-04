@@ -44,7 +44,8 @@ namespace FOSSDiscord
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { cfgjson.CommandPrefix },
-                EnableMentionPrefix = true
+                EnableMentionPrefix = true,
+                EnableDms = false
             });
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
 
@@ -156,8 +157,10 @@ namespace FOSSDiscord
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
+                long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Registered", $"<t:{membercreation}:F>");
                 long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
-                embed.AddField("Joined Guild", $"<t:{memberjoinedat}:F>");
+                embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
                 await loggingchannel.SendMessageAsync(embed);
             };
             discord.ChannelCreated += async (s, e) =>
