@@ -116,8 +116,8 @@ namespace FOSSDiscord.Commands
             embed.WithAuthor(ctx.Guild.Name, null, ctx.Guild.IconUrl);
             embed.AddField("Owner", $"{ctx.Guild.Owner.Username}#{ctx.Guild.Owner.Discriminator}");
             embed.AddField("Server ID", ctx.Guild.Id.ToString());
-            string guildcreation = ctx.Guild.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
-            embed.AddField("Server Created", guildcreation);
+            long guildcreation = ctx.Guild.CreationTimestamp.ToUnixTimeSeconds();
+            embed.AddField("Server Created", $"<t:{guildcreation}:F>");
             embed.AddField("Number of Members", ctx.Guild.MemberCount.ToString());
             embed.AddField("Number of Roles", ctx.Guild.Roles.Count.ToString());
             await ctx.RespondAsync(embed);
@@ -156,11 +156,11 @@ namespace FOSSDiscord.Commands
         public async Task UptimeCommand(CommandContext ctx)
         {
             var uptime = (DateTime.Now - StartTime);
-
+            long onlinesince = StartTime.ToUnixTimeSeconds();
             var embed = new DiscordEmbedBuilder
             {
                 Title = "Uptime",
-                Description = $"{uptime.Days.ToString()} days, {uptime.Minutes.ToString()} minutes and {uptime.Seconds.ToString()} seconds",
+                Description = $"Online since <t:{onlinesince}:F>\n({uptime.Days} days, {uptime.Minutes} minutes and {uptime.Seconds} seconds)",
                 Color = new DiscordColor(0x0080FF)
             };
             await ctx.RespondAsync(embed);
