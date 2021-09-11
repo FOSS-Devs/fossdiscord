@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -17,7 +18,9 @@ namespace FOSSDiscord
 {
     class Program
     {
-        public readonly EventId BotEventId = new EventId(42, "Bot-Ex02");
+        // Set the local version, change when making a release
+        public static string localversion = "v1.0-Dev";
+
         static void Main(string[] args)
         {
             MainAsync().GetAwaiter().GetResult();
@@ -40,7 +43,6 @@ namespace FOSSDiscord
 
                 // Remove this when making a release
                 MinimumLogLevel = LogLevel.Debug
-
             });
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
@@ -269,12 +271,35 @@ namespace FOSSDiscord
 
             commands.CommandErrored += async (s, e) =>
             {
-                // let's log the error details
+                if (e.Exception is CommandNotFoundException)
+                {
+                    string messagecommand = e.Context.Message.Content.Replace(cfgjson.CommandPrefix, "");
+                    var commandnotfoundembed = new DiscordEmbedBuilder
+                    {
+                        Title = "Oops...",
+                        Description = $"The command `{messagecommand}` was not found",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await e.Context.RespondAsync(commandnotfoundembed);
+                    return;
+                }
+                else if (e.Exception.Message == "Could not find a suitable overload for the command.")
+                {
+                    string messagecommand = e.Context.Message.Content.Replace(cfgjson.CommandPrefix, "").Split(" ")[0].ToString();
+                    var overloadembed = new DiscordEmbedBuilder
+                    {
+                        Title = "Oops...",
+                        Description = $"One or more arguments are not needed or missing\nRun `{cfgjson.CommandPrefix}help {messagecommand}` to see all the arguments",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await e.Context.RespondAsync(overloadembed);
+                    return;
+                }
                 var embed = new DiscordEmbedBuilder
                 {
-                    Title = "Error:",
-                    Description = $"{e.Exception.Message}",
-                    Color = new DiscordColor(0xFF0000) // red
+                    Title = "Oops...",
+                    Description = $"Something went wrong\n{e.Exception.Message}",
+                    Color = new DiscordColor(0xFF0000)
                 };
                 await e.Context.RespondAsync(embed);
             };
