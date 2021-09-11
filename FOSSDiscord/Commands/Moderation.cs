@@ -287,33 +287,52 @@ namespace FOSSDiscord.Commands
             {
                 if (File.Exists(file))
                 {
-                    var readData = System.IO.File.ReadAllText($"Data/blacklist/{ctx.Guild.Id}.lst");
-                    JObject jsonData = JObject.Parse(readData);
-                    jsonData.Add($"{member.Id}");
-                    jsonData[member.Id].AddAfterSelf(new warns { caseID = 1, reason = reason });
-                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                    JObject overwrite =
+                    new JObject(
+                        new JProperty($"{member.Id}",
+                            new JObject("case0",
+                                new JProperty("reason", $"{reason}")
+                            )
+                        )
+                    );
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
                 }
                 else
                 {
-                    File.Create(file).Dispose();
-                    var readData = System.IO.File.ReadAllText($"Data/blacklist/{ctx.Guild.Id}.lst");
-                    JObject jsonData = JObject.Parse(readData);
-                    jsonData.Add($"{member.Id}");
-                    jsonData[member.Id].AddAfterSelf(new warns { caseID = 1, reason = reason });
-                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                    JObject overwrite =
+                    new JObject(
+                        new JProperty($"{member.Id}",
+                            new JObject("case0",
+                                new JProperty("reason", $"{reason}")
+                            )
+                        )
+                    );
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
                 }
             }
             catch (Exception)
             {
-                Object newData = new warns { caseID = 1, reason = reason };
-                var jsonData = JsonConvert.SerializeObject(newData);
-                JObject outputData = new JObject{member.Id, {newData}};
+                //Object newData = new warns { caseID = 1, reason = reason };
+                //var jsonData = JsonConvert.SerializeObject(newData);
+                //JObject outputData = new JObject{member.Id, {newData}};
+
+                JObject overwrite =
+                    new JObject(
+                        new JProperty($"{member.Id}",
+                            new JObject(
+                                new JProperty("case0", reason)
+                            )
+                        )
+                    );
+                string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
+                System.IO.File.WriteAllText(file, dataWrite);
+
                 var emNEW = new DiscordEmbedBuilder
                 {
                     Title = $"test",
-                    Description = $"{jsonData}",
+                    Description = $"{overwrite}",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(emNEW);
