@@ -15,9 +15,9 @@ using System.Text.Json;
 
 namespace FOSSDiscord.Commands
 {
-    public class Admin : BaseCommandModule
+    public class Owner : BaseCommandModule
     {
-        [Command("shutdown"), Aliases("shutdownbot")]
+        [Command("shutdown"), Aliases("shutdownbot"), RequireOwner]
         public async Task Shutdowncommand(CommandContext ctx)
         {
             var embed = new DiscordEmbedBuilder
@@ -29,7 +29,7 @@ namespace FOSSDiscord.Commands
             await ctx.Client.DisconnectAsync();
             System.Environment.Exit(1);
         }
-        [Command("servers")]
+        [Command("servers"), RequireOwner]
         public async Task Serverscommand(CommandContext ctx)
         {
             List<string> guildslist = new List<string>();
