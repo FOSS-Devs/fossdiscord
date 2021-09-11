@@ -192,23 +192,14 @@ namespace FOSSDiscord.Commands
                 var em = new DiscordEmbedBuilder
                 {
                     Title = $"Oops...",
-                    Description = "That channel is not in this server",
+                    Description = "That channel does not exist in this server",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(em);
                 return;
             }
-            if (!Directory.Exists(@"Settings/"))
-            {
-                Directory.CreateDirectory(@"Settings/");
-            }
-            else 
-            {
-                if (!Directory.Exists(@"Settings/lck/"))
-                {
-                    Directory.CreateDirectory(@"Settings/lck/");
-                }
-            }
+            Directory.CreateDirectory(@"Settings/");
+            Directory.CreateDirectory(@"Settings/lck/");
             if (time == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 File.Delete($"Settings/lck/{channel.Id}.lck");
@@ -243,7 +234,7 @@ namespace FOSSDiscord.Commands
                     var em = new DiscordEmbedBuilder
                     {
                         Title = $"Oops...",
-                        Description = $"That {channel.Name} is now configured to auto delete messages every {time} hour(s)",
+                        Description = $"`{channel.Name}` is now configured to auto delete messages every {time} hour(s)",
                         Color = new DiscordColor(0x2ECC70)
                     };
                     await ctx.RespondAsync(em);
@@ -269,7 +260,7 @@ namespace FOSSDiscord.Commands
                     var em = new DiscordEmbedBuilder
                     {
                         Title = $"Oops...",
-                        Description = "You comand syntax is not right",
+                        Description = "You command syntax is not right",
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.RespondAsync(em);
