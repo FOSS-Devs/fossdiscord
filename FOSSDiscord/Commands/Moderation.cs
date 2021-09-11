@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace FOSSDiscord.Commands
 {
@@ -137,7 +139,7 @@ namespace FOSSDiscord.Commands
         public async Task UnbanCommand(CommandContext ctx, ulong memberid)
         {
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            if(banlist.Any(x => x.User.Id == memberid))
+            if (banlist.Any(x => x.User.Id == memberid))
             {
                 var embed = new DiscordEmbedBuilder
                 {
@@ -161,7 +163,7 @@ namespace FOSSDiscord.Commands
         [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
         public async Task PurgeCommands(CommandContext ctx, int amount = 10)
         {
-            if (amount > 50) 
+            if (amount > 50)
             {
                 var errembed = new DiscordEmbedBuilder
                 {
@@ -171,7 +173,7 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(errembed);
                 return;
             }
-            var messages = await ctx.Channel.GetMessagesAsync(amount+1);
+            var messages = await ctx.Channel.GetMessagesAsync(amount + 1);
             await ctx.Channel.DeleteMessagesAsync(messages);
 
             var embed = new DiscordEmbedBuilder
@@ -185,7 +187,7 @@ namespace FOSSDiscord.Commands
         }
 
         [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, String time = "1")
+        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, string time)
         {
             if (ctx.Guild.Id != channel.GuildId)
             {
@@ -216,7 +218,7 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(em);
                 return;
             }
-            else if (time == "off" && !File.Exists($"Settings/lck/{channel.Id}.lck")) 
+            else if (time == "off" && !File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 var em = new DiscordEmbedBuilder
                 {
@@ -267,6 +269,71 @@ namespace FOSSDiscord.Commands
                 }
             }
             return;
+        }
+
+        [Command("warn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        public async Task Warn(CommandContext ctx, DiscordMember member, [RemainingText] String reason = "none")
+        {
+            string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
+            if (!Directory.Exists("Data/"))
+            {
+                Directory.CreateDirectory(@"Data/");
+            }
+            if (!Directory.Exists("Data/blacklist/"))
+            {
+                Directory.CreateDirectory(@"Data/blacklist/");
+            }
+            try
+            {
+                if (File.Exists(file))
+                {
+                    var readData = System.IO.File.ReadAllText($"Data/blacklist/{ctx.Guild.Id}.lst");
+                    JObject jsonData = JObject.Parse(readData);
+                    jsonData.Add($"{member.Id}");
+                    jsonData[member.Id].AddAfterSelf(new warns { caseID = 1, reason = reason });
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                }
+                else
+                {
+                    File.Create(file).Dispose();
+                    var readData = System.IO.File.ReadAllText($"Data/blacklist/{ctx.Guild.Id}.lst");
+                    JObject jsonData = JObject.Parse(readData);
+                    jsonData.Add($"{member.Id}");
+                    jsonData[member.Id].AddAfterSelf(new warns { caseID = 1, reason = reason });
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                }
+            }
+            catch (Exception)
+            {
+                Object newData = new warns { caseID = 1, reason = reason };
+                var jsonData = JsonConvert.SerializeObject(newData);
+                JObject outputData = new JObject{member.Id, {newData}};
+                var emNEW = new DiscordEmbedBuilder
+                {
+                    Title = $"test",
+                    Description = $"{jsonData}",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.RespondAsync(emNEW);
+                return;
+            };
+
+            var em = new DiscordEmbedBuilder
+            {
+                Title = $"test",
+                Description = "",
+                Color = new DiscordColor(0x0080FF)
+            };
+            await ctx.RespondAsync(em);
+        }
+
+        public class warns
+        {
+
+            public int caseID { get; set; }
+            public string reason { get; set; }
         }
     }
 }

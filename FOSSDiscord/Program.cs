@@ -17,6 +17,7 @@ namespace FOSSDiscord
 {
     class Program
     {
+        public readonly EventId BotEventId = new EventId(42, "Bot-Ex02");
         static void Main(string[] args)
         {
             MainAsync().GetAwaiter().GetResult();
@@ -266,6 +267,17 @@ namespace FOSSDiscord
                 await loggingchannel.SendMessageAsync(embed);
             };
 
+            commands.CommandErrored += async (s, e) =>
+            {
+                // let's log the error details
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Error:",
+                    Description = $"{e.Exception.Message}",
+                    Color = new DiscordColor(0xFF0000) // red
+                };
+                await e.Context.RespondAsync(embed);
+            };
 
             DiscordActivity discordActivity = new DiscordActivity
             {
