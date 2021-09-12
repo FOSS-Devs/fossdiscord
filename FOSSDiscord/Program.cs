@@ -84,6 +84,10 @@ namespace FOSSDiscord
                 {
                     return;
                 }
+                else if (e.Message.Embeds.Count >= 1)
+                {
+                    return;
+                }
                 else
                 {
                     var embed = new DiscordEmbedBuilder
