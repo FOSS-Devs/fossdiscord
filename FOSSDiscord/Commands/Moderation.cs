@@ -275,14 +275,8 @@ namespace FOSSDiscord.Commands
         public async Task WarnCommand(CommandContext ctx, DiscordMember member, [RemainingText] String reason = "none")
         {
             string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
-            if (!Directory.Exists("Data/"))
-            {
-                Directory.CreateDirectory(@"Data/");
-            }
-            if (!Directory.Exists("Data/blacklist/"))
-            {
-                Directory.CreateDirectory(@"Data/blacklist/");
-            }
+            Directory.CreateDirectory(@"Data/");
+            Directory.CreateDirectory(@"Data/blacklist/");
             try
             {
                 if (File.Exists(file))
