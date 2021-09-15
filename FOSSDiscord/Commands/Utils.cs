@@ -152,6 +152,80 @@ namespace FOSSDiscord.Commands
             }
         }
 
+        [Command("poll")]
+        public async Task Pollcommand(CommandContext ctx, [RemainingText] string poll)
+        {
+
+            string[] pollsplit = poll.Split(" | ");
+            string[] polls = pollsplit.Skip(1).ToArray();
+            long questioncount = 0;
+
+            foreach (string question in polls)
+            {
+                questioncount = questioncount + 1;
+            }
+
+            if (questioncount > 11)
+            {
+                var errorembed = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "You can only use 10 questions in a poll",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(errorembed);
+            }
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = pollsplit[0],
+                Color = new DiscordColor(0x0080FF)
+            };
+
+            string[] number = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+
+            long repeating = 0;
+
+            foreach (string question in polls)
+            {
+                if (repeating == 10)
+                {
+                    embed.AddField($":keycap_ten:", question);
+                }
+                repeating = repeating + 1;
+                embed.AddField($":{number[repeating - 1]}:", question);
+            }
+
+            var embedmsg = await ctx.Channel.SendMessageAsync(embed);
+            await ctx.Message.DeleteAsync();
+
+            repeating = 0;
+
+            foreach (string question in polls)
+            {
+                if (repeating == 10)
+                {
+                    await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":keycap_ten:"));
+                }
+                repeating = repeating + 1;
+                await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, $":{number[repeating - 1]}:"));
+            }
+        }
+
+        [Command("quickpoll"), Aliases("ask")]
+        public async Task QuickpollCommand(CommandContext ctx, [RemainingText] string poll)
+        {
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = $"{ctx.Member.DisplayName} asks:",
+                Description = poll,
+                Color = new DiscordColor(0x0080FF)
+            };
+            var embedmsg = await ctx.RespondAsync(embed);
+            await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsup:"));
+            await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:"));
+        }
+
         [Command("uptime")]
         public async Task UptimeCommand(CommandContext ctx)
         {

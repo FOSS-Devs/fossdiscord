@@ -28,8 +28,7 @@ namespace FOSSDiscord
         internal static async Task MainAsync()
         {
             var json = "";
-            // Remove ..\..\..\ when making a release
-            using (var fs = File.OpenRead(@"..\..\..\config.json"))
+            using (var fs = File.OpenRead(@"config.json"))
             using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
                 json = await sr.ReadToEndAsync();
 
@@ -302,7 +301,7 @@ namespace FOSSDiscord
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = $"Something went wrong\n{e.Exception.Message}",
+                    Description = $"Something went wrong:\n`{e.Exception.Message}`",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await e.Context.RespondAsync(embed);

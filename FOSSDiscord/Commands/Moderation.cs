@@ -272,7 +272,7 @@ namespace FOSSDiscord.Commands
         }
 
         [Command("warn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
-        public async Task Warn(CommandContext ctx, DiscordMember member, [RemainingText] String reason = "none")
+        public async Task WarnCommand(CommandContext ctx, DiscordMember member, [RemainingText] String reason = "none")
         {
             string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
             if (!Directory.Exists("Data/"))

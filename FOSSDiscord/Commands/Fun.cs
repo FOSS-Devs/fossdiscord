@@ -33,8 +33,7 @@ namespace FOSSDiscord.Commands
         [Command("cat")]
         public async Task CatCommand(CommandContext ctx)
         {
-            string URL;
-            URL = "https://api.thecatapi.com/v1/images/search";
+            string URL = "https://api.thecatapi.com/v1/images/search";
             WebRequest wrREQUEST;
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
@@ -58,8 +57,7 @@ namespace FOSSDiscord.Commands
         [Command("dog"), Aliases("doggo")]
         public async Task DogCommand(CommandContext ctx)
         {
-            string URL;
-            URL = "https://api.thedogapi.com/v1/images/search";
+            string URL = "https://api.thedogapi.com/v1/images/search";
             WebRequest wrREQUEST;
             wrREQUEST = WebRequest.Create(URL);
             wrREQUEST.Proxy = null;
@@ -67,6 +65,7 @@ namespace FOSSDiscord.Commands
             WebResponse response = wrREQUEST.GetResponse();
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             string responseData = streamReader.ReadToEnd();
+            Console.WriteLine(responseData);
             streamReader.Close();
             JArray jsonData = JArray.Parse(responseData);
             var dogurl = jsonData[0]["url"];
