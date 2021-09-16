@@ -158,22 +158,17 @@ namespace FOSSDiscord.Commands
 
             string[] pollsplit = poll.Split(" | ");
             string[] polls = pollsplit.Skip(1).ToArray();
-            long questioncount = 0;
 
-            foreach (string question in polls)
-            {
-                questioncount = questioncount + 1;
-            }
-
-            if (questioncount > 11)
+            if (polls.Count() > 10)
             {
                 var errorembed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "You can only use 10 questions in a poll",
+                    Description = "You can only have 10 questions in a poll",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errorembed);
+                return;
             }
 
             var embed = new DiscordEmbedBuilder
