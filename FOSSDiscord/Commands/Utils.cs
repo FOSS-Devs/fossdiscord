@@ -180,11 +180,11 @@ namespace FOSSDiscord.Commands
             {
                 if (repeating == 0)
                 {
-                    pollquestions = $":one: - {question}"
+                    pollquestions = pollquestions + $":one: - {question}";
                 }
                 else
                 {
-                    pollquestions = $"\n:{number[repeating]}: - {question}"
+                    pollquestions = pollquestions + $"\n\n:{number[repeating]}: - {question}";
                 }
                 repeating = repeating + 1;
             }
