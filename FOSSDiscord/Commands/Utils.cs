@@ -171,8 +171,6 @@ namespace FOSSDiscord.Commands
                 return;
             }
 
-
-
             string[] number = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "keycap_ten"};
 
             long repeating = 0;
