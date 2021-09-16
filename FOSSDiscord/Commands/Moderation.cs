@@ -281,29 +281,43 @@ namespace FOSSDiscord.Commands
             {
                 if (File.Exists(file))
                 {
-                    JObject overwrite =
-                    new JObject(
-                        new JProperty($"{member.Id}",
-                            new JObject("case0",
-                                new JProperty("reason", $"{reason}")
-                            )
-                        )
-                    );
-                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
+                    StreamReader readData = new StreamReader(file);
+                    string data = readData.ReadToEnd();
+                    readData.Close();
+                    JObject jsonData = JObject.Parse(data);
+                    //var type = jsonData.HasValues;
+                    if (jsonData.GetValue($"{member.Id}") != null) {
+                        jsonData[$"{member.Id}"]["1"] = reason;
+                    }
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
+                    var firstEM = new DiscordEmbedBuilder
+                    {
+                        Title = "not_overwrite",
+                        Description = dataWrite,
+                        Color = new DiscordColor(0x0080FF)
+                    };
+                    await ctx.RespondAsync(firstEM);
                 }
                 else
                 {
                     JObject overwrite =
                     new JObject(
                         new JProperty($"{member.Id}",
-                            new JObject("case0",
-                                new JProperty("reason", $"{reason}")
+                            new JObject(
+                                new JProperty("0", reason)
                             )
                         )
                     );
                     string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = "overwrite",
+                        Description = dataWrite,
+                        Color = new DiscordColor(0x0080FF)
+                    };
+                    await ctx.RespondAsync(em);
                 }
             }
             catch (Exception)
@@ -316,7 +330,7 @@ namespace FOSSDiscord.Commands
                     new JObject(
                         new JProperty($"{member.Id}",
                             new JObject(
-                                new JProperty("case0", reason)
+                                new JProperty("0", reason)
                             )
                         )
                     );
@@ -325,21 +339,13 @@ namespace FOSSDiscord.Commands
 
                 var emNEW = new DiscordEmbedBuilder
                 {
-                    Title = $"test",
-                    Description = $"{overwrite}",
+                    Title = "overwrite",
+                    Description = dataWrite,
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(emNEW);
                 return;
             };
-
-            var em = new DiscordEmbedBuilder
-            {
-                Title = $"test",
-                Description = "",
-                Color = new DiscordColor(0x0080FF)
-            };
-            await ctx.RespondAsync(em);
         }
 
         public class warns
