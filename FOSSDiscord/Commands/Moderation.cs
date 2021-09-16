@@ -286,8 +286,15 @@ namespace FOSSDiscord.Commands
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
                     //var type = jsonData.HasValues;
-                    if (jsonData.GetValue($"{member.Id}") != null) {
-                        jsonData[$"{member.Id}"]["1"] = reason;
+                    if (jsonData.GetValue($"{member.Id}") != null)
+                    {
+                        string lastItem = ((JProperty)jsonData[$"{member.Id}"].Last()).Name;
+                        int caseIncrement = int.Parse(lastItem) + 1;
+                        jsonData[$"{member.Id}"][$"{caseIncrement}"] = reason;
+                    }
+                    else 
+                    {
+                        jsonData.Add(new JProperty($"{member.Id}", new JObject(new JProperty("0", reason))));
                     }
                     string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
