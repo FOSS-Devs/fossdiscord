@@ -171,21 +171,32 @@ namespace FOSSDiscord.Commands
                 return;
             }
 
-            var embed = new DiscordEmbedBuilder
-            {
-                Title = pollsplit[0],
-                Color = new DiscordColor(0x0080FF)
-            };
+
 
             string[] number = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "keycap_ten"};
 
             long repeating = 0;
+            string pollquestions = String.Empty;
 
             foreach (string question in polls)
             {
-                embed.AddField($":{number[repeating]}:", question);
+                if (repeating == 0)
+                {
+                    pollquestions = $":one: - {question}"
+                }
+                else
+                {
+                    pollquestions = $"\n:{number[repeating]}: - {question}"
+                }
                 repeating = repeating + 1;
             }
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = pollsplit[0],
+                Description = pollquestions,
+                Color = new DiscordColor(0x0080FF)
+            };
 
             var embedmsg = await ctx.Channel.SendMessageAsync(embed);
             await ctx.Message.DeleteAsync();
