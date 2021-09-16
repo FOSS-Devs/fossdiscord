@@ -182,18 +182,14 @@ namespace FOSSDiscord.Commands
                 Color = new DiscordColor(0x0080FF)
             };
 
-            string[] number = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+            string[] number = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "keycap_ten"};
 
             long repeating = 0;
 
             foreach (string question in polls)
             {
-                if (repeating == 10)
-                {
-                    embed.AddField($":keycap_ten:", question);
-                }
+                embed.AddField($":{number[repeating]}:", question);
                 repeating = repeating + 1;
-                embed.AddField($":{number[repeating - 1]}:", question);
             }
 
             var embedmsg = await ctx.Channel.SendMessageAsync(embed);
@@ -203,12 +199,8 @@ namespace FOSSDiscord.Commands
 
             foreach (string question in polls)
             {
-                if (repeating == 10)
-                {
-                    await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":keycap_ten:"));
-                }
+                await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, $":{number[repeating]}:"));
                 repeating = repeating + 1;
-                await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, $":{number[repeating - 1]}:"));
             }
         }
 
