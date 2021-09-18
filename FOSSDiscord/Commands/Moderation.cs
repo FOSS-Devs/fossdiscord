@@ -285,7 +285,6 @@ namespace FOSSDiscord.Commands
                     string data = readData.ReadToEnd();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
-                    //var type = jsonData.HasValues;
                     if (jsonData.GetValue($"{member.Id}") != null)
                     {
                         string lastItem = ((JProperty)jsonData[$"{member.Id}"].Last()).Name;
@@ -300,9 +299,9 @@ namespace FOSSDiscord.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var firstEM = new DiscordEmbedBuilder
                     {
-                        Title = "not_overwrite",
+                        Title = $"**{ member.DisplayName }**has been warned,",
                         Description = dataWrite,
-                        Color = new DiscordColor(0x0080FF)
+                        Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(firstEM);
                 }
@@ -320,19 +319,14 @@ namespace FOSSDiscord.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var em = new DiscordEmbedBuilder
                     {
-                        Title = "overwrite",
-                        Description = dataWrite,
-                        Color = new DiscordColor(0x0080FF)
+                        Title = $"**{member.DisplayName}**has been warned",
+                        Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(em);
                 }
             }
             catch (Exception)
             {
-                //Object newData = new warns { caseID = 1, reason = reason };
-                //var jsonData = JsonConvert.SerializeObject(newData);
-                //JObject outputData = new JObject{member.Id, {newData}};
-
                 JObject overwrite =
                     new JObject(
                         new JProperty($"{member.Id}",
@@ -346,14 +340,78 @@ namespace FOSSDiscord.Commands
 
                 var emNEW = new DiscordEmbedBuilder
                 {
-                    Title = "overwrite",
-                    Description = dataWrite,
-                    Color = new DiscordColor(0x0080FF)
+                    Title = $"**{member.DisplayName}**has been warned",
+                    Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.RespondAsync(emNEW);
                 return;
             };
         }
+
+        [Command("warns"), Aliases("warnings"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        public async Task Warnings(CommandContext ctx, DiscordMember member)
+        {
+            try
+            {
+                string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
+                if (File.Exists(file))
+                {
+                    StreamReader readData = new StreamReader(file);
+                    string data = readData.ReadToEnd();
+                    readData.Close();
+                    JObject jsonData = JObject.Parse(data);
+                    if (jsonData.GetValue($"{member.Id}") != null)
+                    {
+                        dynamic iterData = jsonData[$"{member.Id}"];
+                        var firstEM = new DiscordEmbedBuilder
+                        {
+                            Title = $"**{member.DisplayName}**'s warnings:",
+                            Color = new DiscordColor(0xFFA500)
+                        };
+                        foreach (KeyValuePair<string, JToken> items in (JObject)jsonData[$"{member.Id}"])
+                        {
+                            string caseID = items.Key;
+                            var reason = jsonData[$"{member.Id}"][caseID];
+                            firstEM.AddField($"Case {caseID}",$"{reason}");
+                        }
+                        await ctx.RespondAsync(firstEM);
+                    }
+                    else
+                    {
+                        var nonexistEM = new DiscordEmbedBuilder
+                        {
+                            Title = "Awesome!",
+                            Description = $"{member.DisplayName} has no warning(s)",
+                            Color = new DiscordColor(0x2ECC70)
+                        };
+                        await ctx.RespondAsync(nonexistEM);
+                    }
+                }
+                if (!File.Exists(file)) 
+                {
+                    var nonexistEM = new DiscordEmbedBuilder
+                    {
+                        Title = "Awesome!",
+                        Description = "Nobody in this guild has been warned yet",
+                        Color = new DiscordColor(0x2ECC70)
+                    };
+                    await ctx.RespondAsync(nonexistEM);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorEM = new DiscordEmbedBuilder
+                {
+                    Title = "Oops",
+                    Description = $"{ex}",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.RespondAsync(errorEM);
+                return;
+            };
+        }
+
+
 
         public class warns
         {
