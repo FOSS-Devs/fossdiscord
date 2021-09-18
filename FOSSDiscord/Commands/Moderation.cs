@@ -337,7 +337,6 @@ namespace FOSSDiscord.Commands
                     );
                 string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
                 System.IO.File.WriteAllText(file, dataWrite);
-
                 var emNEW = new DiscordEmbedBuilder
                 {
                     Title = $"**{member.DisplayName}**has been warned",
