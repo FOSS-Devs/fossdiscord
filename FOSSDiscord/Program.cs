@@ -13,6 +13,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using DSharpPlus.VoiceNext;
 
 namespace FOSSDiscord
 {
@@ -20,6 +21,7 @@ namespace FOSSDiscord
     {
         // Set the local version, change when making a release
         public static string localversion = "v1.0-Dev";
+        public VoiceNextExtension Voice { get; set; }
 
         static void Main(string[] args)
         {
@@ -307,6 +309,7 @@ namespace FOSSDiscord
                 await e.Context.RespondAsync(embed);
             };
 
+            discord.UseVoiceNext();
             DiscordActivity discordActivity = new DiscordActivity
             {
                 Name = $"{cfgjson.CommandPrefix}help | v1.0-Dev",
