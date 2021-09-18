@@ -312,7 +312,7 @@ namespace FOSSDiscord.Commands
                     new JObject(
                         new JProperty($"{member.Id}",
                             new JObject(
-                                new JProperty("0", reason)
+                                new JProperty("1", reason)
                             )
                         )
                     );
@@ -337,7 +337,7 @@ namespace FOSSDiscord.Commands
                     new JObject(
                         new JProperty($"{member.Id}",
                             new JObject(
-                                new JProperty("0", reason)
+                                new JProperty("1", reason)
                             )
                         )
                     );
