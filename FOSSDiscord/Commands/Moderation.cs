@@ -310,7 +310,7 @@ namespace FOSSDiscord.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var firstEM = new DiscordEmbedBuilder
                     {
-                        Title = $"**{ member.DisplayName }**has been warned,",
+                        Title = $"**{ member.DisplayName }** has been warned,",
                         Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(firstEM);
@@ -329,7 +329,7 @@ namespace FOSSDiscord.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var em = new DiscordEmbedBuilder
                     {
-                        Title = $"**{member.DisplayName}**has been warned",
+                        Title = $"**{member.DisplayName}** has been warned",
                         Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(em);
@@ -349,7 +349,7 @@ namespace FOSSDiscord.Commands
                 System.IO.File.WriteAllText(file, dataWrite);
                 var emNEW = new DiscordEmbedBuilder
                 {
-                    Title = $"**{member.DisplayName}**has been warned",
+                    Title = $"**{member.DisplayName}** has been warned",
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.RespondAsync(emNEW);
