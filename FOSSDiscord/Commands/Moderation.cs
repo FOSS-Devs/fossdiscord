@@ -377,11 +377,17 @@ namespace FOSSDiscord.Commands
                             Title = $"**{member.DisplayName}**'s warnings:",
                             Color = new DiscordColor(0xFFA500)
                         };
+                        int count = 0;
                         foreach (KeyValuePair<string, JToken> items in (JObject)jsonData[$"{member.Id}"])
                         {
                             string caseID = items.Key;
                             var reason = jsonData[$"{member.Id}"][caseID];
                             firstEM.AddField($"Case {caseID}",$"{reason}");
+                            count += 1;
+                            if(count == 5)
+                            {
+                                break;
+                            }
                         }
                         await ctx.RespondAsync(firstEM);
                     }
