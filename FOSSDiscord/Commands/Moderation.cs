@@ -420,14 +420,5 @@ namespace FOSSDiscord.Commands
                 return;
             };
         }
-
-
-
-        public class warns
-        {
-
-            public int caseID { get; set; }
-            public string reason { get; set; }
-        }
     }
 }
