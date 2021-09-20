@@ -274,6 +274,17 @@ namespace FOSSDiscord.Commands
         [Command("warn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
         public async Task WarnCommand(CommandContext ctx, DiscordMember member, [RemainingText] String reason = "none")
         {
+            if (ctx.Guild.Id != member.Guild.Id)
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That user is not in this guild",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(em);
+                return;
+            }
             string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
             Directory.CreateDirectory(@"Data/");
             Directory.CreateDirectory(@"Data/blacklist/");
