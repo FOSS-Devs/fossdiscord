@@ -50,5 +50,20 @@ namespace FOSSDiscord.Commands
             };
             await ctx.RespondAsync(embed);
         }
+
+        [Command("leaveserver"), RequireOwner]
+        public async Task LeaveserverCommand(CommandContext ctx, ulong server)
+        {
+            DiscordGuild guild = await ctx.Client.GetGuildAsync(server);
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = $"Left {guild.Name}",
+                Description = $"ID: {guild.Id}",
+                Color = new DiscordColor(0x2ECC70)
+            };
+            await guild.LeaveAsync();
+            await ctx.RespondAsync(embed);
+        }
     }
 }
