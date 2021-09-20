@@ -311,7 +311,6 @@ namespace FOSSDiscord.Commands
                     var firstEM = new DiscordEmbedBuilder
                     {
                         Title = $"**{ member.DisplayName }**has been warned,",
-                        Description = dataWrite,
                         Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(firstEM);
