@@ -38,7 +38,17 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(errembed);
                 return;
             }
-
+            else if (reason.Length > 350)
+            {
+                var lengthError = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "Please shorten your reason to within 350 characters",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(lengthError);
+                return;
+            }
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"Kicked {member.Username}#{member.Discriminator}",
@@ -73,6 +83,17 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(errembed);
                 return;
             }
+            else if (reason.Length > 350)
+            {
+                var lengthError = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "Please shorten your reason to within 350 characters",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(lengthError);
+                return;
+            }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (banlist.Any(x => x.User.Id == member.Id))
             {
@@ -100,6 +121,7 @@ namespace FOSSDiscord.Commands
         [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
         public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
         {
+            
             if (member.Id == ctx.Member.Id)
             {
                 var errembed = new DiscordEmbedBuilder
@@ -119,6 +141,17 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.RespondAsync(errembed);
+                return;
+            }
+            else if (reason.Length > 350)
+            {
+                var lengthError = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "Please shorten your reason to within 350 characters",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(lengthError);
                 return;
             }
             else
@@ -167,7 +200,7 @@ namespace FOSSDiscord.Commands
             {
                 var errembed = new DiscordEmbedBuilder
                 {
-                    Title = "Cannot purge more than 100 messages",
+                    Title = "Cannot purge more than 50 messages",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errembed);
@@ -235,9 +268,9 @@ namespace FOSSDiscord.Commands
                 {
                     var em = new DiscordEmbedBuilder
                     {
-                        Title = $"Oops...",
+                        Title = $"Autodelete has started...",
                         Description = $"`{channel.Name}` is now configured to auto delete messages every {time} hour(s)",
-                        Color = new DiscordColor(0x2ECC70)
+                        Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(em);
                     File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
@@ -283,6 +316,17 @@ namespace FOSSDiscord.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(em);
+                return;
+            }
+            else if (reason.Length > 350)
+            {
+                var lengthError = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "Please shorten your reason to within 350 characters",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(lengthError);
                 return;
             }
             string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
@@ -434,9 +478,9 @@ namespace FOSSDiscord.Commands
             {
                 var errorEM = new DiscordEmbedBuilder
                 {
-                    Title = "Oops",
+                    Title = "Oops...",
                     Description = $"{ex}",
-                    Color = new DiscordColor(0x2ECC70)
+                    Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errorEM);
                 return;
@@ -471,7 +515,7 @@ namespace FOSSDiscord.Commands
                         {
                             Title = "Oops...",
                             Description = "This warning does not exist",
-                            Color = new DiscordColor(0x2ECC70)
+                            Color = new DiscordColor(0xFF0000)
                         };
                         await ctx.RespondAsync(nonexistEM);
                         return;
@@ -505,9 +549,9 @@ namespace FOSSDiscord.Commands
                 {
                     var errorEM = new DiscordEmbedBuilder
                     {
-                        Title = "Oops",
+                        Title = "Oops...",
                         Description = $"{ex}",
-                        Color = new DiscordColor(0x2ECC70)
+                        Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.RespondAsync(errorEM);
                     return;
