@@ -456,7 +456,18 @@ namespace FOSSDiscord.Commands
                     string data = readData.ReadToEnd();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
-                    if (jsonData.GetValue($"{member.Id}") != null)
+                    if (jsonData[$"{member.Id}"][$"{caseID}"] == null)
+                    {
+                        var nonexistEM = new DiscordEmbedBuilder
+                        {
+                            Title = "Oops...",
+                            Description = "This warning does not exist",
+                            Color = new DiscordColor(0x2ECC70)
+                        };
+                        await ctx.RespondAsync(nonexistEM);
+                        return;
+                    }
+                    else if(jsonData.GetValue($"{member.Id}") != null)
                     {
                         jsonData[$"{member.Id}"][$"{caseID}"].Parent.Remove();
                         string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
@@ -476,8 +487,9 @@ namespace FOSSDiscord.Commands
                             Description = $"{member.DisplayName} has no warning",
                             Color = new DiscordColor(0x0080FF)
                         };
-                         await ctx.RespondAsync(nonexistEM);
-                        }
+                        await ctx.RespondAsync(nonexistEM);
+                        return;
+                    }
                         
                 }
                 catch (Exception ex)
