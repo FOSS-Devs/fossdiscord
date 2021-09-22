@@ -312,7 +312,7 @@ namespace FOSSDiscord.Commands
                     }
                     else 
                     {
-                        jsonData.Add(new JProperty($"{member.Id}", new JObject(new JProperty("0", reason))));
+                        jsonData.Add(new JProperty($"{member.Id}", new JObject(new JProperty("1", reason))));
                     }
                     string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
