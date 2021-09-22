@@ -306,7 +306,7 @@ namespace FOSSDiscord.Commands
                         }
                         else
                         {
-                            jsonData[$"{member.Id}"]["0"] = reason;
+                            jsonData[$"{member.Id}"]["1"] = reason;
                         }
                         
                     }
