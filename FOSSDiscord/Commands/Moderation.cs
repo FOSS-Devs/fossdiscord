@@ -298,9 +298,17 @@ namespace FOSSDiscord.Commands
                     JObject jsonData = JObject.Parse(data);
                     if (jsonData.GetValue($"{member.Id}") != null)
                     {
-                        string lastItem = ((JProperty)jsonData[$"{member.Id}"].Last()).Name;
-                        int caseIncrement = int.Parse(lastItem) + 1;
-                        jsonData[$"{member.Id}"][$"{caseIncrement}"] = reason;
+                        if (jsonData[$"{member.Id}"].Any())
+                        {
+                            string lastItem = ((JProperty)jsonData[$"{member.Id}"].Last()).Name;
+                            int caseIncrement = int.Parse(lastItem) + 1;
+                            jsonData[$"{member.Id}"][$"{caseIncrement}"] = reason;
+                        }
+                        else
+                        {
+                            jsonData[$"{member.Id}"]["0"] = reason;
+                        }
+                        
                     }
                     else 
                     {
@@ -369,7 +377,7 @@ namespace FOSSDiscord.Commands
                     string data = readData.ReadToEnd();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
-                    if (jsonData.GetValue($"{member.Id}") != null)
+                    if (jsonData.GetValue($"{member.Id}") != null && jsonData[$"{member.Id}"].Any())
                     {
                         dynamic iterData = jsonData[$"{member.Id}"];
                         var firstEM = new DiscordEmbedBuilder
@@ -396,7 +404,7 @@ namespace FOSSDiscord.Commands
                         var nonexistEM = new DiscordEmbedBuilder
                         {
                             Title = "Awesome!",
-                            Description = $"{member.DisplayName} has no warning(s)",
+                            Description = $"{member.DisplayName} has no warning",
                             Color = new DiscordColor(0x2ECC70)
                         };
                         await ctx.RespondAsync(nonexistEM);
@@ -424,6 +432,66 @@ namespace FOSSDiscord.Commands
                 await ctx.RespondAsync(errorEM);
                 return;
             };
+        }
+
+        [Command("delwarn"), Aliases("dewarn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        public async Task Delwarn(CommandContext ctx, DiscordMember member, string caseID)
+        {
+            string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
+            if(!File.Exists(file))
+            {
+                var nonexistEM = new DiscordEmbedBuilder
+                {
+                    Title = "Hmm...",
+                    Description = $"Seems like nobody has been blacklisted yet in this guild",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.RespondAsync(nonexistEM);
+                return;
+            }
+            else {
+                try
+                {
+                    StreamReader readData = new StreamReader(file);
+                    string data = readData.ReadToEnd();
+                    readData.Close();
+                    JObject jsonData = JObject.Parse(data);
+                    if (jsonData.GetValue($"{member.Id}") != null)
+                    {
+                        jsonData[$"{member.Id}"][$"{caseID}"].Parent.Remove();
+                        string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                        System.IO.File.WriteAllText(file, dataWrite);
+                        var EM = new DiscordEmbedBuilder
+                        {
+                            Title = $"Successfully removed `case {caseID}` for **{member.DisplayName}**",
+                            Color = new DiscordColor(0x0080FF)
+                        };
+                        await ctx.RespondAsync(EM);
+                    }
+                    else
+                    {
+                        var nonexistEM = new DiscordEmbedBuilder
+                        {
+                            Title = "Awesome!",
+                            Description = $"{member.DisplayName} has no warning",
+                            Color = new DiscordColor(0x0080FF)
+                        };
+                         await ctx.RespondAsync(nonexistEM);
+                        }
+                        
+                }
+                catch (Exception ex)
+                {
+                    var errorEM = new DiscordEmbedBuilder
+                    {
+                        Title = "Oops",
+                        Description = $"{ex}",
+                        Color = new DiscordColor(0x2ECC70)
+                    };
+                    await ctx.RespondAsync(errorEM);
+                    return;
+                };
+            }
         }
     }
 }
