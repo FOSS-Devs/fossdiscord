@@ -389,8 +389,17 @@ namespace FOSSDiscord.Commands
                         foreach (KeyValuePair<string, JToken> items in (JObject)jsonData[$"{member.Id}"])
                         {
                             string caseID = items.Key;
-                            var reason = jsonData[$"{member.Id}"][caseID];
-                            firstEM.AddField($"Case {caseID}",$"{reason}");
+                            var r = items.Value;
+                            string brief = (string)r;
+                            if (brief.Length > 360)
+                            {
+                                string reason = brief.Substring(0, 360);
+                                firstEM.AddField($"Case {caseID}", $"{reason}...");
+                            }
+                            else
+                            {
+                                firstEM.AddField($"Case {caseID}", $"{brief}");
+                            }
                             count += 1;
                             if(count == 5)
                             {
