@@ -362,7 +362,7 @@ namespace FOSSDiscord.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var firstEM = new DiscordEmbedBuilder
                     {
-                        Title = $"**{ member.DisplayName }** has been warned,",
+                        Title = $"**{ member.DisplayName }** has been warned",
                         Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(firstEM);
@@ -509,28 +509,51 @@ namespace FOSSDiscord.Commands
                     string data = readData.ReadToEnd();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
-                    if (jsonData[$"{member.Id}"][$"{caseID}"] == null)
+                    if(jsonData.GetValue($"{member.Id}") != null && jsonData[$"{member.Id}"].Any())
                     {
-                        var nonexistEM = new DiscordEmbedBuilder
+                        if (caseID == "all" | caseID == "All")
                         {
-                            Title = "Oops...",
-                            Description = "This warning does not exist",
-                            Color = new DiscordColor(0xFF0000)
-                        };
-                        await ctx.RespondAsync(nonexistEM);
-                        return;
-                    }
-                    else if(jsonData.GetValue($"{member.Id}") != null)
-                    {
-                        jsonData[$"{member.Id}"][$"{caseID}"].Parent.Remove();
-                        string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
-                        System.IO.File.WriteAllText(file, dataWrite);
-                        var EM = new DiscordEmbedBuilder
+                            List<string> temp = new List<string>();
+                            foreach (KeyValuePair<string, JToken> items in (JObject)jsonData[$"{member.Id}"])
+                            {
+                                temp.Add(items.Key);
+                            };
+                            foreach(string i in temp)
+                            {
+                                jsonData[$"{member.Id}"][i].Parent.Remove();
+                            }
+                            string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                            System.IO.File.WriteAllText(file, dataWrite);
+                            var EM = new DiscordEmbedBuilder
+                            {
+                                Title = $"Successfully removed all warnings for **{member.DisplayName}**",
+                                Color = new DiscordColor(0x0080FF)
+                            };
+                            await ctx.RespondAsync(EM);
+                        }
+                        else if (jsonData[$"{member.Id}"][$"{caseID}"] == null)
                         {
-                            Title = $"Successfully removed `case {caseID}` for **{member.DisplayName}**",
-                            Color = new DiscordColor(0x0080FF)
-                        };
-                        await ctx.RespondAsync(EM);
+                            var nonexistEM = new DiscordEmbedBuilder
+                            {
+                                Title = "Oops...",
+                                Description = "This warning does not exist",
+                                Color = new DiscordColor(0xFF0000)
+                            };
+                            await ctx.RespondAsync(nonexistEM);
+                            return;
+                        }
+                        else
+                        {
+                            jsonData[$"{member.Id}"][$"{caseID}"].Parent.Remove();
+                            string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                            System.IO.File.WriteAllText(file, dataWrite);
+                            var EM = new DiscordEmbedBuilder
+                            {
+                                Title = $"Successfully removed `case {caseID}` for **{member.DisplayName}**",
+                                Color = new DiscordColor(0x0080FF)
+                            };
+                            await ctx.RespondAsync(EM);
+                        }
                     }
                     else
                     {
