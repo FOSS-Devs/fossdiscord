@@ -17,7 +17,7 @@ namespace FOSSDiscord.Commands
 {
     public class Music : BaseCommandModule
     {
-        [Command("play")]
+        [Command("play"), Cooldown(1, 30, CooldownBucketType.Guild)]
         public async Task PlayCommand(CommandContext ctx, string url)
         {
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
