@@ -29,16 +29,18 @@ namespace FOSSDiscord
         }
         internal static async Task MainAsync()
         {
-            var json = "";
-            using (var fs = File.OpenRead(@"config.json"))
-            using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
-                json = await sr.ReadToEndAsync();
+            if (!File.Exists("config.json"))
+            {
+                Console.WriteLine("No config found\nStarting config creator...\n");
+                WriteConfig();
+                Console.WriteLine("Starting the bot...");
+            }
 
-            var cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+            JObject cfgjson = JObject.Parse(File.ReadAllText("config.json"));
 
             var discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = cfgjson.Token,
+                Token = cfgjson["token"].ToString(),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
 
@@ -47,7 +49,7 @@ namespace FOSSDiscord
             });
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
-                StringPrefixes = new[] { cfgjson.CommandPrefix },
+                StringPrefixes = new[] { cfgjson["prefix"].ToString() },
                 EnableMentionPrefix = true,
                 EnableDms = false
             });
@@ -74,6 +76,10 @@ namespace FOSSDiscord
                 }
                 ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                if (e.Message.Author == null)
+                {
+                    return;
+                }
                 embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
                 embed.AddField("Content", e.Message.Content);
                 embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
@@ -278,7 +284,7 @@ namespace FOSSDiscord
             {
                 if (e.Exception is CommandNotFoundException)
                 {
-                    string messagecommand = e.Context.Message.Content.Replace(cfgjson.CommandPrefix, "");
+                    string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "");
                     var commandnotfoundembed = new DiscordEmbedBuilder
                     {
                         Title = "Oops...",
@@ -290,11 +296,11 @@ namespace FOSSDiscord
                 }
                 else if (e.Exception.Message == "Could not find a suitable overload for the command.")
                 {
-                    string messagecommand = e.Context.Message.Content.Replace(cfgjson.CommandPrefix, "").Split(" ")[0].ToString();
+                    string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "").Split(" ")[0].ToString();
                     var overloadembed = new DiscordEmbedBuilder
                     {
                         Title = "Oops...",
-                        Description = $"One or more arguments are not needed or missing\nRun `{cfgjson.CommandPrefix}help {messagecommand}` to see all the arguments",
+                        Description = $"One or more arguments are not needed or missing\nRun `{cfgjson["prefix"]}help {messagecommand}` to see all the arguments",
                         Color = new DiscordColor(0xFF0000)
                     };
                     await e.Context.RespondAsync(overloadembed);
@@ -312,28 +318,97 @@ namespace FOSSDiscord
             discord.UseVoiceNext();
             DiscordActivity discordActivity = new DiscordActivity
             {
-                Name = $"{cfgjson.CommandPrefix}help | v1.0-Dev",
+                Name = $"{cfgjson["prefix"]}help | v1.0-Dev",
                 ActivityType = ActivityType.Playing
             };
             if (Directory.Exists(@"Settings/lck/"))
             {
                 Directory.Delete("Settings/lck/", true);
             }
-            await discord.ConnectAsync(discordActivity);
+            try
+            {
+            
+                await discord.ConnectAsync(discordActivity);
+            }
+            catch(Exception e)
+            {
+                Console.Clear();
+                Console.WriteLine("Oops...\nSomething went wrong");
+                Console.WriteLine("In most cases this means that the token is invalid");
+                goto Ask;
+            Ask:
+                Console.Write("Do you want to\n(r)ewrite the config\n(s)how more info\n(q)uit\n");
+                string answer = Console.ReadLine();
+                if (answer == "r")
+                {
+                    Console.Clear();
+                    Console.WriteLine("Starting config creator...\n");
+                    WriteConfig();
+                    Console.Clear();
+                    MainAsync().GetAwaiter().GetResult();
+
+                }
+                else if (answer == "s")
+                {
+                    Console.WriteLine("-----Detailed Error-----");
+                    Console.WriteLine(e);
+                    Console.WriteLine("-------------------------");
+                    Console.Write("\n");
+                    goto Ask;
+                }
+                else if (answer == "q")
+                {
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    Console.WriteLine("That option does not exist\n");
+                    goto Ask;
+                }
+            }
             Console.WriteLine("--------------------");
             Console.WriteLine("Connected!");
-            Console.WriteLine($"Please use {cfgjson.CommandPrefix}shutdown to properly shut down the bot");
+            Console.WriteLine($"Please use {cfgjson["prefix"]}shutdown to properly shut down the bot");
             Console.WriteLine("--------------------");
             await Task.Delay(-1);
         }
 
-        public struct ConfigJson
+        private static void WriteConfig()
         {
-            [JsonProperty("token")]
-            public string Token { get; private set; }
+            Console.Write("Enter your bot token: ");
+            string token = Console.ReadLine();
+            Console.Write($"Is this correct? \"{token}\"\n(y)es\n(n)o\n");
+            string confirmation = Console.ReadLine();
+            if (confirmation != "y")
+            {
+                Console.Clear();
+                Console.WriteLine("Re-running config creator\n");
+                WriteConfig();
+            }
+            Console.Clear();
+            Console.Write("Enter the prefix you want the bot to use: ");
+            string prefix = Console.ReadLine();
+            Console.Write($"Is this correct? \"{prefix}\"\n(y)es\n(n)o\n");
+            string confirmation2 = Console.ReadLine();
+            if (confirmation2 != "y")
+            {
+                Console.Clear();
+                Console.WriteLine("Re-running config creator\n");
+                WriteConfig();
+            }
+            Console.WriteLine("Writing config...");
 
-            [JsonProperty("prefix")]
-            public string CommandPrefix { get; private set; }
+            JObject data = new JObject(
+                new JProperty("token", $"{token}"),
+                new JProperty("prefix", $"{prefix}")
+                );
+
+            string configjson = JsonConvert.SerializeObject(data);
+            string path = @"config.json";
+            using (TextWriter tw = new StreamWriter(path))
+            {
+                tw.WriteLine(configjson);
+            };
         }
     }
 }

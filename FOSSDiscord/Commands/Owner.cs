@@ -27,7 +27,7 @@ namespace FOSSDiscord.Commands
             };
             await ctx.RespondAsync(embed);
             await ctx.Client.DisconnectAsync();
-            System.Environment.Exit(1);
+            Environment.Exit(1);
         }
         [Command("servers"), RequireOwner]
         public async Task ServersCommand(CommandContext ctx)

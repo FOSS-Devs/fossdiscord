@@ -160,14 +160,14 @@ namespace FOSSDiscord.Commands
             }
         }
 
-        [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages), Cooldown(1, 5, CooldownBucketType.User)]
         public async Task PurgeCommands(CommandContext ctx, int amount = 10)
         {
             if (amount > 50)
             {
                 var errembed = new DiscordEmbedBuilder
                 {
-                    Title = "Cannot purge more than 100 messages",
+                    Title = "Cannot purge more than 50 messages at one time",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(errembed);
