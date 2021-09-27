@@ -17,7 +17,7 @@ namespace FOSSDiscord.Commands
 {
     public class Fun : BaseCommandModule
     {
-        [Command("rate")]
+        [Command("rate"), Cooldown(3, 3, CooldownBucketType.User)]
         public async Task RateCommand(CommandContext ctx, [RemainingText] string thing)
         {
             Random r = new Random();
@@ -30,7 +30,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("cat")]
+        [Command("cat"), Cooldown(3, 3, CooldownBucketType.User)]
         public async Task CatCommand(CommandContext ctx)
         {
             string URL = "https://api.thecatapi.com/v1/images/search";
@@ -54,7 +54,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("dog"), Aliases("doggo")]
+        [Command("dog"), Aliases("doggo"), Cooldown(3, 3, CooldownBucketType.User)]
         public async Task DogCommand(CommandContext ctx)
         {
             string URL = "https://api.thedogapi.com/v1/images/search";
@@ -79,7 +79,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("wikipedia"), Aliases("wiki")]
+        [Command("wikipedia"), Aliases("wiki"), Cooldown(3, 3, CooldownBucketType.User)]
         public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
         {
             string URL = $"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";

@@ -15,7 +15,7 @@ namespace FOSSDiscord.Commands
         // For the uptime command
         DateTimeOffset StartTime = DateTime.Now;
 
-        [Command("ping")]
+        [Command("ping"), Cooldown(2, 5, CooldownBucketType.Guild)]
         public async Task PingCommand(CommandContext ctx)
         {
             var embed = new DiscordEmbedBuilder
@@ -26,7 +26,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("avatar"), Aliases("pfp")]
+        [Command("avatar"), Aliases("pfp"), Cooldown(3, 5, CooldownBucketType.User)]
         public async Task AvatarCommand(CommandContext ctx, DiscordMember member = null)
         {
             if(member == null)
@@ -53,7 +53,7 @@ namespace FOSSDiscord.Commands
             }
         }
 
-        [Command("userinfo")]
+        [Command("userinfo"), Cooldown(3, 5, CooldownBucketType.User)]
         public async Task UserinfoCommand(CommandContext ctx, DiscordMember member = null)
         {
             if (member == null)
@@ -105,7 +105,7 @@ namespace FOSSDiscord.Commands
             }
         }
 
-        [Command("serverinfo")]
+        [Command("serverinfo"), Cooldown(3, 3, CooldownBucketType.User)]
         public async Task ServerinfoCommand(CommandContext ctx)
         {
             var embed = new DiscordEmbedBuilder
@@ -123,7 +123,7 @@ namespace FOSSDiscord.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("emoji")]
+        [Command("emoji"), Cooldown(3, 3, CooldownBucketType.User)]
         public async Task EmojiCommand(CommandContext ctx, DiscordEmoji emoji = null)
         {
             if(emoji == null)
@@ -152,7 +152,7 @@ namespace FOSSDiscord.Commands
             }
         }
 
-        [Command("poll")]
+        [Command("poll"), Cooldown(3, 10, CooldownBucketType.User)]
         public async Task Pollcommand(CommandContext ctx, [RemainingText] string poll)
         {
 
@@ -208,7 +208,7 @@ namespace FOSSDiscord.Commands
             }
         }
 
-        [Command("quickpoll"), Aliases("ask")]
+        [Command("quickpoll"), Aliases("ask"), Cooldown(3, 3, CooldownBucketType.User)]
         public async Task QuickpollCommand(CommandContext ctx, [RemainingText] string poll)
         {
             var embed = new DiscordEmbedBuilder
@@ -222,7 +222,7 @@ namespace FOSSDiscord.Commands
             await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:"));
         }
 
-        [Command("uptime")]
+        [Command("uptime"), Cooldown(3, 3, CooldownBucketType.Guild)]
         public async Task UptimeCommand(CommandContext ctx)
         {
             var uptime = (DateTime.Now - StartTime);
