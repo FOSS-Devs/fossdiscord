@@ -20,7 +20,7 @@ namespace FOSSDiscord
     class Program
     {
         // Set the local version, change when making a release
-        public static string localversion = "v1.0-Dev";
+        public static string localversion = "v1.0-Beta";
         public VoiceNextExtension Voice { get; set; }
 
         static void Main(string[] args)
