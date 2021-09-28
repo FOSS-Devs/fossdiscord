@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Text.Json;
 
 
-namespace FOSSDiscord.Commands
+namespace FossiumBot.Commands
 {
     public class Owner : BaseCommandModule
     {

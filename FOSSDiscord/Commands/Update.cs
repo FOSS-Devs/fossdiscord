@@ -16,7 +16,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 
-namespace FOSSDiscord.Commands
+namespace FossiumBot.Commands
 {
     public class Update : BaseCommandModule
     {
@@ -34,8 +34,8 @@ namespace FOSSDiscord.Commands
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FOSSDiscord", Program.localversion));
-                content = await client.GetStringAsync("https://api.github.com/repos/SKBotNL/fossdiscord-new/releases/latest");
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                content = await client.GetStringAsync("https://api.github.com/repos/SKBotNL/FossiumBot-new/releases/latest");
             }
             JObject jsonData = JObject.Parse(content);
             var latestversion = jsonData["tag_name"];
@@ -63,8 +63,8 @@ namespace FOSSDiscord.Commands
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FOSSDiscord", Program.localversion));
-                content = await client.GetStringAsync("https://api.github.com/repos/SKBotNL/fossdiscord-updater/releases/latest");
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                content = await client.GetStringAsync("https://api.github.com/repos/SKBotNL/FossiumBot-updater/releases/latest");
             }
             string downloadurl = string.Empty;
             JObject jsonData = JObject.Parse(content);
@@ -72,11 +72,11 @@ namespace FOSSDiscord.Commands
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                downloadurl = $"https://github.com/SKBotNL/fossdiscord-updater/releases/download/{latestversion}/FOSSDiscord-Updater-Windows.zip";
+                downloadurl = $"https://github.com/SKBotNL/FossiumBot-updater/releases/download/{latestversion}/FossiumBot-Updater-Windows.zip";
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                downloadurl = $"https://github.com/SKBotNL/fossdiscord-updater/releases/download/{latestversion}/FOSSDiscord-Updater-Linux.zip";
+                downloadurl = $"https://github.com/SKBotNL/FossiumBot-updater/releases/download/{latestversion}/FossiumBot-Updater-Linux.zip";
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
@@ -92,14 +92,14 @@ namespace FOSSDiscord.Commands
             Directory.CreateDirectory(@"updatertemp/");
             using (var client = new WebClient())
             {
-                client.DownloadFile(downloadurl, @"updatertemp/FOSSDiscord.zip");
+                client.DownloadFile(downloadurl, @"updatertemp/FossiumBot.zip");
             }
-            ZipFile.ExtractToDirectory(@"updatertemp/FOSSDiscord.zip", @"updatertemp/updaterzip/");
+            ZipFile.ExtractToDirectory(@"updatertemp/FossiumBot.zip", @"updatertemp/updaterzip/");
             Directory.CreateDirectory(@"backup/");
             File.Move($"{System.Diagnostics.Process.GetCurrentProcess().ProcessName}.exe", @"backup/", true);
             File.Move("libopus.dll", @"backup/libopus.dll", true);
             File.Move("libsodium.dll", @"backup/libsodium.dll", true);
-            File.Move(@"updatertemp/zip/FOSSDiscord.exe", @"FOSSDiscord.exe", true);
+            File.Move(@"updatertemp/zip/FossiumBot.exe", @"FossiumBot.exe", true);
             File.Move(@"updatertemp/zip/libopus.dll", @"libopus.dll", true);
             File.Move(@"updatertemp/zip/libsodium.dll", @"libsodium.dll", true);
             File.Move(@"updatertemp/zip/no-u.dll", @"no-u.dll", true);

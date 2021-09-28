@@ -8,7 +8,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 
-namespace FOSSDiscord.Commands
+namespace FossiumBot.Commands
 {
     public class Utils : BaseCommandModule
     {

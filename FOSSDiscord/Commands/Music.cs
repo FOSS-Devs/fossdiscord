@@ -15,7 +15,7 @@ using Newtonsoft.Json.Linq;
 using VideoLibrary;
 using System.Text.RegularExpressions;
 
-namespace FOSSDiscord.Commands
+namespace FossiumBot.Commands
 {
     public class Music : BaseCommandModule
     {

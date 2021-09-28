@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
 
-namespace FOSSDiscord
+namespace FossiumBot
 {
     class Program
     {

@@ -10,7 +10,7 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace FOSSDiscord.Commands
+namespace FossiumBot.Commands
 {
     public class Moderation : BaseCommandModule
     {
