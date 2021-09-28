@@ -1,6 +1,6 @@
 # FossiumBot
 Welcome to the GitHub page of FossiumBot!
-The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.io)
+The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.io).
 
 ## Features
 The bot has a lot of features, including but not limited to:
@@ -16,4 +16,4 @@ The bot has a lot of features, including but not limited to:
   - Wikipedia
 
 ## Installing
-To be continued
+Installation is pretty easy, just download the [latest release](https://github.com/Fossium-Team/FossiumBot/releases/latest), unzip, and run the excecutable.
