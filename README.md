@@ -1,5 +1,5 @@
-# Fossium-bot
-Welcome to the GitHub page of Fossium-bot!
+# FossiumBot
+Welcome to the GitHub page of FossiumBot!
 The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.io)
 
 ## Features
