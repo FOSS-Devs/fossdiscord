@@ -1,5 +1,5 @@
-# FOSSDiscord
-Welcome to the GitHub page of the FOSSDiscord bot!
+# Fossium-bot
+Welcome to the GitHub page of Fossium-bot!
 The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.io)
 
 ## Features
