@@ -323,7 +323,7 @@ namespace FOSSDiscord.Commands
                 var lengthError = new DiscordEmbedBuilder
                 {
                     Title = $"Oops...",
-                    Description = "Please shorten your reason to within 350 characters",
+                    Description = "Please make your reason max 350 characters",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(lengthError);
@@ -362,7 +362,7 @@ namespace FOSSDiscord.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var firstEM = new DiscordEmbedBuilder
                     {
-                        Title = $"**{ member.DisplayName }** has been warned",
+                        Title = $"``{member.DisplayName}` has been warned",
                         Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(firstEM);
@@ -381,7 +381,7 @@ namespace FOSSDiscord.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var em = new DiscordEmbedBuilder
                     {
-                        Title = $"**{member.DisplayName}** has been warned",
+                        Title = $"`{member.DisplayName}` has been warned",
                         Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(em);
@@ -401,7 +401,7 @@ namespace FOSSDiscord.Commands
                 System.IO.File.WriteAllText(file, dataWrite);
                 var emNEW = new DiscordEmbedBuilder
                 {
-                    Title = $"**{member.DisplayName}** has been warned",
+                    Title = $"`{member.DisplayName}` has been warned",
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.RespondAsync(emNEW);
@@ -426,7 +426,7 @@ namespace FOSSDiscord.Commands
                         dynamic iterData = jsonData[$"{member.Id}"];
                         var firstEM = new DiscordEmbedBuilder
                         {
-                            Title = $"**{member.DisplayName}**'s warnings:",
+                            Title = $"`{member.DisplayName}`'s warnings:",
                             Color = new DiscordColor(0xFFA500)
                         };
                         int count = 0;
@@ -456,8 +456,8 @@ namespace FOSSDiscord.Commands
                     {
                         var nonexistEM = new DiscordEmbedBuilder
                         {
-                            Title = "Awesome!",
-                            Description = $"{member.DisplayName} has no warning",
+                            Title = "Nice!",
+                            Description = $"`{member.DisplayName}` doesn't have any warnings",
                             Color = new DiscordColor(0x2ECC70)
                         };
                         await ctx.RespondAsync(nonexistEM);
@@ -467,7 +467,7 @@ namespace FOSSDiscord.Commands
                 {
                     var nonexistEM = new DiscordEmbedBuilder
                     {
-                        Title = "Awesome!",
+                        Title = "Nice!",
                         Description = "Nobody in this guild has been warned yet",
                         Color = new DiscordColor(0x2ECC70)
                     };
@@ -487,7 +487,7 @@ namespace FOSSDiscord.Commands
             };
         }
 
-        [Command("delwarn"), Aliases("dewarn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
+        [Command("delwarn"), Aliases("dewarn", "rmwarn", "removewarn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
         public async Task Delwarn(CommandContext ctx, DiscordMember member, string caseID)
         {
             string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
@@ -495,8 +495,8 @@ namespace FOSSDiscord.Commands
             {
                 var nonexistEM = new DiscordEmbedBuilder
                 {
-                    Title = "Hmm...",
-                    Description = $"Seems like nobody has been blacklisted yet in this guild",
+                    Title = "Nice!",
+                    Description = $"Nobody in this guild has been warned yet",
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.RespondAsync(nonexistEM);
@@ -526,7 +526,7 @@ namespace FOSSDiscord.Commands
                             System.IO.File.WriteAllText(file, dataWrite);
                             var EM = new DiscordEmbedBuilder
                             {
-                                Title = $"Successfully removed all warnings for **{member.DisplayName}**",
+                                Title = $"Successfully removed all warnings for `{member.DisplayName}`",
                                 Color = new DiscordColor(0x0080FF)
                             };
                             await ctx.RespondAsync(EM);
@@ -536,7 +536,7 @@ namespace FOSSDiscord.Commands
                             var nonexistEM = new DiscordEmbedBuilder
                             {
                                 Title = "Oops...",
-                                Description = "This warning does not exist",
+                                Description = "This warning doesn't exist",
                                 Color = new DiscordColor(0xFF0000)
                             };
                             await ctx.RespondAsync(nonexistEM);
@@ -549,7 +549,7 @@ namespace FOSSDiscord.Commands
                             System.IO.File.WriteAllText(file, dataWrite);
                             var EM = new DiscordEmbedBuilder
                             {
-                                Title = $"Successfully removed `case {caseID}` for **{member.DisplayName}**",
+                                Title = $"Successfully removed `Case {caseID}` for `{member.DisplayName}`",
                                 Color = new DiscordColor(0x0080FF)
                             };
                             await ctx.RespondAsync(EM);
@@ -559,8 +559,8 @@ namespace FOSSDiscord.Commands
                     {
                         var nonexistEM = new DiscordEmbedBuilder
                         {
-                            Title = "Awesome!",
-                            Description = $"{member.DisplayName} has no warning",
+                            Title = "Nice!",
+                            Description = $"`{member.DisplayName}` doesn't have any warnings",
                             Color = new DiscordColor(0x0080FF)
                         };
                         await ctx.RespondAsync(nonexistEM);
