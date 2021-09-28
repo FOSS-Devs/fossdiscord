@@ -22,7 +22,6 @@ namespace FossiumBot
         // Set the local version, change when making a release
         public static string localversion = "v1.0-Beta";
         public VoiceNextExtension Voice { get; set; }
-
         static void Main(string[] args)
         {
             MainAsync().GetAwaiter().GetResult();
