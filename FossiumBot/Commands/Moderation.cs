@@ -305,7 +305,7 @@ namespace FossiumBot.Commands
         }
 
         [Command("warn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
-        public async Task WarnCommand(CommandContext ctx, DiscordMember member, [RemainingText] String reason = "none")
+        public async Task WarnCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "none")
         {
             if (ctx.Guild.Id != member.Guild.Id)
             {
