@@ -87,6 +87,42 @@ namespace FossiumBot.Commands
                 };
                 await ctx.RespondAsync(embed);
             }
+
+            [Command("muterole"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
+            public async Task MuteRoleCommand(CommandContext ctx, DiscordRole muterole)
+            {
+                string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guild/");
+                if (File.Exists(file))
+                {
+                    StreamReader readData = new StreamReader(file);
+                    string data = readData.ReadToEnd();
+                    readData.Close();
+                    JObject jsonData = JObject.Parse(data);
+                    jsonData["config"]["muterole"] = muterole.Id;
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                }
+                else {
+                    JObject overwrite =
+                        new JObject(
+                            new JProperty("config",
+                            new JObject(
+                                    new JProperty("muterole", muterole.Id)
+                                )
+                            )
+                        );
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                }
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"`@{muterole.Name}` has been set as the mute role",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.RespondAsync(em);
+            }
         }
     }
 }
