@@ -629,5 +629,52 @@ namespace FossiumBot.Commands
                 return;
             }
         }
+
+        [Command("unmute"), RequirePermissions(DSharpPlus.Permissions.ManageRoles)]
+        public async Task UnmuteCommand(CommandContext ctx, DiscordMember member)
+        {
+            string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+            if (File.Exists(file))
+            {
+                StreamReader readData = new StreamReader(file);
+                string data = readData.ReadToEnd();
+                readData.Close();
+                JObject jsonData = JObject.Parse(data);
+                ulong roleID = (ulong)jsonData["config"]["muterole"];
+                DiscordRole muteRole = ctx.Guild.GetRole(roleID);
+                try
+                {
+                    await member.RevokeRoleAsync(muteRole);
+                }
+                catch (Exception ex)
+                {
+                    var errEM = new DiscordEmbedBuilder
+                    {
+                        Title = "Oops..",
+                        Description = $"{ex}",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.RespondAsync(errEM);
+                    return;
+                }
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"`{member.DisplayName}` has been unmuted",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.RespondAsync(em);
+            }
+            else
+            {
+                var roleNotExist = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = $"You haven't set the role for muted members yet\nSet the muted role with `{ctx.Prefix}settings muterole <mention role>`",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(roleNotExist);
+                return;
+            }
+        }
     }
 }
