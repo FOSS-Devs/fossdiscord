@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.VoiceNext;
@@ -17,13 +19,14 @@ using System.Text.RegularExpressions;
 
 namespace FossiumBot.Commands
 {
-    public class Music : BaseCommandModule
+    public class Music : ApplicationCommandModule
     {
         int ffmpegpid = 0;
 
-        [Command("play"), Cooldown(1, 5, CooldownBucketType.User)]
-        public async Task PlayCommand(CommandContext ctx, string url)
+        [SlashCommand("play", "Play audio from a YouTube video"), Cooldown(1, 5, CooldownBucketType.User)]
+        public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource);
             var vstat = ctx.Member?.VoiceState;
             if (vstat == null)
             {
@@ -32,7 +35,7 @@ namespace FossiumBot.Commands
                     Title = $"You are not in a voice channel",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errorembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
                 return;
             }
             string videoid = String.Empty;
@@ -48,7 +51,7 @@ namespace FossiumBot.Commands
                     Title = $"That isn't a YouTube url",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errorembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
                 return;
             }
             var chn = vstat.Channel;
@@ -69,7 +72,7 @@ namespace FossiumBot.Commands
                 Description = "This can take a while...",
                 Color = new DiscordColor(0xFFA500)
             };
-            var embedmsg = await ctx.RespondAsync(downloadembed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(downloadembed));
 
             JObject data = new JObject(
                 new JProperty("name", $"{video.Title}"),
@@ -106,7 +109,7 @@ namespace FossiumBot.Commands
                 Color = new DiscordColor(0x2ECC70)
             };
 
-            await embedmsg.ModifyAsync(null, (DiscordEmbed)playingembed);
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
 
             try
             {
@@ -145,11 +148,17 @@ namespace FossiumBot.Commands
                 {
                     File.Delete(@"Music/nowplaying.json");
                 }
+                var finishedembed = new DiscordEmbedBuilder
+                {
+                    Title = $"Finished playing {video.Title}",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(finishedembed));
             }
         }
 
-        [Command("stop"), Aliases("leave")]
-        public async Task StopCommand(CommandContext ctx)
+        [SlashCommand("stop", "Stop playing and leave the voice channel")]
+        public async Task StopCommand(InteractionContext ctx)
         {
             var vnext = ctx.Client.GetVoiceNext();
             var vnc = vnext.GetConnection(ctx.Guild);
@@ -168,7 +177,7 @@ namespace FossiumBot.Commands
                     Title = $"Stopped playing and left the channel",
                     Color = new DiscordColor(0x2ECC70)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                 return;
             }
             else
@@ -178,13 +187,13 @@ namespace FossiumBot.Commands
                     Title = $"Nothing is playing",
                     Color = new DiscordColor(0xFFA500)
                 };
-                await ctx.RespondAsync(errorembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
                 return;
             }
         }
 
-        [Command("nowplaying"), Aliases("np")]
-        public async Task NowplayingCommand(CommandContext ctx)
+        [SlashCommand("nowplaying", "Show what's currently playing")]
+        public async Task NowplayingCommand(InteractionContext ctx)
         {
             Directory.CreateDirectory(@"Music/");
             if (!File.Exists(@"Music/nowplaying.json"))
@@ -194,7 +203,7 @@ namespace FossiumBot.Commands
                     Title = "Nothing is playing",
                     Color = new DiscordColor(0xFFA500)
                 };
-                await ctx.RespondAsync(nothingplayingembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nothingplayingembed));
                 return;
             }
 
@@ -207,7 +216,7 @@ namespace FossiumBot.Commands
             };
             string videoid = jsonData["videoid"].ToString();
             embed.WithThumbnail($"http://i3.ytimg.com/vi/{videoid}/maxresdefault.jpg");
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
     }
 }

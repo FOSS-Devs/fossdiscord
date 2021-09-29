@@ -5,32 +5,34 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus;
+using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.Json;
 
-
 namespace FossiumBot.Commands
 {
-    public class Owner : BaseCommandModule
+    public class Owner : ApplicationCommandModule
     {
-        [Command("shutdown"), Aliases("shutdownbot"), RequireOwner]
-        public async Task ShutdownCommand(CommandContext ctx)
+        [SlashCommand("shutdown", "Shut down the bot")]
+        [SlashRequireOwner]
+        public async Task ShutdownCommand(InteractionContext ctx)
         {
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"The bot is now shut down",
                 Color = new DiscordColor(0x2ECC70)
             };
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             await ctx.Client.DisconnectAsync();
             Environment.Exit(1);
         }
-        [Command("servers"), RequireOwner]
-        public async Task ServersCommand(CommandContext ctx)
+        [SlashCommand("servers", "Show all the servers the bot is in")]
+        [SlashRequireOwner]
+        public async Task ServersCommand(InteractionContext ctx)
         {
             List<string> guildslist = new List<string>();
 
@@ -48,13 +50,14 @@ namespace FossiumBot.Commands
                 Description = connectedguilds,
                 Color = new DiscordColor(0x0080FF)
             };
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("leaveserver"), RequireOwner]
-        public async Task LeaveserverCommand(CommandContext ctx, ulong server)
+        [SlashCommand("leaveserver", "Leave a server the bot is in")]
+        [SlashRequireOwner]
+        public async Task LeaveserverCommand(InteractionContext ctx, [Option("serverid", "Server ID of the server you want the bot to leave")] long serverid)
         {
-            DiscordGuild guild = await ctx.Client.GetGuildAsync(server);
+            DiscordGuild guild = await ctx.Client.GetGuildAsync((ulong)serverid);
 
             var embed = new DiscordEmbedBuilder
             {
@@ -63,7 +66,7 @@ namespace FossiumBot.Commands
                 Color = new DiscordColor(0x2ECC70)
             };
             await guild.LeaveAsync();
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
     }
 }

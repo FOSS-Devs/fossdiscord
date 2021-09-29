@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using DSharpPlus.CommandsNext.Exceptions;
 using System;
 using System.IO;
@@ -14,6 +15,7 @@ using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
+using FossiumBot.Commands;
 
 namespace FossiumBot
 {
@@ -476,6 +478,10 @@ namespace FossiumBot
             };
 
             discord.UseVoiceNext();
+            var slash = discord.UseSlashCommands();
+            slash.RegisterCommands<Fun>(848464241219338250);
+            slash.RegisterCommands<Music>(848464241219338250);
+            slash.RegisterCommands<Owner>(848464241219338250);
             DiscordActivity discordActivity = new DiscordActivity
             {
                 Name = $"{cfgjson["prefix"]}help | v1.0-Dev",

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 
@@ -153,7 +154,7 @@ namespace FossiumBot.Commands
         }
 
         [Command("poll"), Cooldown(3, 10, CooldownBucketType.User)]
-        public async Task Pollcommand(CommandContext ctx, [RemainingText] string poll)
+        public async Task PollCommand(CommandContext ctx, [RemainingText] string poll)
         {
 
             string[] pollsplit = poll.Split(" | ");

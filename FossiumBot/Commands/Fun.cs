@@ -5,7 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
@@ -15,10 +17,10 @@ using System.Text.Json;
 
 namespace FossiumBot.Commands
 {
-    public class Fun : BaseCommandModule
+    public class Fun : ApplicationCommandModule
     {
-        [Command("rate"), Cooldown(3, 3, CooldownBucketType.User)]
-        public async Task RateCommand(CommandContext ctx, [RemainingText] string thing)
+        [SlashCommand("rate", "Rate something out of 10"), Cooldown(3, 3, CooldownBucketType.User)]
+        public async Task RateCommand(InteractionContext ctx, [Option("thing", "Thing to rate")] string thing)
         {
             Random r = new Random();
             int randomnum = r.Next(0, 10);
@@ -27,11 +29,11 @@ namespace FossiumBot.Commands
                 Title = $"I rate `{thing}` a {randomnum}/10",
                 Color = new DiscordColor(0x0080FF)
             };
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("cat"), Cooldown(3, 3, CooldownBucketType.User)]
-        public async Task CatCommand(CommandContext ctx)
+        [SlashCommand("cat", "Shows a random picture of a cat"), Cooldown(3, 3, CooldownBucketType.User)]
+        public async Task CatCommand(InteractionContext ctx)
         {
             string URL = "https://api.thecatapi.com/v1/images/search";
             WebRequest wrREQUEST;
@@ -51,11 +53,11 @@ namespace FossiumBot.Commands
                 ImageUrl = catpic,
                 Color = new DiscordColor(0x0080FF)
             };
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("dog"), Aliases("doggo"), Cooldown(3, 3, CooldownBucketType.User)]
-        public async Task DogCommand(CommandContext ctx)
+        [SlashCommand("dog", "Shows a random picture of a dog"), Cooldown(3, 3, CooldownBucketType.User)]
+        public async Task DogCommand(InteractionContext ctx)
         {
             string URL = "https://api.thedogapi.com/v1/images/search";
             WebRequest wrREQUEST;
@@ -76,11 +78,11 @@ namespace FossiumBot.Commands
                 ImageUrl = dogpic,
                 Color = new DiscordColor(0x0080FF)
             };
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("wikipedia"), Aliases("wiki"), Cooldown(3, 3, CooldownBucketType.User)]
-        public async Task WikiCommand(CommandContext ctx, [RemainingText] string query)
+        [SlashCommand("wikipedia", "Get information about something from Wikipedia"), Cooldown(3, 3, CooldownBucketType.User)]
+        public async Task WikiCommand(InteractionContext ctx, [Option("query", "What you want to get information of")] string query)
         {
             string URL = $"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
             WebRequest wrREQUEST;
@@ -103,7 +105,7 @@ namespace FossiumBot.Commands
                         Description = "The page you've requested might not exist",
                         Color = new DiscordColor(0xFF0000)
                     };
-                    await ctx.RespondAsync(errEmbed);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
                     return;
                 }
                 else
@@ -117,7 +119,7 @@ namespace FossiumBot.Commands
                         Description = $"{brief}...",
                         Color = new DiscordColor(0x0080FF)
                     };
-                    await ctx.RespondAsync(embed);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                 }
             }
             catch (Exception)
@@ -128,7 +130,7 @@ namespace FossiumBot.Commands
                     Description = "Page does not exist",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errEmbed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
                 return;
             }
         }
