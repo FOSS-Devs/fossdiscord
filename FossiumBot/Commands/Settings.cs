@@ -120,7 +120,7 @@ namespace FossiumBot.Commands
                 }
                 var em = new DiscordEmbedBuilder
                 {
-                    Title = $"`@{muterole.Name}` has been set as the mute role",
+                    Title = $"`{muterole.Name}` has been set as the mute role",
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.RespondAsync(em);

@@ -64,7 +64,7 @@ namespace FossiumBot
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]} help <command>` for extended information on a command",
+                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
                         Color = new DiscordColor(0x0080FF)
                     };
                     embed.AddField("Moderation", "Autodelete\nBan\nDelwarn\nKick\nMute\nPurge\nSoftban\nUnban\nUnmute\nWarn\nWarns");
@@ -90,7 +90,7 @@ namespace FossiumBot
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]} help <command>` for extended information on a command",
+                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
                         Color = new DiscordColor(0x0080FF)
                     };
                     embed.AddField("Moderation", "Avatar\nEmoji\nPing\nPoll\nQuickpoll\nServerinfo\nUptime\nUserinfo");
@@ -116,7 +116,7 @@ namespace FossiumBot
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]} help <command>` for extended information on a command",
+                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
                         Color = new DiscordColor(0x0080FF)
                     };
                     embed.AddField("Fun", "Cat\nDog\nRate\nWikipedia");
@@ -142,7 +142,7 @@ namespace FossiumBot
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]} help <command>` for extended information on a command",
+                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
                         Color = new DiscordColor(0x0080FF)
                     };
                     embed.AddField("Music", "Nowplaying\nPlay\nStop");
@@ -168,7 +168,7 @@ namespace FossiumBot
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]} help <command>` for extended information on a command",
+                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
                         Color = new DiscordColor(0x0080FF)
                     };
                     embed.AddField("Owner", "Leaveserver\nServers\nShutdown");
@@ -194,7 +194,7 @@ namespace FossiumBot
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]} help <command>` for extended information on a command",
+                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
                         Color = new DiscordColor(0x0080FF)
                     };
                     embed.AddField("Settings", "Loggingchannel");
