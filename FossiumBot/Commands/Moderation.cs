@@ -362,7 +362,7 @@ namespace FossiumBot.Commands
                     System.IO.File.WriteAllText(file, dataWrite);
                     var firstEM = new DiscordEmbedBuilder
                     {
-                        Title = $"``{member.DisplayName}` has been warned",
+                        Title = $"`{member.DisplayName}` has been warned",
                         Color = new DiscordColor(0xFFA500)
                     };
                     await ctx.RespondAsync(firstEM);
@@ -579,6 +579,54 @@ namespace FossiumBot.Commands
                     await ctx.RespondAsync(errorEM);
                     return;
                 };
+            }
+        }
+
+        [Command("mute"), RequirePermissions(DSharpPlus.Permissions.ManageRoles)]
+        public async Task MuteCommand(CommandContext ctx, DiscordMember member, int mutetime = 15)
+        {
+            if (ctx.Member.Hierarchy <= member.Hierarchy)
+            {
+                var errembed = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Your role is too low in the role hierarchy to do that",
+                    Color = new DiscordColor(0xFF0000),
+                };
+                await ctx.RespondAsync(errembed);
+                return;
+            }
+            string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+            if (File.Exists(file))
+            {
+                StreamReader readData = new StreamReader(file);
+                string data = readData.ReadToEnd();
+                readData.Close();
+                JObject jsonData = JObject.Parse(data);
+                ulong roleID = (ulong)jsonData["config"]["muterole"];
+                DiscordRole muteRole = ctx.Guild.GetRole(roleID);
+                await member.GrantRoleAsync(muteRole);
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"`{member.DisplayName}` has been muted for {mutetime} minute(s)",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.RespondAsync(em);
+                System.Threading.Thread.Sleep(TimeSpan.FromMinutes(mutetime));
+                //System.Threading.Thread.Sleep(TimeSpan.FromSeconds(mutetime));
+                await member.RevokeRoleAsync(muteRole);
+                return;
+            }
+            else
+            {
+                var roleNotExist = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "You haven't set the roles for muted people yet",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(roleNotExist);
+                return;
             }
         }
     }
