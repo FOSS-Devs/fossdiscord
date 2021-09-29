@@ -6,6 +6,7 @@ The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.i
 The bot has a lot of features, including but not limited to:
 - Moderation
   - Warning system
+  - Mute system
   - Kick, ban, softban
   - Purge
   - Autodelete
