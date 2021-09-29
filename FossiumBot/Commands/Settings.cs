@@ -29,6 +29,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0x0080FF)
                 };
                 embed.AddField($"`{ctx.Prefix}settings loggingchannel <mention channel>`", "Set the channel to log events to, disable logging by running the command without any arguments");
+                embed.AddField($"`{ctx.Prefix}settings muterole <mention role>`", "Set the role used by the mute commands");
                 await ctx.RespondAsync(embed);
             }
 

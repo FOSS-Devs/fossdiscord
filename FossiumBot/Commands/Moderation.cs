@@ -622,7 +622,7 @@ namespace FossiumBot.Commands
                 var roleNotExist = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "You haven't set the roles for muted people yet",
+                    Description = $"You haven't set the roles for muted people yet\nSet the muted role with `{ctx.Prefix}settings muterole <mention role>`",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.RespondAsync(roleNotExist);

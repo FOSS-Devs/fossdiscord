@@ -99,6 +99,18 @@ namespace FossiumBot.Commands
                 await ctx.RespondAsync(embed);
             }
 
+            [Command("mute")]
+            public async Task HelpMute(CommandContext ctx)
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Moderation: Mute",
+                    Description = $"{ctx.Prefix}mute <member> [time in minutes]\nMute a member\n`[time in minutes]` is optional, default value is 15",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.RespondAsync(embed);
+            }
+
             [Command("purge")]
             public async Task HelpPurge(CommandContext ctx)
             {
@@ -135,13 +147,25 @@ namespace FossiumBot.Commands
                 await ctx.RespondAsync(embed);
             }
 
+            [Command("unmute")]
+            public async Task HelpUnmute(CommandContext ctx)
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Moderation: Unmute",
+                    Description = $"{ctx.Prefix}unmute <member>\nUnmute a member",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.RespondAsync(embed);
+            }
+
             [Command("warn")]
             public async Task HelpWarn(CommandContext ctx)
             {
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Warn",
-                    Description = $"{ctx.Prefix}warn <member> [reason]\nWarn a member\n[reason] is optional",
+                    Description = $"{ctx.Prefix}warn <member> [reason]\nWarn a member\n`[reason]` is optional",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);

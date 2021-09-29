@@ -65,7 +65,7 @@ namespace FossiumBot
                         Description = $"Use `{cfgjson["prefix"]} help <command>` for extended information on a command",
                         Color = new DiscordColor(0x0080FF)
                     };
-                    embed.AddField("Moderation", "Autodelete\nBan\nDelwarn\nKick\nPurge\nSoftban\nUnban\nWarn\nWarns");
+                    embed.AddField("Moderation", "Autodelete\nBan\nDelwarn\nKick\nMute\nPurge\nSoftban\nUnban\nUnmute\nWarn\nWarns");
                     await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                     new DiscordInteractionResponseBuilder()
                         .AddEmbed(embed)
