@@ -57,7 +57,7 @@ namespace FossiumBot.Commands
         [SlashCommand("dog", "Shows a random picture of a dog")]
         public async Task DogCommand(InteractionContext ctx)
         {
-            string content = String.Empty;
+            string content = string.Empty;
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
@@ -78,16 +78,13 @@ namespace FossiumBot.Commands
         [SlashCommand("wikipedia", "Get information about something from Wikipedia")]
         public async Task WikiCommand(InteractionContext ctx, [Option("query", "What you want to get information of")] string query)
         {
-            string URL = $"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
-            WebRequest wrREQUEST;
-            wrREQUEST = WebRequest.Create(URL);
-            wrREQUEST.Proxy = null;
-            wrREQUEST.Method = "GET";
-            WebResponse response = wrREQUEST.GetResponse();
-            StreamReader streamReader = new StreamReader(response.GetResponseStream());
-            string responseData = streamReader.ReadToEnd();
-            streamReader.Close();
-            JObject jsonData = JObject.Parse(responseData);
+            string content = String.Empty;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                content = await client.GetStringAsync("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}");
+            }
+            JObject jsonData = JObject.Parse(content);
             try
             {
                 string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
