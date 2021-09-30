@@ -485,7 +485,7 @@ namespace FossiumBot
             slash.RegisterCommands<Moderation>(848464241219338250);
             DiscordActivity discordActivity = new DiscordActivity
             {
-                Name = $"{cfgjson["prefix"]}help | v1.0-Dev",
+                Name = $"{cfgjson["prefix"]}help | {localversion}",
                 ActivityType = ActivityType.Playing
             };
             if (Directory.Exists(@"Settings/lck/"))
