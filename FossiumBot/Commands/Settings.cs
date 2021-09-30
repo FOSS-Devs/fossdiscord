@@ -5,38 +5,26 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands.Attributes;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.Json;
 
-
 namespace FossiumBot.Commands
 {
-    public class Settings : BaseCommandModule
+    public class Settings : ApplicationCommandModule
     {
-        // make this user only
-        [Group("settings"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-        public class SettingsGroup : BaseCommandModule
+        [SlashCommandGroup("settings", "A group with all the settings")]
+        public class SettingsGroup : ApplicationCommandModule
         {
-            [GroupCommand]
-            public async Task SettingsCommand(CommandContext ctx)
-            {
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = "Settings",
-                    Color = new DiscordColor(0x0080FF)
-                };
-                embed.AddField($"`{ctx.Prefix}settings loggingchannel <mention channel>`", "Set the channel to log events to, disable logging by running the command without any arguments");
-                embed.AddField($"`{ctx.Prefix}settings muterole <mention role>`", "Set the role used by the mute commands");
-                await ctx.RespondAsync(embed);
-            }
-
-            [Command("loggingchannel"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-            public async Task LoggingchannelCommand(CommandContext ctx, DiscordChannel loggingchannel = null)
+            [SlashCommand("loggingchannel", "Set the channel to log events to, disable logging by running the command without any arguments")]
+            [SlashRequireUserPermissions(Permissions.Administrator)]
+            public async Task LoggingchannelCommand(InteractionContext ctx, [Option("loggingchannel", "Mention the channel to log events to")] DiscordChannel loggingchannel = null)
             {
                 if (loggingchannel == null)
                 {
@@ -57,7 +45,7 @@ namespace FossiumBot.Commands
                         Title = $"Disabled logging",
                         Color = new DiscordColor(0x2ECC70)
                     };
-                    await ctx.RespondAsync(disableembed);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(disableembed));
                     return;
                 }
                 else if (loggingchannel.GuildId != ctx.Guild.Id)
@@ -68,7 +56,7 @@ namespace FossiumBot.Commands
                         Description = "That channel is not in this server",
                         Color = new DiscordColor(0xFF0000)
                     };
-                    await ctx.RespondAsync(em);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                     return;
                 }
                 JObject data = new JObject(
@@ -85,14 +73,15 @@ namespace FossiumBot.Commands
 
                 var embed = new DiscordEmbedBuilder
                 {
-                    Title = $"Set #{loggingchannel.Name} as the logging channel",
+                    Title = $"Set `#{loggingchannel.Name}` as the logging channel",
                     Color = new DiscordColor(0x2ECC70)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
 
-            [Command("muterole"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-            public async Task MuteRoleCommand(CommandContext ctx, DiscordRole muterole)
+            [SlashCommand("muterole", "Set the role used by the mute commands")]
+            [SlashRequireUserPermissions(Permissions.Administrator)]
+            public async Task MuteRoleCommand(InteractionContext ctx, [Option("muterole", "Mention the role used by the mute commands")] DiscordRole muterole)
             {
                 string file = $"Settings/guild/{ctx.Guild.Id}.conf";
                 Directory.CreateDirectory(@"Settings/");
@@ -121,10 +110,10 @@ namespace FossiumBot.Commands
                 }
                 var em = new DiscordEmbedBuilder
                 {
-                    Title = $"`{muterole.Name}` has been set as the mute role",
+                    Title = $"`@{muterole.Name}` has been set as the mute role",
                     Color = new DiscordColor(0x2ECC70)
                 };
-                await ctx.RespondAsync(em);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
         }
     }
