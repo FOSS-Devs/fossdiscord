@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands.Attributes;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
@@ -13,10 +15,11 @@ using Newtonsoft.Json;
 
 namespace FossiumBot.Commands
 {
-    public class Moderation : BaseCommandModule
+    public class Moderation : ApplicationCommandModule
     {
-        [Command("kick"), RequirePermissions(DSharpPlus.Permissions.KickMembers)]
-        public async Task KickCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "no reason given")
+        [SlashCommand("kick", "Kick a member")]
+        [SlashRequirePermissions(Permissions.KickMembers)]
+        public async Task KickCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordMember member, [Option("reason", "Reason of kicking")] string reason = "no reason given")
         {
             if (member.Id == ctx.Member.Id)
             {
@@ -25,7 +28,7 @@ namespace FossiumBot.Commands
                     Title = "You cannot kick yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
@@ -36,7 +39,7 @@ namespace FossiumBot.Commands
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else if (reason.Length > 350)
@@ -47,7 +50,7 @@ namespace FossiumBot.Commands
                     Description = "Please shorten your reason to within 350 characters",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(lengthError);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
                 return;
             }
             var embed = new DiscordEmbedBuilder
@@ -57,11 +60,12 @@ namespace FossiumBot.Commands
             };
             embed.AddField("Reason", reason);
             await member.RemoveAsync(reason);
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("ban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
-        public async Task BanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
+        [SlashCommand("ban", "Ban a member")]
+        [SlashRequirePermissions(Permissions.BanMembers)]
+        public async Task BanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordMember member, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
         {
             if (member.Id == ctx.Member.Id)
             {
@@ -70,7 +74,7 @@ namespace FossiumBot.Commands
                     Title = "You cannot ban yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
@@ -81,7 +85,7 @@ namespace FossiumBot.Commands
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else if (reason.Length > 350)
@@ -92,7 +96,7 @@ namespace FossiumBot.Commands
                     Description = "Please shorten your reason to within 350 characters",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(lengthError);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
                 return;
             }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
@@ -103,7 +107,7 @@ namespace FossiumBot.Commands
                     Title = $"{member.Username}#{member.Discriminator} is already banned",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else
@@ -114,13 +118,14 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 embed.AddField("Reason", reason);
-                await member.BanAsync(deletemessagedays, reason);
-                await ctx.RespondAsync(embed);
+                await member.BanAsync((int)deletemessagedays, reason);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
         }
 
-        [Command("softban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
-        public async Task SoftbanCommand(CommandContext ctx, DiscordMember member, int deletemessagedays = 5, [RemainingText] string reason = "no reason given")
+        [SlashCommand("softban", "Softban a member")]
+        [SlashRequirePermissions(Permissions.BanMembers)]
+        public async Task SoftbanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordMember member, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
         {
             
             if (member.Id == ctx.Member.Id)
@@ -130,7 +135,7 @@ namespace FossiumBot.Commands
                     Title = "You cannot softban yourself",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
@@ -141,7 +146,7 @@ namespace FossiumBot.Commands
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else if (reason.Length > 350)
@@ -152,7 +157,7 @@ namespace FossiumBot.Commands
                     Description = "Please shorten your reason to within 350 characters",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(lengthError);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
                 return;
             }
             else
@@ -163,14 +168,15 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 embed.AddField("Reason", reason);
-                await member.BanAsync(deletemessagedays, reason);
+                await member.BanAsync((int)deletemessagedays, reason);
                 await ctx.Guild.UnbanMemberAsync(member.Id);
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
         }
 
-        [Command("unban"), RequirePermissions(DSharpPlus.Permissions.BanMembers)]
-        public async Task UnbanCommand(CommandContext ctx, ulong memberid)
+        [SlashCommand("unban", "Unban a user")]
+        [SlashRequirePermissions(Permissions.BanMembers)]
+        public async Task UnbanCommand(InteractionContext ctx, [Option("memberid", "The ID of the member you want to unban")] ulong memberid)
         {
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (banlist.Any(x => x.User.Id == memberid))
@@ -181,7 +187,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.Guild.UnbanMemberAsync(memberid);
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
             else
             {
@@ -190,12 +196,13 @@ namespace FossiumBot.Commands
                     Title = $"{memberid} is not banned",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
             }
         }
 
-        [Command("purge"), RequirePermissions(DSharpPlus.Permissions.ManageMessages), Cooldown(1, 5, CooldownBucketType.User)]
-        public async Task PurgeCommands(CommandContext ctx, int amount = 10)
+        [Command("purge")]
+        [SlashRequirePermissions(Permissions.ManageMessages)]
+        public async Task PurgeCommands(InteractionContext ctx, [Option("amount", "Amount of messages to delete")] ulong amount = 10)
         {
             if (amount > 50)
             {
@@ -204,10 +211,10 @@ namespace FossiumBot.Commands
                     Title = "Cannot purge more than 50 messages at one time",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
-            var messages = await ctx.Channel.GetMessagesAsync(amount + 1);
+            var messages = await ctx.Channel.GetMessagesAsync((int)amount + 1);
             await ctx.Channel.DeleteMessagesAsync(messages);
 
             var embed = new DiscordEmbedBuilder
@@ -215,9 +222,9 @@ namespace FossiumBot.Commands
                 Title = $"Purged {amount} messages",
                 Color = new DiscordColor(0x2ECC70)
             };
-            var responsemsg = await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             await Task.Delay(5000);
-            await responsemsg.DeleteAsync();
+            await ctx.DeleteResponseAsync();
         }
 
         [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
