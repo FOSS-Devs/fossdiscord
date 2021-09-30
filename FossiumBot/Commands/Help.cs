@@ -58,7 +58,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Autodelete",
-                    Description = $"{ctx.Prefix}autodelete <mention channel> <time>\nAutomatically deletes messages in a channel",
+                    Description = $"{ctx.Prefix}autodelete <mention channel> <time>\nAutomatically delete messages in a channel",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -70,7 +70,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Ban",
-                    Description = $"{ctx.Prefix}ban <member>\nBan a member",
+                    Description = $"{ctx.Prefix}ban <user>\nBan a user",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -82,7 +82,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Delwarn",
-                    Description = $"{ctx.Prefix}delwarn <member> <caseid or all>\nRemove warnings from a member\nAliases: dewarn, rmwarn, removewarn",
+                    Description = $"{ctx.Prefix}delwarn <user> <caseid or all>\nRemove warnings from a user\nAliases: dewarn, rmwarn, removewarn",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -94,7 +94,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Delwarn",
-                    Description = $"{ctx.Prefix}kick <member>\nKick a member",
+                    Description = $"{ctx.Prefix}kick <user>\nKick a user",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -106,7 +106,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Mute",
-                    Description = $"{ctx.Prefix}mute <member> [time in minutes]\nMute a member\n`[time in minutes]` is optional, default value is 15",
+                    Description = $"{ctx.Prefix}mute <user> [time in minutes]\nMute a user\n`[time in minutes]` is optional, default value is 15",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -118,7 +118,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Purge",
-                    Description = $"{ctx.Prefix}purge <amount of messages>\nPurge certain amount of messages",
+                    Description = $"{ctx.Prefix}purge <amount of messages>\nPurge a certain amount of messages",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -130,7 +130,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Softban",
-                    Description = $"{ctx.Prefix}softban <member>\nBan and unban a member to delete all their messages",
+                    Description = $"{ctx.Prefix}softban <user>\nBan and unban a user to delete all their messages",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -154,7 +154,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Unmute",
-                    Description = $"{ctx.Prefix}unmute <member>\nUnmute a member",
+                    Description = $"{ctx.Prefix}unmute <user>\nUnmute a user",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -166,7 +166,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Warn",
-                    Description = $"{ctx.Prefix}warn <member> [reason]\nWarn a member\n`[reason]` is optional",
+                    Description = $"{ctx.Prefix}warn <user> [reason]\nWarn a user\n`[reason]` is optional",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
@@ -178,7 +178,7 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Moderation: Warns",
-                    Description = $"{ctx.Prefix}warns <member>\nSee all the warnings of a member\nAliases: warnings",
+                    Description = $"{ctx.Prefix}warns <user>\nSee all the warnings of a user\nAliases: warnings",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.RespondAsync(embed);
