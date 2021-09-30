@@ -13,13 +13,14 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.Json;
-
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace FossiumBot.Commands
 {
     public class Fun : ApplicationCommandModule
     {
-        [SlashCommand("rate", "Rate something out of 10"), Cooldown(3, 3, CooldownBucketType.User)]
+        [SlashCommand("rate", "Rate something out of 10")]
         public async Task RateCommand(InteractionContext ctx, [Option("thing", "Thing to rate")] string thing)
         {
             Random r = new Random();
@@ -32,19 +33,16 @@ namespace FossiumBot.Commands
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("cat", "Shows a random picture of a cat"), Cooldown(3, 3, CooldownBucketType.User)]
+        [SlashCommand("cat", "Shows a random picture of a cat")]
         public async Task CatCommand(InteractionContext ctx)
         {
-            string URL = "https://api.thecatapi.com/v1/images/search";
-            WebRequest wrREQUEST;
-            wrREQUEST = WebRequest.Create(URL);
-            wrREQUEST.Proxy = null;
-            wrREQUEST.Method = "GET";
-            WebResponse response = wrREQUEST.GetResponse();
-            StreamReader streamReader = new StreamReader(response.GetResponseStream());
-            string responseData = streamReader.ReadToEnd();
-            streamReader.Close();
-            JArray jsonData = JArray.Parse(responseData);
+            string content = String.Empty;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                content = await client.GetStringAsync("https://api.thecatapi.com/v1/images/search");
+            }
+            JArray jsonData = JArray.Parse(content);
             var caturl = jsonData[0]["url"];
             string catpic = (string)caturl;
             var embed = new DiscordEmbedBuilder
@@ -56,20 +54,16 @@ namespace FossiumBot.Commands
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("dog", "Shows a random picture of a dog"), Cooldown(3, 3, CooldownBucketType.User)]
+        [SlashCommand("dog", "Shows a random picture of a dog")]
         public async Task DogCommand(InteractionContext ctx)
         {
-            string URL = "https://api.thedogapi.com/v1/images/search";
-            WebRequest wrREQUEST;
-            wrREQUEST = WebRequest.Create(URL);
-            wrREQUEST.Proxy = null;
-            wrREQUEST.Method = "GET";
-            WebResponse response = wrREQUEST.GetResponse();
-            StreamReader streamReader = new StreamReader(response.GetResponseStream());
-            string responseData = streamReader.ReadToEnd();
-            Console.WriteLine(responseData);
-            streamReader.Close();
-            JArray jsonData = JArray.Parse(responseData);
+            string content = String.Empty;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                content = await client.GetStringAsync("https://api.thedogapi.com/v1/images/search   ");
+            }
+            JArray jsonData = JArray.Parse(content);
             var dogurl = jsonData[0]["url"];
             string dogpic = (string)dogurl;
             var embed = new DiscordEmbedBuilder
@@ -81,7 +75,7 @@ namespace FossiumBot.Commands
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("wikipedia", "Get information about something from Wikipedia"), Cooldown(3, 3, CooldownBucketType.User)]
+        [SlashCommand("wikipedia", "Get information about something from Wikipedia")]
         public async Task WikiCommand(InteractionContext ctx, [Option("query", "What you want to get information of")] string query)
         {
             string URL = $"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}";
