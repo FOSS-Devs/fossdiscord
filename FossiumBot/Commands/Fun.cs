@@ -61,7 +61,7 @@ namespace FossiumBot.Commands
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
-                content = await client.GetStringAsync("https://api.thedogapi.com/v1/images/search   ");
+                content = await client.GetStringAsync("https://api.thedogapi.com/v1/images/search");
             }
             JArray jsonData = JArray.Parse(content);
             var dogurl = jsonData[0]["url"];
