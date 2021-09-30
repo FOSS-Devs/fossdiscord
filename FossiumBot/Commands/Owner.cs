@@ -46,7 +46,7 @@ namespace FossiumBot.Commands
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = $"Connected on {ctx.Client.Guilds.Count} servers",
+                Title = $"Connected on {ctx.Client.Guilds.Count} server(s)",
                 Description = connectedguilds,
                 Color = new DiscordColor(0x0080FF)
             };

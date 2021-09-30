@@ -106,7 +106,7 @@ namespace FossiumBot.Commands
             }
         }
 
-        [Command("serverinfo"), Cooldown(3, 3, CooldownBucketType.User)]
+        [Command("serverinfo")]
         public async Task ServerinfoCommand(CommandContext ctx)
         {
             var embed = new DiscordEmbedBuilder
@@ -124,7 +124,7 @@ namespace FossiumBot.Commands
             await ctx.RespondAsync(embed);
         }
 
-        [Command("emoji"), Cooldown(3, 3, CooldownBucketType.User)]
+        [Command("emoji")]
         public async Task EmojiCommand(CommandContext ctx, DiscordEmoji emoji = null)
         {
             if(emoji == null)
@@ -209,7 +209,7 @@ namespace FossiumBot.Commands
             }
         }
 
-        [Command("quickpoll"), Aliases("ask"), Cooldown(3, 3, CooldownBucketType.User)]
+        [Command("quickpoll"), Aliases("ask")]
         public async Task QuickpollCommand(CommandContext ctx, [RemainingText] string poll)
         {
             var embed = new DiscordEmbedBuilder
