@@ -479,10 +479,14 @@ namespace FossiumBot
 
             discord.UseVoiceNext();
             var slash = discord.UseSlashCommands();
-            slash.RegisterCommands<Fun>(848464241219338250);
-            slash.RegisterCommands<Music>(848464241219338250);
-            slash.RegisterCommands<Owner>(848464241219338250);
-            slash.RegisterCommands<Moderation>(848464241219338250);
+            //slash.RegisterCommands<Fun>(848464241219338250);
+            slash.RegisterCommands<Fun>();
+            //slash.RegisterCommands<Music>(848464241219338250);
+            slash.RegisterCommands<Music>();
+            //slash.RegisterCommands<Owner>(848464241219338250);
+            slash.RegisterCommands<Owner>();
+            //slash.RegisterCommands<Moderation>(848464241219338250);
+            slash.RegisterCommands<Moderation>();
             DiscordActivity discordActivity = new DiscordActivity
             {
                 Name = $"{cfgjson["prefix"]}help | {localversion}",
