@@ -66,7 +66,7 @@ namespace FossiumBot.Commands
 
         [SlashCommand("ban", "Ban a member")]
         [SlashRequirePermissions(Permissions.BanMembers)]
-        public async Task BanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordUser user, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
+        public async Task BanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordUser user, [Option("deletemessagedays", "How many days to delete the messages from")] long deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
         {
             DiscordMember member = (DiscordMember)user;
             if (member.Id == ctx.Member.Id)
@@ -127,7 +127,7 @@ namespace FossiumBot.Commands
 
         [SlashCommand("softban", "Ban and unban a user to delete all their messages")]
         [SlashRequirePermissions(Permissions.BanMembers)]
-        public async Task SoftbanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordUser user, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
+        public async Task SoftbanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordUser user, [Option("deletemessagedays", "How many days to delete the messages from")] long deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
         {
             DiscordMember member = (DiscordMember)user;
             if (member.Id == ctx.Member.Id)
@@ -178,24 +178,24 @@ namespace FossiumBot.Commands
 
         [SlashCommand("unban", "Unban a user")]
         [SlashRequirePermissions(Permissions.BanMembers)]
-        public async Task UnbanCommand(InteractionContext ctx, [Option("memberid", "The ID of the member you want to unban")] ulong memberid)
+        public async Task UnbanCommand(InteractionContext ctx, [Option("user", "The member you want to unban")] DiscordUser user)
         {
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            if (banlist.Any(x => x.User.Id == memberid))
+            if (banlist.Any(x => x.User.Id == user.Id))
             {
                 var embed = new DiscordEmbedBuilder
                 {
-                    Title = $"Unbanned {memberid}",
+                    Title = $"Unbanned {user.Username}#{user.Discriminator}",
                     Color = new DiscordColor(0x2ECC70)
                 };
-                await ctx.Guild.UnbanMemberAsync(memberid);
+                await ctx.Guild.UnbanMemberAsync(user);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
             else
             {
                 var errembed = new DiscordEmbedBuilder
                 {
-                    Title = $"{memberid} is not banned",
+                    Title = $"{user.Username}#{user.Discriminator} is not banned",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
@@ -204,7 +204,7 @@ namespace FossiumBot.Commands
 
         [SlashCommand("purge", "Purge a certain amount of messages")]
         [SlashRequirePermissions(Permissions.ManageMessages)]
-        public async Task PurgeCommands(InteractionContext ctx, [Option("amount", "Amount of messages to delete")] ulong amount = 10)
+        public async Task PurgeCommands(InteractionContext ctx, [Option("amount", "Amount of messages to delete")] long amount = 10)
         {
             if (amount > 50)
             {
@@ -317,7 +317,7 @@ namespace FossiumBot.Commands
 
         [SlashCommand("warn", "Warn a user")]
         [SlashRequirePermissions(Permissions.ManageMessages)]
-        public async Task WarnCommand(InteractionContext ctx, [Option("user", "The user to warn")] DiscordUser user, [Option("reason", "The reason of the warn, optional")] string reason = "none")
+        public async Task WarnCommand(InteractionContext ctx, [Option("user", "The user to warn")] DiscordUser user, [Option("reason", "The reason of the warn")] string reason = "none")
         {
             DiscordMember member = (DiscordMember)user;
             if (ctx.Guild.Id != member.Guild.Id)
@@ -601,7 +601,7 @@ namespace FossiumBot.Commands
 
         [SlashCommand("mute", "Mute a user")]
         [SlashRequirePermissions(Permissions.ManageRoles)]
-        public async Task MuteCommand(InteractionContext ctx, [Option("user", "The user to mute")] DiscordUser user, [Option("mutetime", "The amount of time to mute the user for in minutes, optional, default value is 15")] int mutetime = 15)
+        public async Task MuteCommand(InteractionContext ctx, [Option("user", "The user to mute")] DiscordUser user, [Option("mutetime", "The amount of time to mute the user for in minutes, default value is 15")] long mutetime = 15)
         {
             DiscordMember member = (DiscordMember)user;
             if (ctx.Member.Hierarchy <= member.Hierarchy)

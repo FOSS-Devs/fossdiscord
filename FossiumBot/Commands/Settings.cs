@@ -18,6 +18,7 @@ namespace FossiumBot.Commands
 {
     public class Settings : BaseCommandModule
     {
+        // make this user only
         [Group("settings"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
         public class SettingsGroup : BaseCommandModule
         {
