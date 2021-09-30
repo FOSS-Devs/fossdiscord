@@ -17,7 +17,7 @@ The bot has a lot of features, including but not limited to:
   - Wikipedia
 
 ## Installing
-Installation is pretty easy, just download the [latest release](https://github.com/Fossium-Team/FossiumBot/releases/latest), unzip, and run the excecutable.
+Installation is pretty easy, just download the [latest release](https://github.com/Fossium-Team/FossiumBot/releases/latest), unzip, and run the excecutable.\
 If you can't use the commands right away, don't worry, slash commands can take some time to register and update.
 
 ## Support Server
