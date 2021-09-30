@@ -19,8 +19,9 @@ namespace FossiumBot.Commands
     {
         [SlashCommand("kick", "Kick a member")]
         [SlashRequirePermissions(Permissions.KickMembers)]
-        public async Task KickCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordMember member, [Option("reason", "Reason of kicking")] string reason = "no reason given")
+        public async Task KickCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordUser user, [Option("reason", "Reason of kicking")] string reason = "no reason given")
         {
+            DiscordMember member = (DiscordMember)user;
             if (member.Id == ctx.Member.Id)
             {
                 var errembed = new DiscordEmbedBuilder
@@ -65,8 +66,9 @@ namespace FossiumBot.Commands
 
         [SlashCommand("ban", "Ban a member")]
         [SlashRequirePermissions(Permissions.BanMembers)]
-        public async Task BanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordMember member, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
+        public async Task BanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordUser user, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
         {
+            DiscordMember member = (DiscordMember)user;
             if (member.Id == ctx.Member.Id)
             {
                 var errembed = new DiscordEmbedBuilder
@@ -123,11 +125,11 @@ namespace FossiumBot.Commands
             }
         }
 
-        [SlashCommand("softban", "Softban a member")]
+        [SlashCommand("softban", "Ban and unban a user to delete all their messages")]
         [SlashRequirePermissions(Permissions.BanMembers)]
-        public async Task SoftbanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordMember member, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
+        public async Task SoftbanCommand(InteractionContext ctx, [Option("member", "mention or an id of a member")] DiscordUser user, [Option("deletemessagedays", "How many days to delete the messages from")] ulong deletemessagedays = 5, [Option("reason", "Reason of banning")] string reason = "no reason given")
         {
-            
+            DiscordMember member = (DiscordMember)user;
             if (member.Id == ctx.Member.Id)
             {
                 var errembed = new DiscordEmbedBuilder
@@ -200,7 +202,7 @@ namespace FossiumBot.Commands
             }
         }
 
-        [Command("purge")]
+        [SlashCommand("purge", "Purge a certain amount of messages")]
         [SlashRequirePermissions(Permissions.ManageMessages)]
         public async Task PurgeCommands(InteractionContext ctx, [Option("amount", "Amount of messages to delete")] ulong amount = 10)
         {
@@ -227,8 +229,9 @@ namespace FossiumBot.Commands
             await ctx.DeleteResponseAsync();
         }
 
-        [Command("autodelete"), RequirePermissions(DSharpPlus.Permissions.Administrator)]
-        public async Task AutoDeleteCommand(CommandContext ctx, DiscordChannel channel, string time)
+        [SlashCommand("autodelete", "Automatically delete messages in a channel")]
+        [SlashRequirePermissions(Permissions.ManageMessages)]
+        public async Task AutoDeleteCommand(InteractionContext ctx, [Option("channel", "The channel to automatically delete messages for")] DiscordChannel channel, [Option("time", "The amount of time between deletion of messsages in the channel in hours")] string time)
         {
             if (ctx.Guild.Id != channel.GuildId)
             {
@@ -238,7 +241,7 @@ namespace FossiumBot.Commands
                     Description = "That channel does not exist in this server",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(em);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 return;
             }
             Directory.CreateDirectory(@"Settings/");
@@ -256,7 +259,7 @@ namespace FossiumBot.Commands
                     Description = "That channel already configured to auto delete messages",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(em);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 return;
             }
             else if (time == "off" && !File.Exists($"Settings/lck/{channel.Id}.lck"))
@@ -267,7 +270,7 @@ namespace FossiumBot.Commands
                     Description = "That channel is not configured to auto delete messages",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(em);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 return;
             }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
@@ -280,7 +283,7 @@ namespace FossiumBot.Commands
                         Description = $"`{channel.Name}` is now configured to auto delete messages every {time} hour(s)",
                         Color = new DiscordColor(0xFFA500)
                     };
-                    await ctx.RespondAsync(em);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                     File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
                     while (File.Exists($"Settings/lck/{channel.Id}.lck"))
                     {
@@ -306,15 +309,17 @@ namespace FossiumBot.Commands
                         Description = "You command syntax is not right",
                         Color = new DiscordColor(0xFF0000)
                     };
-                    await ctx.RespondAsync(em);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 }
             }
             return;
         }
 
-        [Command("warn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
-        public async Task WarnCommand(CommandContext ctx, DiscordMember member, [RemainingText] string reason = "none")
+        [SlashCommand("warn", "Warn a user")]
+        [SlashRequirePermissions(Permissions.ManageMessages)]
+        public async Task WarnCommand(InteractionContext ctx, [Option("user", "The user to warn")] DiscordUser user, [Option("reason", "The reason of the warn, optional")] string reason = "none")
         {
+            DiscordMember member = (DiscordMember)user;
             if (ctx.Guild.Id != member.Guild.Id)
             {
                 var em = new DiscordEmbedBuilder
@@ -323,7 +328,7 @@ namespace FossiumBot.Commands
                     Description = "That user is not in this guild",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(em);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 return;
             }
             else if (reason.Length > 350)
@@ -334,7 +339,7 @@ namespace FossiumBot.Commands
                     Description = "Please make your reason max 350 characters",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(lengthError);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
                 return;
             }
             string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
@@ -373,7 +378,7 @@ namespace FossiumBot.Commands
                         Title = $"`{member.DisplayName}` has been warned",
                         Color = new DiscordColor(0xFFA500)
                     };
-                    await ctx.RespondAsync(firstEM);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(firstEM));
                 }
                 else
                 {
@@ -392,7 +397,7 @@ namespace FossiumBot.Commands
                         Title = $"`{member.DisplayName}` has been warned",
                         Color = new DiscordColor(0xFFA500)
                     };
-                    await ctx.RespondAsync(em);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 }
             }
             catch (Exception)
@@ -412,14 +417,16 @@ namespace FossiumBot.Commands
                     Title = $"`{member.DisplayName}` has been warned",
                     Color = new DiscordColor(0xFFA500)
                 };
-                await ctx.RespondAsync(emNEW);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(emNEW));
                 return;
             };
         }
 
-        [Command("warns"), Aliases("warnings"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
-        public async Task Warnings(CommandContext ctx, DiscordMember member)
+        [SlashCommand("warns", "See all the warnings of a user")]
+        [SlashRequirePermissions(Permissions.ManageMessages)]
+        public async Task Warnings(InteractionContext ctx, [Option("user", "The user to show the warnings of")] DiscordUser user)
         {
+            DiscordMember member = (DiscordMember)user;
             try
             {
                 string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
@@ -458,7 +465,7 @@ namespace FossiumBot.Commands
                                 break;
                             }
                         }
-                        await ctx.RespondAsync(firstEM);
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(firstEM));
                     }
                     else
                     {
@@ -468,7 +475,7 @@ namespace FossiumBot.Commands
                             Description = $"`{member.DisplayName}` doesn't have any warnings",
                             Color = new DiscordColor(0x2ECC70)
                         };
-                        await ctx.RespondAsync(nonexistEM);
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
                     }
                 }
                 if (!File.Exists(file)) 
@@ -479,7 +486,7 @@ namespace FossiumBot.Commands
                         Description = "Nobody in this guild has been warned yet",
                         Color = new DiscordColor(0x2ECC70)
                     };
-                    await ctx.RespondAsync(nonexistEM);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
                 }
             }
             catch (Exception ex)
@@ -490,14 +497,16 @@ namespace FossiumBot.Commands
                     Description = $"{ex}",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errorEM);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorEM));
                 return;
             };
         }
 
-        [Command("delwarn"), Aliases("dewarn", "rmwarn", "removewarn"), RequirePermissions(DSharpPlus.Permissions.ManageMessages)]
-        public async Task Delwarn(CommandContext ctx, DiscordMember member, string caseID)
+        [SlashCommand("delwarn", "Remove warnings from a user")]
+        [SlashRequirePermissions(Permissions.ManageMessages)]
+        public async Task Delwarn(InteractionContext ctx, [Option("user", "The user to delete the warning from")] DiscordUser user, [Option("caseID", "The ID of the case you want to delete")] string caseID)
         {
+            DiscordMember member = (DiscordMember)user;
             string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
             if(!File.Exists(file))
             {
@@ -507,7 +516,7 @@ namespace FossiumBot.Commands
                     Description = $"Nobody in this guild has been warned yet",
                     Color = new DiscordColor(0x2ECC70)
                 };
-                await ctx.RespondAsync(nonexistEM);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
                 return;
             }
             else {
@@ -537,7 +546,7 @@ namespace FossiumBot.Commands
                                 Title = $"Successfully removed all warnings for `{member.DisplayName}`",
                                 Color = new DiscordColor(0x0080FF)
                             };
-                            await ctx.RespondAsync(EM);
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(EM));
                         }
                         else if (jsonData[$"{member.Id}"][$"{caseID}"] == null)
                         {
@@ -547,7 +556,7 @@ namespace FossiumBot.Commands
                                 Description = "This warning doesn't exist",
                                 Color = new DiscordColor(0xFF0000)
                             };
-                            await ctx.RespondAsync(nonexistEM);
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
                             return;
                         }
                         else
@@ -560,7 +569,7 @@ namespace FossiumBot.Commands
                                 Title = $"Successfully removed `Case {caseID}` for `{member.DisplayName}`",
                                 Color = new DiscordColor(0x0080FF)
                             };
-                            await ctx.RespondAsync(EM);
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(EM));
                         }
                     }
                     else
@@ -571,7 +580,7 @@ namespace FossiumBot.Commands
                             Description = $"`{member.DisplayName}` doesn't have any warnings",
                             Color = new DiscordColor(0x0080FF)
                         };
-                        await ctx.RespondAsync(nonexistEM);
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
                         return;
                     }
                         
@@ -584,15 +593,17 @@ namespace FossiumBot.Commands
                         Description = $"{ex}",
                         Color = new DiscordColor(0xFF0000)
                     };
-                    await ctx.RespondAsync(errorEM);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorEM));
                     return;
                 };
             }
         }
 
-        [Command("mute"), RequirePermissions(DSharpPlus.Permissions.ManageRoles)]
-        public async Task MuteCommand(CommandContext ctx, DiscordMember member, int mutetime = 15)
+        [SlashCommand("mute", "Mute a user")]
+        [SlashRequirePermissions(Permissions.ManageRoles)]
+        public async Task MuteCommand(InteractionContext ctx, [Option("user", "The user to mute")] DiscordUser user, [Option("mutetime", "The amount of time to mute the user for in minutes, optional, default value is 15")] int mutetime = 15)
         {
+            DiscordMember member = (DiscordMember)user;
             if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
                 var errembed = new DiscordEmbedBuilder
@@ -601,7 +612,7 @@ namespace FossiumBot.Commands
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
                 };
-                await ctx.RespondAsync(errembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             string file = $"Settings/guild/{ctx.Guild.Id}.conf";
@@ -619,7 +630,7 @@ namespace FossiumBot.Commands
                     Title = $"`{member.DisplayName}` has been muted for {mutetime} minute(s)",
                     Color = new DiscordColor(0xFFA500)
                 };
-                await ctx.RespondAsync(em);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 System.Threading.Thread.Sleep(TimeSpan.FromMinutes(mutetime));
                 //System.Threading.Thread.Sleep(TimeSpan.FromSeconds(mutetime));
                 await member.RevokeRoleAsync(muteRole);
@@ -630,17 +641,19 @@ namespace FossiumBot.Commands
                 var roleNotExist = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = $"You haven't set the role for muted members yet\nSet the muted role with `{ctx.Prefix}settings muterole <mention role>`",
+                    Description = $"You haven't set the role for muted members yet\nSet the muted role with `/settings muterole <mention role>`",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(roleNotExist);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(roleNotExist));
                 return;
             }
         }
 
-        [Command("unmute"), RequirePermissions(DSharpPlus.Permissions.ManageRoles)]
-        public async Task UnmuteCommand(CommandContext ctx, DiscordMember member)
+        [SlashCommand("unmute", "Unmute a user")]
+        [SlashRequirePermissions(Permissions.ManageRoles)]
+        public async Task UnmuteCommand(InteractionContext ctx, [Option("user", "The user to unmute")] DiscordUser user)
         {
+            DiscordMember member = (DiscordMember)user;
             string file = $"Settings/guild/{ctx.Guild.Id}.conf";
             if (File.Exists(file))
             {
@@ -662,7 +675,7 @@ namespace FossiumBot.Commands
                         Description = $"{ex}",
                         Color = new DiscordColor(0xFF0000)
                     };
-                    await ctx.RespondAsync(errEM);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEM));
                     return;
                 }
                 var em = new DiscordEmbedBuilder
@@ -670,17 +683,17 @@ namespace FossiumBot.Commands
                     Title = $"`{member.DisplayName}` has been unmuted",
                     Color = new DiscordColor(0xFFA500)
                 };
-                await ctx.RespondAsync(em);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
             else
             {
                 var roleNotExist = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = $"You haven't set the role for muted members yet\nSet the muted role with `{ctx.Prefix}settings muterole <mention role>`",
+                    Description = $"You haven't set the role for muted members yet\nSet the muted role with `/settings muterole <mention role>`",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(roleNotExist);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(roleNotExist));
                 return;
             }
         }
