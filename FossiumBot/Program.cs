@@ -592,7 +592,7 @@ namespace FossiumBot
                 new JProperty("prefix", $"{prefix}")
                 );
 
-            string configjson = JsonConvert.SerializeObject(data);
+            string configjson = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented));
             string path = @"config.json";
             using (TextWriter tw = new StreamWriter(path))
             {
