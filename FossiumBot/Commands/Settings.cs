@@ -26,29 +26,10 @@ namespace FossiumBot.Commands
             [SlashRequireUserPermissions(Permissions.Administrator)]
             public async Task LoggingchannelCommand(InteractionContext ctx, [Option("loggingchannel", "Mention the channel to log events to")] DiscordChannel loggingchannel = null)
             {
-                if (loggingchannel == null)
-                {
-                    JObject disabledata = new JObject(
-                        new JProperty($"Loggingchannelid", "0")
-                        );
-
-                    string disablejson = JsonConvert.SerializeObject(disabledata);
-                    Directory.CreateDirectory(@"Settings/");
-                    string disablepath = $"Settings/Loggingsettings-{ctx.Guild.Id}.json";
-                    using (TextWriter tw = new StreamWriter(disablepath))
-                    {
-                        tw.WriteLine(disablejson);
-                    };
-
-                    var disableembed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Disabled logging",
-                        Color = new DiscordColor(0x2ECC70)
-                    };
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(disableembed));
-                    return;
-                }
-                else if (loggingchannel.GuildId != ctx.Guild.Id)
+                string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guild/");
+                if (loggingchannel != null && loggingchannel.GuildId != ctx.Guild.Id)
                 {
                     var em = new DiscordEmbedBuilder
                     {
@@ -59,18 +40,46 @@ namespace FossiumBot.Commands
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                     return;
                 }
-                JObject data = new JObject(
-                    new JProperty($"Loggingchannelid", $"{loggingchannel.Id}")
-                    );
-
-                string json = JsonConvert.SerializeObject(data);
-                Directory.CreateDirectory(@"Settings/");
-                string path = $"Settings/Loggingsettings-{ctx.Guild.Id}.json";
-                using (TextWriter tw = new StreamWriter(path))
+                else if (loggingchannel == null && File.Exists(file))
                 {
-                    tw.WriteLine(json);
-                };
-
+                    StreamReader readData = new StreamReader(file);
+                    string data = readData.ReadToEnd();
+                    readData.Close();
+                    JObject jsonData = JObject.Parse(data);
+                    jsonData["config"]["loggingchannelid"] = "off";
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                    var disableembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Disabled logging",
+                        Color = new DiscordColor(0x2ECC70)
+                    };
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(disableembed));
+                    return;
+                }
+                else if (loggingchannel != null && File.Exists(file))
+                {
+                    StreamReader readData = new StreamReader(file);
+                    string data = readData.ReadToEnd();
+                    readData.Close();
+                    JObject jsonData = JObject.Parse(data);
+                    jsonData["config"]["loggingchannelid"] = loggingchannel.Id;
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                }
+                else
+                {
+                    JObject overwrite =
+                        new JObject(
+                            new JProperty("config",
+                                new JObject(
+                                    new JProperty("loggingchannelid", loggingchannel.Id)
+                                )
+                            )
+                        );
+                    string overwriteData = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, overwriteData);
+                }
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Set `#{loggingchannel.Name}` as the logging channel",
@@ -78,6 +87,42 @@ namespace FossiumBot.Commands
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
+            /*JObject disabledata = new JObject(
+                new JProperty($"Loggingchannelid", "0")
+                );
+            string disablejson = JsonConvert.SerializeObject(disabledata);
+            Directory.CreateDirectory(@"Settings/");
+            string disablepath = $"Settings/Loggingsettings-{ctx.Guild.Id}.json";
+            using (TextWriter tw = new StreamWriter(disablepath))
+            {
+                tw.WriteLine(disablejson);
+            };
+
+            var disableembed = new DiscordEmbedBuilder
+            {
+                Title = $"Disabled logging",
+                Color = new DiscordColor(0x2ECC70)
+            };
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(disableembed));
+            return;*/
+            /*JObject data = new JObject(
+                new JProperty($"Loggingchannelid", $"{loggingchannel.Id}")
+                );
+
+            string json = JsonConvert.SerializeObject(data);
+            Directory.CreateDirectory(@"Settings/");
+            string path = $"Settings/Loggingsettings-{ctx.Guild.Id}.json";
+            using (TextWriter tw = new StreamWriter(path))
+            {
+                tw.WriteLine(json);
+            };
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = $"Set `#{loggingchannel.Name}` as the logging channel",
+                Color = new DiscordColor(0x2ECC70)
+            };
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));*/
 
             [SlashCommand("muterole", "Set the role used by the mute commands")]
             [SlashRequireUserPermissions(Permissions.Administrator)]
@@ -96,7 +141,8 @@ namespace FossiumBot.Commands
                     string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
                 }
-                else {
+                else
+                {
                     JObject overwrite =
                         new JObject(
                             new JProperty("config",
