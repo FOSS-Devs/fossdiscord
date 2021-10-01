@@ -441,7 +441,23 @@ namespace FossiumBot
                 embed.AddField("ID", e.Channel.Id.ToString());
                 await loggingchannel.SendMessageAsync(embed);
             };
-
+            discord.GuildMemberAdded += async (s, e) =>
+            {
+                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                if (File.Exists(file))
+                {
+                    StreamReader readData = new StreamReader(file);
+                    string data = readData.ReadToEnd();
+                    readData.Close();
+                    JObject jsonData = JObject.Parse(data);
+                    if (jsonData["config"]["welcomechannel"] != null)
+                    {
+                        ulong welcomechannelID = (ulong)jsonData["config"]["welcomechannel"];
+                        DiscordChannel loggingchannel = e.Guild.GetChannel(welcomechannelID);
+                        await loggingchannel.SendMessageAsync($"{e.Member.DisplayName} made it into the server, welcome!");
+                    }
+                }
+            };
             commands.CommandErrored += async (s, e) =>
             {
                 if (e.Exception is CommandNotFoundException)
