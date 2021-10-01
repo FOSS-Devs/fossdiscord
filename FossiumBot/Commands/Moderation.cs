@@ -43,6 +43,17 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
+            else if (ctx.Guild.Id != member.Guild.Id)
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That user does not exist in this server",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                return;
+            }
             else if (reason.Length > 350)
             {
                 var lengthError = new DiscordEmbedBuilder
@@ -149,6 +160,17 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
+                return;
+            }
+            else if (ctx.Guild.Id != member.Guild.Id)
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Oops...",
+                    Description = "That user does not exist in this server",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 return;
             }
             else if (reason.Length > 350)
@@ -329,6 +351,17 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                return;
+            }
+            else if (ctx.Member.Id == member.Id)
+            {
+                var errembed = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "You cannot warn yourself",
+                    Color = new DiscordColor(0xFF0000),
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
             else if (reason.Length > 350)
@@ -611,6 +644,16 @@ namespace FossiumBot.Commands
                     Title = "Oops...",
                     Description = "Your role is too low in the role hierarchy to do that",
                     Color = new DiscordColor(0xFF0000),
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
+                return;
+            }
+            else if (member.Id == ctx.Member.Id)
+            {
+                var errembed = new DiscordEmbedBuilder
+                {
+                    Title = "You cannot mute yourself",
+                    Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
