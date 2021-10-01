@@ -26,9 +26,9 @@ namespace FossiumBot.Commands
             [SlashRequireUserPermissions(Permissions.Administrator)]
             public async Task LoggingchannelCommand(InteractionContext ctx, [Option("loggingchannel", "Mention the channel to log events to")] DiscordChannel loggingchannel = null)
             {
-                string file = $"Settings/guild/{ctx.Guild.Id}.json";
+                string file = $"Settings/guilds/{ctx.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
-                Directory.CreateDirectory(@"Settings/guild/");
+                Directory.CreateDirectory(@"Settings/guilds/");
                 if (loggingchannel != null && loggingchannel.GuildId != ctx.Guild.Id)
                 {
                     var em = new DiscordEmbedBuilder
@@ -128,9 +128,9 @@ namespace FossiumBot.Commands
             [SlashRequireUserPermissions(Permissions.Administrator)]
             public async Task MuteRoleCommand(InteractionContext ctx, [Option("muterole", "Mention the role used by the mute commands")] DiscordRole muterole)
             {
-                string file = $"Settings/guild/{ctx.Guild.Id}.json";
+                string file = $"Settings/guilds/{ctx.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
-                Directory.CreateDirectory(@"Settings/guild/");
+                Directory.CreateDirectory(@"Settings/guilds/");
                 if (File.Exists(file))
                 {
                     StreamReader readData = new StreamReader(file);
