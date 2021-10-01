@@ -41,7 +41,7 @@ namespace FossiumBot.Commands
                 guildslist.Add(guild.ToString());
             }
             string[] guildsarray = guildslist.ToArray();
-            string guildsstring = String.Join(" ", guildsarray);
+            string guildsstring = string.Join(" ", guildsarray);
             string connectedguilds = guildsstring.Replace(" Guild ", "\nID: ").Replace("Guild ", "ID: ").Replace("; ", " Name: ");
 
             var embed = new DiscordEmbedBuilder

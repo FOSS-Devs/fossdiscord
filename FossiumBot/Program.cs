@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
 using FossiumBot.Commands;
+using System.Linq;
 
 namespace FossiumBot
 {
@@ -215,13 +216,13 @@ namespace FossiumBot
                     return;
                 }
             };
-            //Automatically create confit during server joining.
+            //Automatically create config when the bot joins a guild.
             discord.GuildAvailable += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.json";
+                string jsonfile = $"Settings/guild/{e.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guild/");
-                if (!File.Exists(file))
+                if (!File.Exists(jsonfile))
                 {
                     JObject newConfig =
                         new JObject(
@@ -232,9 +233,35 @@ namespace FossiumBot
                                  }
                             )
                         );
-                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(newConfig, Newtonsoft.Json.Formatting.Indented);
-                    System.IO.File.WriteAllText(file, dataWrite);
+                    string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
+                    File.WriteAllText(jsonfile, dataWrite);
                 }
+
+
+                List<string> guildslist = new List<string>();
+                foreach (DiscordGuild guild in discord.Guilds.Values)
+                {
+                    guildslist.Add(guild.ToString());
+                }
+
+                Console.WriteLine(guildslist);
+
+                List<string> fileslist = new List<string>();
+                foreach (string file in Directory.GetFiles($"{Directory.GetCurrentDirectory()}/Settings/guild", "*.json"))
+                {
+                    guildslist.Add(file);
+                }
+                foreach (string file in fileslist)
+                {
+                    if (!fileslist.Contains(file))
+                    {
+                        Console.WriteLine(file);
+                    }
+                }
+                string[] filesarray = fileslist.ToArray();
+                string filesstring = string.Join(" ", filesarray);
+                Console.WriteLine(filesstring);
+
                 return;
             };
             discord.GuildCreated += async (s, e) =>
