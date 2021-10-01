@@ -46,7 +46,7 @@ namespace FossiumBot.Commands
                     string data = readData.ReadToEnd();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
-                    jsonData["config"]["loggingchannelid"] = "off";
+                    jsonData["config"]["loggingchannelid"] = null;
                     string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
                     var disableembed = new DiscordEmbedBuilder
@@ -67,7 +67,7 @@ namespace FossiumBot.Commands
                     string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, dataWrite);
                 }
-                else
+                /*else
                 {
                     JObject overwrite =
                         new JObject(
@@ -79,7 +79,7 @@ namespace FossiumBot.Commands
                         );
                     string overwriteData = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
                     System.IO.File.WriteAllText(file, overwriteData);
-                }
+                }*/
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Set `#{loggingchannel.Name}` as the logging channel",

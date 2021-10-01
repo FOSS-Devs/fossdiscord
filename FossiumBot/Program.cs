@@ -227,7 +227,7 @@ namespace FossiumBot
                         new JObject(
                             new JProperty("config",
                             new JObject {
-                                    new JProperty("loggingchannelid", "off"),
+                                    new JProperty("loggingchannelid", null),
                                     new JProperty("muterole", null),
                                  }
                             )
@@ -248,7 +248,7 @@ namespace FossiumBot
                           new JObject(
                               new JProperty("config",
                               new JObject {
-                                    new JProperty("loggingchannelid", "off"),
+                                    new JProperty("loggingchannelid", null),
                                     new JProperty("muterole", null),
                                    }
                               )
@@ -286,7 +286,7 @@ namespace FossiumBot
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if(jsonData["config"]["loggingchannelid"].ToString() == "off")
+                if(jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
@@ -327,7 +327,7 @@ namespace FossiumBot
                         return;
                     }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if (jsonData["config"]["loggingchannelid"].ToString() == "off")
+                    if (jsonData["config"]["loggingchannelid"] == null)
                     {
                         return;
                     }
@@ -355,7 +355,7 @@ namespace FossiumBot
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"].ToString() == "off")
+                if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
@@ -382,7 +382,7 @@ namespace FossiumBot
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"].ToString() == "off")
+                if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
@@ -412,7 +412,7 @@ namespace FossiumBot
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"].ToString() == "off")
+                if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
@@ -438,7 +438,7 @@ namespace FossiumBot
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"].ToString() == "off")
+                if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
@@ -484,7 +484,7 @@ namespace FossiumBot
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"].ToString() == "off")
+                if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
