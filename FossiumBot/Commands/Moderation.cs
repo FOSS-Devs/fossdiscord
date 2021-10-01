@@ -665,19 +665,22 @@ namespace FossiumBot.Commands
                 string data = readData.ReadToEnd();
                 readData.Close();
                 JObject jsonData = JObject.Parse(data);
-                ulong roleID = (ulong)jsonData["config"]["muterole"];
-                DiscordRole muteRole = ctx.Guild.GetRole(roleID);
-                await member.GrantRoleAsync(muteRole);
-                var em = new DiscordEmbedBuilder
+                if(jsonData["config"]["muterole"] != null)
                 {
-                    Title = $"`{member.DisplayName}` has been muted for {mutetime} minute(s)",
-                    Color = new DiscordColor(0xFFA500)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                System.Threading.Thread.Sleep(TimeSpan.FromMinutes(mutetime));
-                //System.Threading.Thread.Sleep(TimeSpan.FromSeconds(mutetime));
-                await member.RevokeRoleAsync(muteRole);
-                return;
+                    ulong roleID = (ulong)jsonData["config"]["muterole"];
+                    DiscordRole muteRole = ctx.Guild.GetRole(roleID);
+                    await member.GrantRoleAsync(muteRole);
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"`{member.DisplayName}` has been muted for {mutetime} minute(s)",
+                        Color = new DiscordColor(0xFFA500)
+                    };
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                    System.Threading.Thread.Sleep(TimeSpan.FromMinutes(mutetime));
+                    //System.Threading.Thread.Sleep(TimeSpan.FromSeconds(mutetime));
+                    await member.RevokeRoleAsync(muteRole);
+                    return;
+                }
             }
             else
             {

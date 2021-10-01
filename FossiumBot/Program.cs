@@ -56,7 +56,6 @@ namespace FossiumBot
                 EnableDefaultHelp = false
             });
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
-
             discord.ComponentInteractionCreated += async (s, e) =>
             {
                 if (e.Id == "help_moderation")
@@ -216,7 +215,61 @@ namespace FossiumBot
                     return;
                 }
             };
-
+            //Automatically create confit during server joining.
+            discord.GuildAvailable += async (s, e) =>
+            {
+                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guild/");
+                if (!File.Exists(file))
+                {
+                    JObject newConfig =
+                        new JObject(
+                            new JProperty("config",
+                            new JObject {
+                                    new JProperty("loggingchannelid", "off"),
+                                    new JProperty("muterole", null),
+                                 }
+                            )
+                        );
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(newConfig, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                }
+                return;
+            };
+            discord.GuildCreated += async (s, e) =>
+            {
+                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guild/");
+                if (!File.Exists(file))
+                {
+                    JObject newConfig =
+                          new JObject(
+                              new JProperty("config",
+                              new JObject {
+                                    new JProperty("loggingchannelid", "off"),
+                                    new JProperty("muterole", null),
+                                   }
+                              )
+                          );
+                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(newConfig, Newtonsoft.Json.Formatting.Indented);
+                    System.IO.File.WriteAllText(file, dataWrite);
+                }
+                return;
+            };
+            discord.GuildDeleted += async (s, e) =>
+            {
+                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (FileNotFoundException)
+                {
+                    return;
+                }
+            };
             // Logging
             discord.MessageDeleted += async (s, e) =>
             {
