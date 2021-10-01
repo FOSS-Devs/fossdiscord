@@ -13,28 +13,28 @@ using DSharpPlus.Entities;
 
 namespace FossiumBot.Commands
 {
-    public class Utils : BaseCommandModule
+    public class Utils : ApplicationCommandModule
     {
         // For the uptime command
         DateTimeOffset StartTime = DateTime.Now;
 
-        [Command("ping"), Cooldown(2, 5, CooldownBucketType.Guild)]
-        public async Task PingCommand(CommandContext ctx)
+        [SlashCommand("ping", "Get the ping of the bot")]
+        public async Task PingCommand(InteractionContext ctx)
         {
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"Pong! `{ctx.Client.Ping}ms`",
                 Color = new DiscordColor(0x0080FF)
             };
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("avatar"), Aliases("pfp"), Cooldown(3, 5, CooldownBucketType.User)]
-        public async Task AvatarCommand(CommandContext ctx, DiscordMember member = null)
+        [SlashCommand("avatar", "Get the avatar from a user")]
+        public async Task AvatarCommand(InteractionContext ctx, [Option("user", "The user get the avatar from")] DiscordUser user = null)
         {
-            if(member == null)
+            if(user == null)
             {
-                member = (DiscordMember)ctx.User;
+                DiscordMember member = (DiscordMember)ctx.User;
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{member.DisplayName}'s avatar",
@@ -42,25 +42,27 @@ namespace FossiumBot.Commands
                     ImageUrl = member.AvatarUrl,
                     Color = new DiscordColor(0x0080FF)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
             else
             {
+                DiscordMember member = (DiscordMember)user;
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{member.DisplayName}'s avatar",
                     ImageUrl = member.AvatarUrl,
                     Color = new DiscordColor(0x0080FF)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
         }
 
-        [Command("userinfo"), Cooldown(3, 5, CooldownBucketType.User)]
-        public async Task UserinfoCommand(CommandContext ctx, DiscordMember member = null)
+        [SlashCommand("userinfo", "Get information about a user")]
+        public async Task UserinfoCommand(InteractionContext ctx, [Option("user", "User to get information")] DiscordUser user = null)
         {
-            if (member == null)
+            if (user == null)
             {
+                DiscordMember member = (DiscordMember)ctx.User;
                 member = (DiscordMember)ctx.User;
                 var embed = new DiscordEmbedBuilder
                 {
@@ -81,10 +83,11 @@ namespace FossiumBot.Commands
                 embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
                 long membercreation = member.CreationTimestamp.ToUnixTimeSeconds();
                 embed.AddField("Registered", $"<t:{membercreation}:F>");
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
             else
             {
+                DiscordMember member = (DiscordMember)user;
                 var embed = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(0x0080FF)
@@ -104,12 +107,12 @@ namespace FossiumBot.Commands
                 embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
                 long membercreation = member.CreationTimestamp.ToUnixTimeSeconds();
                 embed.AddField("Registered", $"<t:{membercreation}:F>");
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
         }
 
-        [Command("serverinfo")]
-        public async Task ServerinfoCommand(CommandContext ctx)
+        [SlashCommand("serverinfo", "Get information about the server")]
+        public async Task ServerinfoCommand(InteractionContext ctx)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -123,21 +126,21 @@ namespace FossiumBot.Commands
             embed.AddField("Server Created", $"<t:{guildcreation}:F>");
             embed.AddField("Number of Members", ctx.Guild.MemberCount.ToString());
             embed.AddField("Number of Roles", ctx.Guild.Roles.Count.ToString());
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("emoji")]
-        public async Task EmojiCommand(CommandContext ctx, DiscordEmoji emoji = null)
+        [SlashCommand("emoji", "Get information about an emoji")]
+        public async Task EmojiCommand(InteractionContext ctx, [Option("emoji", "Emoji to get information")] DiscordEmoji emoji = null)
         {
             if(emoji == null)
             {
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = "Missing argument",
-                    Description = $"Usage:\n{ctx.Prefix}emoji <emoji>",
+                    Description = $"Usage:\n/emoji <emoji>",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
             else
             {
@@ -151,12 +154,12 @@ namespace FossiumBot.Commands
                 string emojicreation = emoji.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
                 embed.AddField("Created on", emojicreation);
                 embed.AddField("URL", emoji.Url);
-                await ctx.RespondAsync(embed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
         }
 
-        [Command("poll"), Cooldown(3, 10, CooldownBucketType.User)]
-        public async Task PollCommand(CommandContext ctx, [RemainingText] string poll)
+        [SlashCommand("poll", "Make a poll with multiple options")]
+        public async Task PollCommand(InteractionContext ctx, [Option("poll", "The poll, split the title and the different questions with \" | \"")] string poll)
         {
 
             string[] pollsplit = poll.Split(" | ");
@@ -167,10 +170,10 @@ namespace FossiumBot.Commands
                 var errorembed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "You can only have 10 questions in a poll",
+                    Description = "You can only have up to 10 questions in a poll",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(errorembed);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
                 return;
             }
 
@@ -199,20 +202,21 @@ namespace FossiumBot.Commands
                 Color = new DiscordColor(0x0080FF)
             };
 
-            var embedmsg = await ctx.Channel.SendMessageAsync(embed);
-            await ctx.Message.DeleteAsync();
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            var embedmsg = await ctx.GetOriginalResponseAsync();
 
             repeating = 0;
 
             foreach (string question in polls)
             {
+                
                 await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, $":{number[repeating]}:"));
                 repeating = repeating + 1;
             }
         }
 
-        [Command("quickpoll"), Aliases("ask")]
-        public async Task QuickpollCommand(CommandContext ctx, [RemainingText] string poll)
+        [SlashCommand("quickpoll", "Make a yes/no poll")]
+        public async Task QuickpollCommand(InteractionContext ctx, [Option("poll", "The poll/question")] string poll)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -220,13 +224,14 @@ namespace FossiumBot.Commands
                 Description = poll,
                 Color = new DiscordColor(0x0080FF)
             };
-            var embedmsg = await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            var embedmsg = await ctx.GetOriginalResponseAsync();
             await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsup:"));
             await embedmsg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":thumbsdown:"));
         }
 
-        [Command("uptime"), Cooldown(3, 3, CooldownBucketType.Guild)]
-        public async Task UptimeCommand(CommandContext ctx)
+        [SlashCommand("uptime", "Get the uptime of the bot")]
+        public async Task UptimeCommand(InteractionContext ctx)
         {
             var uptime = (DateTime.Now - StartTime);
             long onlinesince = StartTime.ToUnixTimeSeconds();
@@ -236,7 +241,7 @@ namespace FossiumBot.Commands
                 Description = $"Online since <t:{onlinesince}:F>\n({uptime.Days} days, {uptime.Minutes} minutes and {uptime.Seconds} seconds)",
                 Color = new DiscordColor(0x0080FF)
             };
-            await ctx.RespondAsync(embed);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
     }
 }
