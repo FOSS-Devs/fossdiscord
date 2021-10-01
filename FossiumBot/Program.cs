@@ -453,8 +453,8 @@ namespace FossiumBot
                     if (jsonData["config"]["welcomechannel"] != null)
                     {
                         ulong welcomechannelID = (ulong)jsonData["config"]["welcomechannel"];
-                        DiscordChannel loggingchannel = e.Guild.GetChannel(welcomechannelID);
-                        await loggingchannel.SendMessageAsync($"{e.Member.DisplayName} made it into the server, welcome!");
+                        DiscordChannel welcomechanel = e.Guild.GetChannel(welcomechannelID);
+                        await welcomechanel.SendMessageAsync($"{e.Member.DisplayName} made it into the server, welcome!");
                     }
                 }
             };
