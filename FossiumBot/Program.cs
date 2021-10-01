@@ -218,7 +218,7 @@ namespace FossiumBot
             //Automatically create confit during server joining.
             discord.GuildAvailable += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guild/");
                 if (!File.Exists(file))
@@ -239,7 +239,7 @@ namespace FossiumBot
             };
             discord.GuildCreated += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guild/");
                 if (!File.Exists(file))
@@ -260,7 +260,7 @@ namespace FossiumBot
             };
             discord.GuildDeleted += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 try
                 {
                     File.Delete(file);
@@ -280,7 +280,7 @@ namespace FossiumBot
                     Timestamp = e.Message.Timestamp
                 };
                 //Directory.CreateDirectory(@"Settings/");
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 if (!File.Exists(file))
                 {
                     return;
@@ -303,7 +303,7 @@ namespace FossiumBot
             };
             discord.MessageUpdated += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 if (e.Message.IsEdited == false)
                 {
                     return;
@@ -342,7 +342,7 @@ namespace FossiumBot
             };
             discord.GuildMemberAdded += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Member joined",
@@ -369,7 +369,7 @@ namespace FossiumBot
             };
             discord.GuildMemberRemoved += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Member left",
@@ -398,7 +398,7 @@ namespace FossiumBot
             };
             discord.ChannelCreated += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Channel created",
@@ -424,7 +424,7 @@ namespace FossiumBot
             };
             discord.ChannelUpdated += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Channel updated",
@@ -471,7 +471,7 @@ namespace FossiumBot
             };
             discord.ChannelDeleted += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Channel deleted",
@@ -503,7 +503,7 @@ namespace FossiumBot
             };
             /*discord.GuildMemberAdded += async (s, e) =>
             {
-                string file = $"Settings/guild/{e.Guild.Id}.conf";
+                string file = $"Settings/guild/{e.Guild.Id}.json";
                 if (File.Exists(file))
                 {
                     StreamReader readData = new StreamReader(file);

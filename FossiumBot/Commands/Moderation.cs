@@ -375,9 +375,9 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
                 return;
             }
-            string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
+            string file = $"Data/Warnings/{ctx.Guild.Id}.json";
             Directory.CreateDirectory(@"Data/");
-            Directory.CreateDirectory(@"Data/blacklist/");
+            Directory.CreateDirectory(@"Data/Warnings/");
             try
             {
                 if (File.Exists(file))
@@ -462,7 +462,7 @@ namespace FossiumBot.Commands
             DiscordMember member = (DiscordMember)user;
             try
             {
-                string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
+                string file = $"Data/Warnings/{ctx.Guild.Id}.json";
                 if (File.Exists(file))
                 {
                     StreamReader readData = new StreamReader(file);
@@ -540,7 +540,7 @@ namespace FossiumBot.Commands
         public async Task Delwarn(InteractionContext ctx, [Option("user", "The user to delete the warning from")] DiscordUser user, [Option("caseID", "The ID of the case you want to delete")] string caseID)
         {
             DiscordMember member = (DiscordMember)user;
-            string file = $"Data/blacklist/{ctx.Guild.Id}.lst";
+            string file = $"Data/Warnings/{ctx.Guild.Id}.json";
             if(!File.Exists(file))
             {
                 var nonexistEM = new DiscordEmbedBuilder
@@ -658,7 +658,7 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
-            string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+            string file = $"Settings/guild/{ctx.Guild.Id}.json";
             if (File.Exists(file))
             {
                 StreamReader readData = new StreamReader(file);
@@ -700,7 +700,7 @@ namespace FossiumBot.Commands
         public async Task UnmuteCommand(InteractionContext ctx, [Option("user", "The user to unmute")] DiscordUser user)
         {
             DiscordMember member = (DiscordMember)user;
-            string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+            string file = $"Settings/guild/{ctx.Guild.Id}.json";
             if (File.Exists(file))
             {
                 StreamReader readData = new StreamReader(file);

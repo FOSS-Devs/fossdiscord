@@ -26,7 +26,7 @@ namespace FossiumBot.Commands
             [SlashRequireUserPermissions(Permissions.Administrator)]
             public async Task LoggingchannelCommand(InteractionContext ctx, [Option("loggingchannel", "Mention the channel to log events to")] DiscordChannel loggingchannel = null)
             {
-                string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+                string file = $"Settings/guild/{ctx.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guild/");
                 if (loggingchannel != null && loggingchannel.GuildId != ctx.Guild.Id)
@@ -128,7 +128,7 @@ namespace FossiumBot.Commands
             [SlashRequireUserPermissions(Permissions.Administrator)]
             public async Task MuteRoleCommand(InteractionContext ctx, [Option("muterole", "Mention the role used by the mute commands")] DiscordRole muterole)
             {
-                string file = $"Settings/guild/{ctx.Guild.Id}.conf";
+                string file = $"Settings/guild/{ctx.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guild/");
                 if (File.Exists(file))
