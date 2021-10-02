@@ -306,7 +306,7 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds");
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if(jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
+                if((string)jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
                 {
                     return;
                 }
