@@ -14,6 +14,7 @@ The bot has a lot of features, including but not limited to:
   - Avatar, userinfo, serverinfo
 - Fun
   - Dog, cat
+  - GitHub
   - Wikipedia
 
 ## Installing
