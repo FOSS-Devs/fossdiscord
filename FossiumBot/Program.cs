@@ -306,19 +306,14 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds");
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if(jsonData["config"]["loggingchannelid"] == null || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
+                if(jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
                 {
                     return;
                 }
-                else {
+                else 
+                {
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Message deleted in #{e.Channel.Name}",
-                        Color = new DiscordColor(0xFF0000),
-                        Timestamp = e.Message.Timestamp
-                    };
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
                     embed.AddField("Content", e.Message.Content);
                     embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
@@ -335,10 +330,6 @@ namespace FossiumBot
                 }
                 else
                 {
-                    return;
-                }
-                else
-                {
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Message edited in #{e.Channel.Name}",
@@ -346,13 +337,14 @@ namespace FossiumBot
                         Color = new DiscordColor(0xFFA500),
                         Timestamp = e.Message.Timestamp
                     };
-                    //Directory.CreateDirectory(@"Settings/");
+                    Directory.CreateDirectory(@"Settings/");
+                    Directory.CreateDirectory(@"Settings/guilds/");
                     if (!File.Exists(file))
                     {
                         return;
                     }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if (jsonData["config"]["loggingchannelid"] == null)
+                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
                     {
                         return;
                     }
@@ -374,7 +366,8 @@ namespace FossiumBot
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Member.JoinedAt
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
                     return;
@@ -401,13 +394,14 @@ namespace FossiumBot
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = DateTime.Now
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
@@ -431,13 +425,14 @@ namespace FossiumBot
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Channel.CreationTimestamp
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
@@ -457,13 +452,14 @@ namespace FossiumBot
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = DateTime.Now
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
@@ -503,13 +499,14 @@ namespace FossiumBot
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = DateTime.Now
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }

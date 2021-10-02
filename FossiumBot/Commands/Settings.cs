@@ -34,10 +34,10 @@ namespace FossiumBot.Commands
                         new JObject(
                             new JProperty("config",
                             new JObject {
-                                    new JProperty("loggingchannelid", null),
-                                    new JProperty("muterole", null),
-                                    new JProperty("welcomer", null),
-                                    new JProperty("welcomercustommessage", null)
+                                    new JProperty("loggingchannelid", "null"),
+                                    new JProperty("muterole", "null"),
+                                    new JProperty("welcomer", "null"),
+                                    new JProperty("welcomercustommessage", "null")
                                  }
                             )
                         );
@@ -105,10 +105,11 @@ namespace FossiumBot.Commands
                         new JObject(
                             new JProperty("config",
                             new JObject {
-                                    new JProperty("loggingchannelid", null),
-                                    new JProperty("muterole", null),
-                                    new JProperty("welcomer", null),
-                                    new JProperty("welcomercustommessage", null)
+                                    new JProperty("loggingchannelid", "null"),
+                                    new JProperty("muterole", "null"),
+                                    new JProperty("welcomer", "null"),
+                                    new JProperty("welcomerchannel", "null"),
+                                    new JProperty("welcomercustommessage", "null")
                                  }
                             )
                         );
@@ -143,11 +144,11 @@ namespace FossiumBot.Commands
                         new JObject(
                             new JProperty("config",
                             new JObject {
-                                new JProperty("loggingchannelid", null),
-                                new JProperty("muterole", null),
-                                new JProperty("welcomer", null),
-                                new JProperty("welcomerchannel", null),
-                                new JProperty("welcomercustommessage", null)
+                                new JProperty("loggingchannelid", "null"),
+                                new JProperty("muterole", "null"),
+                                new JProperty("welcomer", "null"),
+                                new JProperty("welcomerchannel", "null"),
+                                new JProperty("welcomercustommessage", "null")
                                     }
                             )
                         );
@@ -180,11 +181,11 @@ namespace FossiumBot.Commands
                         new JObject(
                             new JProperty("config",
                             new JObject {
-                                new JProperty("loggingchannelid", null),
-                                new JProperty("muterole", null),
-                                new JProperty("welcomer", null),
-                                new JProperty("welcomerchannel", null),
-                                new JProperty("welcomercustommessage", null)
+                                new JProperty("loggingchannelid", "null"),
+                                new JProperty("muterole", "null"),
+                                new JProperty("welcomer", "null"),
+                                new JProperty("welcomerchannel", "null"),
+                                new JProperty("welcomercustommessage", "null")
                                     }
                             )
                         );
@@ -217,11 +218,11 @@ namespace FossiumBot.Commands
                         new JObject(
                             new JProperty("config",
                             new JObject {
-                                new JProperty("loggingchannelid", null),
-                                new JProperty("muterole", null),
-                                new JProperty("welcomer", null),
-                                new JProperty("welcomerchannel", null),
-                                new JProperty("welcomercustommessage", null)
+                                new JProperty("loggingchannelid", "null"),
+                                new JProperty("muterole", "null"),
+                                new JProperty("welcomer", "null"),
+                                new JProperty("welcomerchannel", "null"),
+                                new JProperty("welcomercustommessage", "null")
                                     }
                             )
                         );
