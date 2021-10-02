@@ -266,11 +266,12 @@ namespace FossiumBot.Commands
                 var committer = responseData[0]["commit"]["committer"]["name"];
                 var commitMessage = responseData[0]["commit"]["message"];
                 var commitAuthor = responseData[0]["commit"]["author"]["name"];
+                //string commitDate = (string)responseData[0]["commit"]["committer"]["date"];
                 var embed = new DiscordEmbedBuilder
                 {
-                    Title = $"{repository}",
-                    Description = $"\n\n**Last commit:**\n{lasCommitSHA}\n\n**Author:** {commitAuthor}\n\n**Committer:** {committer}\n\n**Link:**\n{lasCommitURL}\n\n**Commit Message:** ```{commitMessage}```",
-                    //Description = $"Testing result: {content.Content}",
+                    Title = $"**{repository}**",
+                    Description = $"\n\n**Last commit:**\n{lasCommitSHA}\n\n**Commit Author:**\n`{commitAuthor}`\n**Committer:**\n`{committer}`\n\n**Link:**\n{lasCommitURL}\n\n**Commit Message:** ```{commitMessage}```\n\nCommit Time: `{responseData[0]["commit"]["committer"]["date"]}`",
+                    //Description = $"Testing result: {commitDate}",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
