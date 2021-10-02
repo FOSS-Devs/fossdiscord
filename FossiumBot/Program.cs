@@ -320,11 +320,7 @@ namespace FossiumBot
             discord.MessageUpdated += async (s, e) =>
             {
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                if (e.Message.IsEdited == false)
-                {
-                    return;
-                }
-                else if (e.Message.Embeds.Count >= 1)
+                if (e.Message.IsEdited == false || e.Message.Embeds.Count >= 1)
                 {
                     return;
                 }
@@ -365,157 +361,147 @@ namespace FossiumBot
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Member.JoinedAt
                 };
-                //Directory.CreateDirectory(@"Settings/");
-                if (!File.Exists(file))
-                {
-                    return;
-                }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
-                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
-                embed.AddField("ID", e.Member.Id.ToString());
-                long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
-                embed.AddField("Registered", $"<t:{membercreation}:F>");
-                await loggingchannel.SendMessageAsync(embed);
+                else
+                {
+                    ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
+                    embed.AddField("ID", e.Member.Id.ToString());
+                    long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
+                    embed.AddField("Registered", $"<t:{membercreation}:F>");
+                    await loggingchannel.SendMessageAsync(embed);
+                }
             };
             discord.GuildMemberRemoved += async (s, e) =>
             {
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = $"Member left",
-                    Color = new DiscordColor(0xFF0000),
-                    Timestamp = DateTime.Now
-                };
-                //Directory.CreateDirectory(@"Settings/");
-                if (!File.Exists(file))
-                {
-                    return;
-                }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
-                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
-                embed.AddField("ID", e.Member.Id.ToString());
-                long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
-                embed.AddField("Registered", $"<t:{membercreation}:F>");
-                long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
-                embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
-                await loggingchannel.SendMessageAsync(embed);
+                else
+                {
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Member left",
+                        Color = new DiscordColor(0xFF0000),
+                        Timestamp = DateTime.Now
+                    };
+                    ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
+                    embed.AddField("ID", e.Member.Id.ToString());
+                    long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
+                    embed.AddField("Registered", $"<t:{membercreation}:F>");
+                    long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
+                    embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
+                    await loggingchannel.SendMessageAsync(embed);
+                }
             };
             discord.ChannelCreated += async (s, e) =>
             {
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = $"Channel created",
-                    Description = e.Channel.Mention,
-                    Color = new DiscordColor(0x2ECC70),
-                    Timestamp = e.Channel.CreationTimestamp
-                };
-                //Directory.CreateDirectory(@"Settings/");
-                if (!File.Exists(file))
-                {
-                    return;
-                }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
-                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                embed.AddField("Type", e.Channel.Type.ToString());
-                embed.AddField("ID", e.Channel.Id.ToString());
-                await loggingchannel.SendMessageAsync(embed);
+                else
+                {
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Channel created",
+                        Description = e.Channel.Mention,
+                        Color = new DiscordColor(0x2ECC70),
+                        Timestamp = e.Channel.CreationTimestamp
+                    };
+                    ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    embed.AddField("Type", e.Channel.Type.ToString());
+                    embed.AddField("ID", e.Channel.Id.ToString());
+                    await loggingchannel.SendMessageAsync(embed);
+                }
             };
             discord.ChannelUpdated += async (s, e) =>
             {
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = $"Channel updated",
-                    Description = e.ChannelAfter.Mention,
-                    Color = new DiscordColor(0x2ECC70),
-                    Timestamp = DateTime.Now
-                };
-                //Directory.CreateDirectory(@"Settings/");
-                if (!File.Exists(file))
-                {
-                    return;
-                }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
-                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                if(e.ChannelBefore.Name != e.ChannelAfter.Name)
+                else
                 {
-                    embed.AddField("Name", $"**Before**: {e.ChannelBefore.Name}\n**After**: {e.ChannelAfter.Name}");
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Channel updated",
+                        Description = e.ChannelAfter.Mention,
+                        Color = new DiscordColor(0x2ECC70),
+                        Timestamp = DateTime.Now
+                    };
+                    ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    if(e.ChannelBefore.Name != e.ChannelAfter.Name)
+                    {
+                        embed.AddField("Name", $"**Before**: {e.ChannelBefore.Name}\n**After**: {e.ChannelAfter.Name}");
+                    }
+                    if(e.ChannelAfter.Type == ChannelType.Text && e.ChannelBefore.Topic != e.ChannelAfter.Topic)
+                    {
+                        if(e.ChannelBefore.Topic == null)
+                        {
+                            embed.AddField("Topic", $"**Before**: <none>\n**After**: `{e.ChannelAfter.Topic}`");
+                        }
+                        else if(e.ChannelAfter.Topic == null)
+                        {
+                            embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: <none>");
+                        }
+                        else
+                        {
+                            embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: `{e.ChannelAfter.Topic}`");
+                        }
+                    }
+                    long channelcreation = e.ChannelBefore.CreationTimestamp.ToUnixTimeSeconds();
+                    embed.AddField("Type", e.ChannelAfter.Type.ToString());
+                    embed.AddField("Creation date", $"<t:{channelcreation}:F>");
+                    embed.AddField("ID", e.ChannelAfter.Id.ToString());
+                    await loggingchannel.SendMessageAsync(embed);
                 }
-                if(e.ChannelAfter.Type == ChannelType.Text && e.ChannelBefore.Topic != e.ChannelAfter.Topic)
-                {
-                    if(e.ChannelBefore.Topic == null)
-                    {
-                        embed.AddField("Topic", $"**Before**: <none>\n**After**: `{e.ChannelAfter.Topic}`");
-                    }
-                    else if(e.ChannelAfter.Topic == null)
-                    {
-                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: <none>");
-                    }
-                    else
-                    {
-                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: `{e.ChannelAfter.Topic}`");
-                    }
-                }
-                long channelcreation = e.ChannelBefore.CreationTimestamp.ToUnixTimeSeconds();
-                embed.AddField("Type", e.ChannelAfter.Type.ToString());
-                embed.AddField("Creation date", $"<t:{channelcreation}:F>");
-                embed.AddField("ID", e.ChannelAfter.Id.ToString());
-                await loggingchannel.SendMessageAsync(embed);
             };
             discord.ChannelDeleted += async (s, e) =>
             {
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = $"Channel deleted",
-                    Color = new DiscordColor(0xFF0000),
-                    Timestamp = DateTime.Now
-                };
-                //Directory.CreateDirectory(@"Settings/");
-                if (!File.Exists(file))
-                {
-                    return;
-                }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if (jsonData["config"]["loggingchannelid"] == null)
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
-                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
-                embed.AddField("Name", e.Channel.Name.ToString());
-                if(e.Channel.Type == ChannelType.Text && e.Channel.Topic != null)
+                else
                 {
-                    embed.AddField("Topic", e.Channel.Topic);
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Channel deleted",
+                        Color = new DiscordColor(0xFF0000),
+                        Timestamp = DateTime.Now
+                    };
+                    ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
+                    embed.AddField("Name", e.Channel.Name.ToString());
+                    if(e.Channel.Type == ChannelType.Text && e.Channel.Topic != null)
+                    {
+                        embed.AddField("Topic", e.Channel.Topic);
+                    }
+                    embed.AddField("Type", e.Channel.Type.ToString());
+                    embed.AddField("Creation date", $"<t:{channelcreation}:F>");
+                    embed.AddField("ID", e.Channel.Id.ToString());
+                    await loggingchannel.SendMessageAsync(embed);
                 }
-                embed.AddField("Type", e.Channel.Type.ToString());
-                embed.AddField("Creation date", $"<t:{channelcreation}:F>");
-                embed.AddField("ID", e.Channel.Id.ToString());
-                await loggingchannel.SendMessageAsync(embed);
             };
             /*discord.GuildMemberAdded += async (s, e) =>
             {
