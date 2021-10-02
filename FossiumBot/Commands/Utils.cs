@@ -10,6 +10,9 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
 
 namespace FossiumBot.Commands
 {
@@ -237,6 +240,61 @@ namespace FossiumBot.Commands
                 Color = new DiscordColor(0x0080FF)
             };
             await ctx.RespondAsync(embed);
+        }
+
+        [Command("github"), Cooldown(3, 10, CooldownBucketType.User)]
+        public async Task GitHubCommand(CommandContext ctx, [RemainingText] string repository)
+        {
+            HttpResponseMessage response;
+            string responseBody;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                response = await client.GetAsync($"https://api.github.com/repos/{repository}/commits");
+                responseBody = await response.Content.ReadAsStringAsync();
+            }
+            if (response.IsSuccessStatusCode)
+            {
+                JArray responseData = JArray.Parse(responseBody);
+                var lasCommitSHA = responseData[0]["sha"];
+                var lasCommitURL = responseData[0]["html_url"];
+                var committer = responseData[0]["commit"]["committer"]["name"];
+                var commitMessage = responseData[0]["commit"]["message"];
+                var commitAuthor = responseData[0]["commit"]["author"]["name"];
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"{repository}",
+                    Description = $"**Last commit:**\n{lasCommitSHA}\n\n**Author:** {commitAuthor}\n\n**Committer:** {committer}\n\n**Link:**\n{lasCommitURL}\n\n**Commit Message:** ```{commitMessage}```",
+                    //Description = $"Testing result: {content.Content}",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.RespondAsync(embed);
+                return;
+            }
+            else if (((int)response.StatusCode) == 404)
+            {
+                var notFound = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Page not found",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(notFound);
+                return;
+            }
+            else
+            {
+                JObject responseData = JObject.Parse(responseBody);
+                var message = responseData["message"];
+                var error = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = $"{message}",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.RespondAsync(error);
+                return;
+            }
         }
     }
 }
