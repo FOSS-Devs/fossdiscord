@@ -36,7 +36,8 @@ namespace FossiumBot.Commands
                             new JObject {
                                     new JProperty("loggingchannelid", "null"),
                                     new JProperty("muterole", "null"),
-                                    new JProperty("welcomer", "null"),
+                                    new JProperty("welcomer", "off"),
+                                    new JProperty("welcomerchannel", "null"),
                                     new JProperty("welcomercustommessage", "null")
                                  }
                             )
@@ -64,7 +65,7 @@ namespace FossiumBot.Commands
                     string data = readData.ReadToEnd();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
-                    jsonData["config"]["loggingchannelid"] = null;
+                    jsonData["config"]["loggingchannelid"] = "null";
                     string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
                     File.WriteAllText(file, dataWrite);
                     var disableembed = new DiscordEmbedBuilder
@@ -107,7 +108,7 @@ namespace FossiumBot.Commands
                             new JObject {
                                     new JProperty("loggingchannelid", "null"),
                                     new JProperty("muterole", "null"),
-                                    new JProperty("welcomer", "null"),
+                                    new JProperty("welcomer", "off"),
                                     new JProperty("welcomerchannel", "null"),
                                     new JProperty("welcomercustommessage", "null")
                                  }
@@ -146,7 +147,7 @@ namespace FossiumBot.Commands
                             new JObject {
                                 new JProperty("loggingchannelid", "null"),
                                 new JProperty("muterole", "null"),
-                                new JProperty("welcomer", "null"),
+                                new JProperty("welcomer", "off"),
                                 new JProperty("welcomerchannel", "null"),
                                 new JProperty("welcomercustommessage", "null")
                                     }
@@ -183,7 +184,7 @@ namespace FossiumBot.Commands
                             new JObject {
                                 new JProperty("loggingchannelid", "null"),
                                 new JProperty("muterole", "null"),
-                                new JProperty("welcomer", "null"),
+                                new JProperty("welcomer", "off"),
                                 new JProperty("welcomerchannel", "null"),
                                 new JProperty("welcomercustommessage", "null")
                                     }
@@ -220,7 +221,7 @@ namespace FossiumBot.Commands
                             new JObject {
                                 new JProperty("loggingchannelid", "null"),
                                 new JProperty("muterole", "null"),
-                                new JProperty("welcomer", "null"),
+                                new JProperty("welcomer", "off"),
                                 new JProperty("welcomerchannel", "null"),
                                 new JProperty("welcomercustommessage", "null")
                                     }
