@@ -294,33 +294,28 @@ namespace FossiumBot
             // Logging
             discord.MessageDeleted += async (s, e) =>
             {
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = $"Message deleted in #{e.Channel.Name}",
-                    Color = new DiscordColor(0xFF0000),
-                    Timestamp = e.Message.Timestamp
-                };
                 //Directory.CreateDirectory(@"Settings/");
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                if (!File.Exists(file))
-                {
-                    return;
-                }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if(jsonData["config"]["loggingchannelid"] == null)
+                if(jsonData["config"]["loggingchannelid"] == null || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                if (e.Message.Author == null)
-                {
+                else {
+                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    var embed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Message deleted in #{e.Channel.Name}",
+                        Color = new DiscordColor(0xFF0000),
+                        Timestamp = e.Message.Timestamp
+                    };
+                    embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
+                    embed.AddField("Content", e.Message.Content);
+                    embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
+                    await loggingchannel.SendMessageAsync(embed);
                     return;
                 }
-                embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
-                embed.AddField("Content", e.Message.Content);
-                embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
-                await loggingchannel.SendMessageAsync(embed);
             };
             discord.MessageUpdated += async (s, e) =>
             {
@@ -335,30 +330,30 @@ namespace FossiumBot
                 }
                 else
                 {
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Message edited in #{e.Channel.Name}",
-                        Description = $"[Jump To Message]({e.Message.JumpLink})",
-                        Color = new DiscordColor(0xFFA500),
-                        Timestamp = e.Message.Timestamp
-                    };
                     //Directory.CreateDirectory(@"Settings/");
-                    if (!File.Exists(file))
-                    {
-                        return;
-                    }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if (jsonData["config"]["loggingchannelid"] == null)
+                    if (jsonData["config"]["loggingchannelid"] == null || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
                     {
                         return;
                     }
-                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                    embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
-                    embed.AddField("Before", e.MessageBefore.Content);
-                    embed.AddField("After", e.Message.Content);
-                    embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
-                    await loggingchannel.SendMessageAsync(embed);
+                    else
+                    {
+                        var embed = new DiscordEmbedBuilder
+                        {
+                            Title = $"Message edited in #{e.Channel.Name}",
+                            Description = $"[Jump To Message]({e.Message.JumpLink})",
+                            Color = new DiscordColor(0xFFA500),
+                            Timestamp = e.Message.Timestamp
+                        };
+                        ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                        DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                        embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
+                        embed.AddField("Before", e.MessageBefore.Content);
+                        embed.AddField("After", e.Message.Content);
+                        embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
+                        await loggingchannel.SendMessageAsync(embed);
+                        return;
+                    }
                 }
             };
             discord.GuildMemberAdded += async (s, e) =>
