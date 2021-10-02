@@ -217,68 +217,70 @@ namespace FossiumBot
                 }
             };
             //Automatically create config when the bot joins a guild.
-            discord.GuildAvailable += async (s, e) =>
-            {
-                string jsonfile = $"Settings/guilds/{e.Guild.Id}.json";
-                Directory.CreateDirectory(@"Settings/");
-                Directory.CreateDirectory(@"Settings/guilds/");
-                if (!File.Exists(jsonfile))
-                {
-                    JObject newConfig =
-                        new JObject(
-                            new JProperty("config",
-                            new JObject {
-                                    new JProperty("loggingchannelid", null),
-                                    new JProperty("muterole", null),
-                                 }
-                            )
-                        );
-                    string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText(jsonfile, dataWrite);
-                }
+            //discord.GuildAvailable += async (s, e) =>
+            //{
+            //    string jsonfile = $"Settings/guilds/{e.Guild.Id}.json";
+            //    Directory.CreateDirectory(@"Settings/");
+            //    Directory.CreateDirectory(@"Settings/guilds/");
+            //    if (!File.Exists(jsonfile))
+            //    {
+            //        JObject newConfig =
+            //            new JObject(
+            //                new JProperty("config",
+            //                new JObject {
+            //                        new JProperty("loggingchannelid", "null"),
+            //                        new JProperty("muterole", "null"),
+            //                        new JProperty("welcomer", "off"),
+            //                        new JProperty("welcomercustommessage", "null")
+            //                     }
+            //                )
+            //            );
+            //        string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
+            //        File.WriteAllText(jsonfile, dataWrite);
+            //    }
 
-                List<string> guildslist = new List<string>();
-                foreach (DiscordGuild guild in discord.Guilds.Values)
-                {
-                    guildslist.Add(guild.Id.ToString());
-                }
+            //    List<string> guildslist = new List<string>();
+            //    foreach (DiscordGuild guild in discord.Guilds.Values)
+            //    {
+            //        guildslist.Add(guild.Id.ToString());
+            //    }
 
-                List<string> fileslist = new List<string>();
-                foreach (string file in Directory.GetFiles($"{Directory.GetCurrentDirectory()}/Settings/guilds/", "*.json"))
-                {
-                    fileslist.Add(file);
-                }
-                foreach (string file in fileslist)
-                {
-                    if (!guildslist.Contains(Path.GetFileNameWithoutExtension(file)))
-                    {
-                        File.Delete(file);
-                    }
-                }
+            //    List<string> fileslist = new List<string>();
+            //    foreach (string file in Directory.GetFiles($"{Directory.GetCurrentDirectory()}/Settings/guilds/", "*.json"))
+            //    {
+            //        fileslist.Add(file);
+            //    }
+            //    foreach (string file in fileslist)
+            //    {
+            //        if (!guildslist.Contains(Path.GetFileNameWithoutExtension(file)))
+            //        {
+            //            File.Delete(file);
+            //        }
+            //    }
 
-                return;
-            };
-            discord.GuildCreated += async (s, e) =>
-            {
-                string file = $"Settings/guilds/{e.Guild.Id}.json";
-                Directory.CreateDirectory(@"Settings/");
-                Directory.CreateDirectory(@"Settings/guilds/");
-                if (!File.Exists(file))
-                {
-                    JObject newConfig =
-                          new JObject(
-                              new JProperty("config",
-                              new JObject {
-                                    new JProperty("loggingchannelid", null),
-                                    new JProperty("muterole", null),
-                                   }
-                              )
-                          );
-                    string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText(file, dataWrite);
-                }
-                return;
-            };
+            //    return;
+            //};
+            //discord.GuildCreated += async (s, e) =>
+            //{
+            //    string file = $"Settings/guilds/{e.Guild.Id}.json";
+            //    Directory.CreateDirectory(@"Settings/");
+            //    Directory.CreateDirectory(@"Settings/guilds/");
+            //    if (!File.Exists(file))
+            //    {
+            //        JObject newConfig =
+            //              new JObject(
+            //                  new JProperty("config",
+            //                  new JObject {
+            //                        new JProperty("loggingchannelid", null),
+            //                        new JProperty("muterole", null),
+            //                       }
+            //                  )
+            //              );
+            //        string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
+            //        File.WriteAllText(file, dataWrite);
+            //    }
+            //    return;
+            //};
             discord.GuildDeleted += async (s, e) =>
             {
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
@@ -300,7 +302,8 @@ namespace FossiumBot
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = e.Message.Timestamp
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
                 if (!File.Exists(file))
                 {
@@ -342,13 +345,14 @@ namespace FossiumBot
                         Color = new DiscordColor(0xFFA500),
                         Timestamp = e.Message.Timestamp
                     };
-                    //Directory.CreateDirectory(@"Settings/");
+                    Directory.CreateDirectory(@"Settings/");
+                    Directory.CreateDirectory(@"Settings/guilds");
                     if (!File.Exists(file))
                     {
                         return;
                     }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if (jsonData["config"]["loggingchannelid"] == null)
+                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
                     {
                         return;
                     }
@@ -370,17 +374,18 @@ namespace FossiumBot
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Member.JoinedAt
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
@@ -397,17 +402,18 @@ namespace FossiumBot
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = DateTime.Now
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
@@ -427,17 +433,18 @@ namespace FossiumBot
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = e.Channel.CreationTimestamp
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.AddField("Type", e.Channel.Type.ToString());
                 embed.AddField("ID", e.Channel.Id.ToString());
@@ -453,17 +460,18 @@ namespace FossiumBot
                     Color = new DiscordColor(0x2ECC70),
                     Timestamp = DateTime.Now
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 if(e.ChannelBefore.Name != e.ChannelAfter.Name)
                 {
@@ -499,17 +507,18 @@ namespace FossiumBot
                     Color = new DiscordColor(0xFF0000),
                     Timestamp = DateTime.Now
                 };
-                //Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
                 if (!File.Exists(file))
                 {
                     return;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if (jsonData["config"]["loggingchannelid"] == null)
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
                 embed.AddField("Name", e.Channel.Name.ToString());
@@ -522,57 +531,77 @@ namespace FossiumBot
                 embed.AddField("ID", e.Channel.Id.ToString());
                 await loggingchannel.SendMessageAsync(embed);
             };
-            /*discord.GuildMemberAdded += async (s, e) =>
+            discord.GuildMemberAdded += async (s, e) =>
             {
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                if (File.Exists(file))
+                if (!File.Exists(file))
                 {
-                    StreamReader readData = new StreamReader(file);
-                    string data = readData.ReadToEnd();
-                    readData.Close();
-                    JObject jsonData = JObject.Parse(data);
-                    if (jsonData["config"]["welcomechannel"] != null)
+                    return;
+                }
+
+                string json = File.ReadAllText(file);
+                dynamic jsonData = JsonConvert.DeserializeObject(json);
+                    if (jsonData["config"]["welcomer"] == "off")
                     {
-                        ulong welcomechannelID = (ulong)jsonData["config"]["welcomechannel"];
-                        DiscordChannel welcomechanel = e.Guild.GetChannel(welcomechannelID);
-                        await welcomechanel.SendMessageAsync($"{e.Member.DisplayName} made it into the server, welcome!");
+                        return;
                     }
-                }
-            };*/
-            commands.CommandErrored += async (s, e) =>
-            {
-                if (e.Exception is CommandNotFoundException)
-                {
-                    string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "");
-                    var commandnotfoundembed = new DiscordEmbedBuilder
+
+                    if (jsonData["config"]["welcomerchannel"] == "null")
                     {
-                        Title = "Oops...",
-                        Description = $"The command `{messagecommand}` was not found",
-                        Color = new DiscordColor(0xFF0000)
-                    };
-                    await e.Context.RespondAsync(commandnotfoundembed);
-                    return;
-                }
-                else if (e.Exception.Message == "Could not find a suitable overload for the command.")
-                {
-                    string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "").Split(" ")[0].ToString();
-                    var overloadembed = new DiscordEmbedBuilder
+                        return;
+                    }
+
+                    if (jsonData["config"]["welcomercustommessage"] == "null")
                     {
-                        Title = "Oops...",
-                        Description = $"One or more arguments are not needed or missing\nRun `{cfgjson["prefix"]}help {messagecommand}` to see all the arguments",
-                        Color = new DiscordColor(0xFF0000)
-                    };
-                    await e.Context.RespondAsync(overloadembed);
-                    return;
-                }
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = "Oops...",
-                    Description = $"Something went wrong:\n`{e.Exception.Message}`",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await e.Context.RespondAsync(embed);
+                        ulong welcomerchannelID = (ulong)jsonData["config"]["welcomerchannel"];
+                        DiscordChannel welcomerchannel = e.Guild.GetChannel(welcomerchannelID);
+                        await welcomerchannel.SendMessageAsync($"Welcome {e.Member.Mention}, to {e.Guild.Name}!");
+                    }
+                    else
+                    {
+                        ulong welcomerchannelID = (ulong)jsonData["config"]["welcomerchannel"];
+                        DiscordChannel welcomerchannel = e.Guild.GetChannel(welcomerchannelID);
+                        string custommessage = jsonData["config"]["welcomercustommessage"];
+                        string custommessagereplaced = custommessage.Replace("{user}", e.Member.Username).Replace("{usermention}", e.Member.Mention).Replace("{servername}", e.Guild.Name);
+                        await welcomerchannel.SendMessageAsync(custommessagereplaced);
+                    }   
             };
+            //commands.CommandErrored += async (s, e) =>
+            //{
+            //    if (e.Exception is CommandNotFoundException)
+            //    {
+            //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "");
+            //        var commandnotfoundembed = new DiscordEmbedBuilder
+            //        {
+            //            Title = "Oops...",
+            //            Description = $"The command `{messagecommand}` was not found",
+            //            Color = new DiscordColor(0xFF0000)
+            //        };
+            //        await e.Context.RespondAsync(commandnotfoundembed);
+            //        return;
+            //    }
+            //    else if (e.Exception.Message == "Could not find a suitable overload for the command.")
+            //    {
+            //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "").Split(" ")[0].ToString();
+            //        var overloadembed = new DiscordEmbedBuilder
+            //        {
+            //            Title = "Oops...",
+            //            Description = $"One or more arguments are not needed or missing\nRun `{cfgjson["prefix"]}help {messagecommand}` to see all the arguments",
+            //            Color = new DiscordColor(0xFF0000)
+            //        };
+            //        await e.Context.RespondAsync(overloadembed);
+            //        return;
+            //    }
+            //    var embed = new DiscordEmbedBuilder
+            //    {
+            //        Title = "Oops...",
+            //        Description = $"Something went wrong:\n`{e.Exception.Message}`",
+            //        Color = new DiscordColor(0xFF0000)
+            //    };
+            //    await e.Context.RespondAsync(embed);
+            //};
 
             discord.UseVoiceNext();
             var slash = discord.UseSlashCommands();
@@ -584,8 +613,8 @@ namespace FossiumBot
             slash.RegisterCommands<Owner>();
             //slash.RegisterCommands<Moderation>(848464241219338250);
             slash.RegisterCommands<Moderation>();
-            //slash.RegisterCommands<Settings>(848464241219338250);
-            slash.RegisterCommands<Settings>();
+            slash.RegisterCommands<Settings>(848464241219338250);
+            //slash.RegisterCommands<Settings>();
             //slash.RegisterCommands<Utils>(848464241219338250);
             slash.RegisterCommands<Utils>();
             DiscordActivity discordActivity = new DiscordActivity

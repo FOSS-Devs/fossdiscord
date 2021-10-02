@@ -658,7 +658,7 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
                 return;
             }
-            string file = $"Settings/guild/{ctx.Guild.Id}.json";
+            string file = $"Settings/guilds/{ctx.Guild.Id}.json";
             if (File.Exists(file))
             {
                 StreamReader readData = new StreamReader(file);
@@ -700,7 +700,7 @@ namespace FossiumBot.Commands
         public async Task UnmuteCommand(InteractionContext ctx, [Option("user", "The user to unmute")] DiscordUser user)
         {
             DiscordMember member = (DiscordMember)user;
-            string file = $"Settings/guild/{ctx.Guild.Id}.json";
+            string file = $"Settings/guilds/{ctx.Guild.Id}.json";
             if (File.Exists(file))
             {
                 StreamReader readData = new StreamReader(file);
