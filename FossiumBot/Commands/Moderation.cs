@@ -73,6 +73,30 @@ namespace FossiumBot.Commands
             embed.AddField("Reason", reason);
             await member.RemoveAsync(reason);
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+
+            Directory.CreateDirectory(@"Settings/");
+            Directory.CreateDirectory(@"Settings/guilds");
+            string file = $"Settings/guilds/{ctx.Guild.Id}.json";
+            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            if ((string)jsonData["config"]["loggingchannelid"] == "null")
+            {
+                return;
+            }
+            else
+            {
+                var loggingembed = new DiscordEmbedBuilder
+                {
+                    Title = $"{member.Username}#{member.Discriminator} has been kicked",
+                    Color = new DiscordColor(0xFFA500),
+                    Timestamp = DateTime.Now
+                };
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                await loggingchannel.SendMessageAsync(loggingembed);
+                return;
+            }
         }
 
         [SlashCommand("ban", "Ban a member")]
@@ -133,6 +157,30 @@ namespace FossiumBot.Commands
                 embed.AddField("Reason", reason);
                 await member.BanAsync((int)deletemessagedays, reason);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            }
+
+            Directory.CreateDirectory(@"Settings/");
+            Directory.CreateDirectory(@"Settings/guilds");
+            string file = $"Settings/guilds/{ctx.Guild.Id}.json";
+            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            if ((string)jsonData["config"]["loggingchannelid"] == "null")
+            {
+                return;
+            }
+            else
+            {
+                var loggingembed = new DiscordEmbedBuilder
+                {
+                    Title = $"{member.Username}#{member.Discriminator} has been banned",
+                    Color = new DiscordColor(0xFF0000),
+                    Timestamp = DateTime.Now
+                };
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                await loggingchannel.SendMessageAsync(loggingembed);
+                return;
             }
         }
 
@@ -196,6 +244,30 @@ namespace FossiumBot.Commands
                 await ctx.Guild.UnbanMemberAsync(member.Id);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
+
+            Directory.CreateDirectory(@"Settings/");
+            Directory.CreateDirectory(@"Settings/guilds");
+            string file = $"Settings/guilds/{ctx.Guild.Id}.json";
+            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            if ((string)jsonData["config"]["loggingchannelid"] == "null")
+            {
+                return;
+            }
+            else
+            {
+                var loggingembed = new DiscordEmbedBuilder
+                {
+                    Title = $"{member.Username}#{member.Discriminator} has been softbanned",
+                    Color = new DiscordColor(0xFFA500),
+                    Timestamp = DateTime.Now
+                };
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                await loggingchannel.SendMessageAsync(loggingembed);
+                return;
+            }
         }
 
         [SlashCommand("unban", "Unban a user")]
@@ -221,6 +293,30 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
+            }
+
+            Directory.CreateDirectory(@"Settings/");
+            Directory.CreateDirectory(@"Settings/guilds");
+            string file = $"Settings/guilds/{ctx.Guild.Id}.json";
+            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            if ((string)jsonData["config"]["loggingchannelid"] == "null")
+            {
+                return;
+            }
+            else
+            {
+                var loggingembed = new DiscordEmbedBuilder
+                {
+                    Title = $"{user.Username}#{user.Discriminator} has been unbanned",
+                    Color = new DiscordColor(0x2ECC70),
+                    Timestamp = DateTime.Now
+                };
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                await loggingchannel.SendMessageAsync(loggingembed);
+                return;
             }
         }
 
@@ -297,7 +393,7 @@ namespace FossiumBot.Commands
             }
             if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
-                if (time != "off" && Int16.Parse(time) >= 1)
+                if (time != "off" && short.Parse(time) >= 1)
                 {
                     var em = new DiscordEmbedBuilder
                     {
@@ -313,8 +409,8 @@ namespace FossiumBot.Commands
                         foreach (var message in messages)
                         {
                             var msgTime = message.Timestamp.UtcDateTime;
-                            var sysTime = System.DateTime.UtcNow;
-                            if (sysTime.Subtract(msgTime).TotalHours > Int16.Parse(time) && sysTime.Subtract(msgTime).TotalHours < 336)
+                            var sysTime = DateTime.UtcNow;
+                            if (sysTime.Subtract(msgTime).TotalHours > short.Parse(time) && sysTime.Subtract(msgTime).TotalHours < 336)
                             {
                                 await channel.DeleteMessageAsync(message);
                                 await Task.Delay(3000);
@@ -404,8 +500,8 @@ namespace FossiumBot.Commands
                     {
                         jsonData.Add(new JProperty($"{member.Id}", new JObject(new JProperty("1", reason))));
                     }
-                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
-                    System.IO.File.WriteAllText(file, dataWrite);
+                    string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+                    File.WriteAllText(file, dataWrite);
                     var firstEM = new DiscordEmbedBuilder
                     {
                         Title = $"`{member.DisplayName}` has been warned",
@@ -423,8 +519,8 @@ namespace FossiumBot.Commands
                             )
                         )
                     );
-                    string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
-                    System.IO.File.WriteAllText(file, dataWrite);
+                    string dataWrite = JsonConvert.SerializeObject(overwrite, Formatting.Indented);
+                    File.WriteAllText(file, dataWrite);
                     var em = new DiscordEmbedBuilder
                     {
                         Title = $"`{member.DisplayName}` has been warned",
@@ -443,16 +539,40 @@ namespace FossiumBot.Commands
                             )
                         )
                     );
-                string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(overwrite, Newtonsoft.Json.Formatting.Indented);
-                System.IO.File.WriteAllText(file, dataWrite);
+                string dataWrite = JsonConvert.SerializeObject(overwrite, Formatting.Indented);
+                File.WriteAllText(file, dataWrite);
                 var emNEW = new DiscordEmbedBuilder
                 {
                     Title = $"`{member.DisplayName}` has been warned",
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(emNEW));
-                return;
             };
+
+            Directory.CreateDirectory(@"Settings/");
+            Directory.CreateDirectory(@"Settings/guilds");
+            string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
+            JObject jsonData = JObject.Parse(File.ReadAllText(loggingfile));
+            if ((string)jsonData["config"]["loggingchannelid"] == "null")
+            {
+                return;
+            }
+            else
+            {
+                var loggingembed = new DiscordEmbedBuilder
+                {
+                    Title = $"{member.Username}#{member.Discriminator} has been warned",
+                    Color = new DiscordColor(0xFFA500),
+                    Timestamp = DateTime.Now
+                };
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                loggingembed.AddField("Reason", reason);
+                loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                await loggingchannel.SendMessageAsync(loggingembed);
+                return;
+            }
         }
 
         [SlashCommand("warns", "See all the warnings of a user")]
@@ -572,14 +692,38 @@ namespace FossiumBot.Commands
                             {
                                 jsonData[$"{member.Id}"][i].Parent.Remove();
                             }
-                            string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
-                            System.IO.File.WriteAllText(file, dataWrite);
+                            string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+                            File.WriteAllText(file, dataWrite);
                             var EM = new DiscordEmbedBuilder
                             {
                                 Title = $"Successfully removed all warnings for `{member.DisplayName}`",
                                 Color = new DiscordColor(0x0080FF)
                             };
                             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(EM));
+
+                            Directory.CreateDirectory(@"Settings/");
+                            Directory.CreateDirectory(@"Settings/guilds");
+                            string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
+                            JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                            if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                var loggingembed = new DiscordEmbedBuilder
+                                {
+                                    Title = $"All warnings from {member.Username}#{member.Discriminator} have been removed",
+                                    Color = new DiscordColor(0x2ECC70),
+                                    Timestamp = DateTime.Now
+                                };
+                                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                                DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                                loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                                loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                                await loggingchannel.SendMessageAsync(loggingembed);
+                                return;
+                            }
                         }
                         else if (jsonData[$"{member.Id}"][$"{caseID}"] == null)
                         {
@@ -595,14 +739,38 @@ namespace FossiumBot.Commands
                         else
                         {
                             jsonData[$"{member.Id}"][$"{caseID}"].Parent.Remove();
-                            string dataWrite = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData, Newtonsoft.Json.Formatting.Indented);
-                            System.IO.File.WriteAllText(file, dataWrite);
+                            string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+                            File.WriteAllText(file, dataWrite);
                             var EM = new DiscordEmbedBuilder
                             {
                                 Title = $"Successfully removed `Case {caseID}` for `{member.DisplayName}`",
                                 Color = new DiscordColor(0x0080FF)
                             };
                             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(EM));
+
+                            Directory.CreateDirectory(@"Settings/");
+                            Directory.CreateDirectory(@"Settings/guilds");
+                            string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
+                            JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                            if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                var loggingembed = new DiscordEmbedBuilder
+                                {
+                                    Title = $"Case {caseID} has been removed from {member.Username}#{member.Discriminator}",
+                                    Color = new DiscordColor(0x2ECC70),
+                                    Timestamp = DateTime.Now
+                                };
+                                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                                DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                                loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                                loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                                await loggingchannel.SendMessageAsync(loggingembed);
+                                return;
+                            }
                         }
                     }
                     else
@@ -679,7 +847,31 @@ namespace FossiumBot.Commands
                     System.Threading.Thread.Sleep(TimeSpan.FromMinutes(mutetime));
                     //System.Threading.Thread.Sleep(TimeSpan.FromSeconds(mutetime));
                     await member.RevokeRoleAsync(muteRole);
-                    return;
+
+                    Directory.CreateDirectory(@"Settings/");
+                    Directory.CreateDirectory(@"Settings/guilds");
+                    string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
+                    JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                    if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        var loggingembed = new DiscordEmbedBuilder
+                        {
+                            Title = $"{member.Username}#{member.Discriminator} has been muted",
+                            Color = new DiscordColor(0xFFA500),
+                            Timestamp = DateTime.Now
+                        };
+                        ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                        DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                        loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                        loggingembed.AddField("Time in minutes", mutetime.ToString());
+                        loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                        await loggingchannel.SendMessageAsync(loggingembed);
+                        return;
+                    }
                 }
             }
             else
@@ -726,10 +918,34 @@ namespace FossiumBot.Commands
                 }
                 var em = new DiscordEmbedBuilder
                 {
-                    Title = $"`{member.DisplayName}` has been unmuted",
+                    Title = $"Unmuted `{member.DisplayName}`",
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
+                string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
+                JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
+                {
+                    return;
+                }
+                else
+                {
+                    var loggingembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"{member.Username}#{member.Discriminator} has been unmuted",
+                        Color = new DiscordColor(0x2ECC70),
+                        Timestamp = DateTime.Now
+                    };
+                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                    DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
+                    loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
+                    loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
+                    await loggingchannel.SendMessageAsync(loggingembed);
+                    return;
+                }
             }
             else
             {

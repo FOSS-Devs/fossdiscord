@@ -374,7 +374,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
@@ -402,7 +402,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
                 embed.AddField("ID", e.Member.Id.ToString());
@@ -433,7 +433,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 embed.AddField("Type", e.Channel.Type.ToString());
                 embed.AddField("ID", e.Channel.Id.ToString());
@@ -460,7 +460,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 if(e.ChannelBefore.Name != e.ChannelAfter.Name)
                 {
@@ -507,7 +507,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                ulong loggingchannelid = (ulong)jsonData["Loggingchannelid"];
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                 long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
                 embed.AddField("Name", e.Channel.Name.ToString());
@@ -594,18 +594,18 @@ namespace FossiumBot
 
             discord.UseVoiceNext();
             var slash = discord.UseSlashCommands();
-            //slash.RegisterCommands<Fun>(848464241219338250);
-            slash.RegisterCommands<Fun>();
-            //slash.RegisterCommands<Music>(848464241219338250);
-            slash.RegisterCommands<Music>();
-            //slash.RegisterCommands<Owner>(848464241219338250);
-            slash.RegisterCommands<Owner>();
-            //slash.RegisterCommands<Moderation>(848464241219338250);
-            slash.RegisterCommands<Moderation>();
-            //slash.RegisterCommands<Settings>(848464241219338250);
-            slash.RegisterCommands<Settings>();
-            //slash.RegisterCommands<Utils>(848464241219338250);
-            slash.RegisterCommands<Utils>();
+            slash.RegisterCommands<Fun>(848464241219338250);
+            //slash.RegisterCommands<Fun>();
+            slash.RegisterCommands<Music>(848464241219338250);
+            //slash.RegisterCommands<Music>();
+            slash.RegisterCommands<Owner>(848464241219338250);
+            //slash.RegisterCommands<Owner>();
+            slash.RegisterCommands<Moderation>(848464241219338250);
+            //slash.RegisterCommands<Moderation>();
+            slash.RegisterCommands<Settings>(848464241219338250);
+            //slash.RegisterCommands<Settings>();
+            slash.RegisterCommands<Utils>(848464241219338250);
+            //slash.RegisterCommands<Utils>();
             DiscordActivity discordActivity = new DiscordActivity
             {
                 Name = $"{cfgjson["prefix"]}help | {localversion}",

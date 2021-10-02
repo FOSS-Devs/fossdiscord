@@ -61,13 +61,11 @@ namespace FossiumBot.Commands
                 }
                 else if (loggingchannel == null && File.Exists(file))
                 {
-                    StreamReader readData = new StreamReader(file);
-                    string data = readData.ReadToEnd();
-                    readData.Close();
-                    JObject jsonData = JObject.Parse(data);
+                    string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                    dynamic jsonData = JsonConvert.DeserializeObject(json);
                     jsonData["config"]["loggingchannelid"] = "null";
                     string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                    File.WriteAllText(file, dataWrite);
+                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                     var disableembed = new DiscordEmbedBuilder
                     {
                         Title = $"Disabled logging",
@@ -78,13 +76,11 @@ namespace FossiumBot.Commands
                 }
                 else if (loggingchannel != null && File.Exists(file))
                 {
-                    StreamReader readData = new StreamReader(file);
-                    string data = readData.ReadToEnd();
-                    readData.Close();
-                    JObject jsonData = JObject.Parse(data);
-                    jsonData["config"]["loggingchannelid"] = loggingchannel.Id;
+                    string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                    dynamic jsonData = JsonConvert.DeserializeObject(json);
+                    jsonData["config"]["loggingchannelid"] = $"{loggingchannel.Id}";
                     string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                    File.WriteAllText(file, dataWrite);
+                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                 }
                 var embed = new DiscordEmbedBuilder
                 {
