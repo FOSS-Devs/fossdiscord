@@ -247,7 +247,7 @@ namespace FossiumBot.Commands
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("uptime", "Get the uptime of the bot")]
+        [SlashCommand("github", "Get the uptime of the bot")]
         public async Task GitHubCommand(InteractionContext ctx, [Option("repository", "Which repo do you want to get information of `owner/repo`?")] string repository)
         {
             HttpResponseMessage response;
