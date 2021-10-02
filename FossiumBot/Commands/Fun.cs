@@ -174,5 +174,59 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
             }
         }
+
+        [SlashCommand("github", "Get information about a GitHub repository")]
+        public async Task GithubCommand(InteractionContext ctx, [Option("repository", "Which repo do you want to get information of `owner/repo`?")] string repository)
+        {
+            HttpResponseMessage response;
+            string responseBody;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                response = await client.GetAsync($"https://api.github.com/repos/{repository}/commits");
+                responseBody = await response.Content.ReadAsStringAsync();
+            }
+            if (response.IsSuccessStatusCode)
+            {
+                JArray responseData = JArray.Parse(responseBody);
+                string lasCommitSHA = (string)responseData[0]["sha"];
+                string lasCommitURL = (string)responseData[0]["html_url"];
+                string committer = (string)responseData[0]["commit"]["committer"]["name"];
+                string commitMessage = (string)responseData[0]["commit"]["message"];
+                string commitAuthor = (string)responseData[0]["commit"]["author"]["name"];
+                string committerAvatar = (string)responseData[0]["committer"]["avatar_url"];
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"**{repository}**",
+                    Description = $"\n\n**Last commit:**\n{lasCommitSHA}\n\n**Commit Author:**\n`{commitAuthor}`\n**Committer:**\n`{committer}`\n\n**Link:**\n{lasCommitURL}\n\n**Commit Message:** ```{commitMessage}```\n\nCommit Time: `{responseData[0]["commit"]["committer"]["date"]}`",
+                    //Description = $"Testing result: {commitDate}",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                embed.WithThumbnail(committerAvatar);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            }
+            else if (((int)response.StatusCode) == 404)
+            {
+                var notFound = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Page not found",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(notFound));
+            }
+            else
+            {
+                JObject responseData = JObject.Parse(responseBody);
+                var message = responseData["message"];
+                var error = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = $"{message}",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(error));
+            }
+        }
     }
 }
