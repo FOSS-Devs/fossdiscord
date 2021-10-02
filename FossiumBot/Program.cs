@@ -56,210 +56,207 @@ namespace FossiumBot
                 EnableDms = false,
                 EnableDefaultHelp = false
             });
-            commands.RegisterCommands(Assembly.GetExecutingAssembly());
-            discord.ComponentInteractionCreated += async (s, e) =>
-            {
-                if (e.Id == "help_moderation")
-                {
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    embed.AddField("Moderation", "Autodelete\nBan\nDelwarn\nKick\nMute\nPurge\nSoftban\nUnban\nUnmute\nWarn\nWarns");
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-                        .AddEmbed(embed)
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", true),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
-                        })
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
-                        }));
-                    return;
-                }
-                else if (e.Id == "help_utils")
-                {
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    embed.AddField("Moderation", "Avatar\nEmoji\nPing\nPoll\nQuickpoll\nServerinfo\nUptime\nUserinfo");
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-                        .AddEmbed(embed)
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", true),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
-                        })
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
-                        }));
-                    return;
-                }
-                else if (e.Id == "help_fun")
-                {
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    embed.AddField("Fun", "Cat\nDog\nRate\nWikipedia");
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-                        .AddEmbed(embed)
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", true),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
-                        })
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
-                        }));
-                    return;
-                }
-                else if (e.Id == "help_music")
-                {
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    embed.AddField("Music", "Nowplaying\nPlay\nStop");
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-                        .AddEmbed(embed)
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", true),
-                        })
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
-                        }));
-                    return;
-                }
-                else if (e.Id == "help_owner")
-                {
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    embed.AddField("Owner", "Leaveserver\nServers\nShutdown");
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-                        .AddEmbed(embed)
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
-                        })
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", true),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
-                        }));
-                    return;
-                }
-                else if (e.Id == "help_settings")
-                {
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Help",
-                        Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    embed.AddField("Settings", "Loggingchannel");
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-                        .AddEmbed(embed)
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
-                        })
-                        .AddComponents(new DiscordComponent[]
-                        {
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
-                            new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", true)
-                        }));
-                    return;
-                }
-            };
-            //Automatically create config when the bot joins a guild.
-            //discord.GuildAvailable += async (s, e) =>
+            //discord.ComponentInteractionCreated += async (s, e) =>
             //{
-            //    string jsonfile = $"Settings/guilds/{e.Guild.Id}.json";
-            //    Directory.CreateDirectory(@"Settings/");
-            //    Directory.CreateDirectory(@"Settings/guilds/");
-            //    if (!File.Exists(jsonfile))
+            //    if (e.Id == "help_moderation")
             //    {
-            //        JObject newConfig =
-            //            new JObject(
-            //                new JProperty("config",
-            //                new JObject {
-            //                        new JProperty("loggingchannelid", "null"),
-            //                        new JProperty("muterole", "null"),
-            //                        new JProperty("welcomer", "off"),
-            //                        new JProperty("welcomercustommessage", "null")
-            //                     }
-            //                )
-            //            );
-            //        string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-            //        File.WriteAllText(jsonfile, dataWrite);
-            //    }
-
-            //    List<string> guildslist = new List<string>();
-            //    foreach (DiscordGuild guild in discord.Guilds.Values)
-            //    {
-            //        guildslist.Add(guild.Id.ToString());
-            //    }
-
-            //    List<string> fileslist = new List<string>();
-            //    foreach (string file in Directory.GetFiles($"{Directory.GetCurrentDirectory()}/Settings/guilds/", "*.json"))
-            //    {
-            //        fileslist.Add(file);
-            //    }
-            //    foreach (string file in fileslist)
-            //    {
-            //        if (!guildslist.Contains(Path.GetFileNameWithoutExtension(file)))
+            //        var embed = new DiscordEmbedBuilder
             //        {
-            //            File.Delete(file);
-            //        }
+            //            Title = $"Help",
+            //            Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
+            //            Color = new DiscordColor(0x0080FF)
+            //        };
+            //        embed.AddField("Moderation", "Autodelete\nBan\nDelwarn\nKick\nMute\nPurge\nSoftban\nUnban\nUnmute\nWarn\nWarns");
+            //        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+            //        new DiscordInteractionResponseBuilder()
+            //            .AddEmbed(embed)
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", true),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
+            //            })
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
+            //            }));
+            //        return;
             //    }
-
-            //    return;
+            //    else if (e.Id == "help_utils")
+            //    {
+            //        var embed = new DiscordEmbedBuilder
+            //        {
+            //            Title = $"Help",
+            //            Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
+            //            Color = new DiscordColor(0x0080FF)
+            //        };
+            //        embed.AddField("Moderation", "Avatar\nEmoji\nPing\nPoll\nQuickpoll\nServerinfo\nUptime\nUserinfo");
+            //        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+            //        new DiscordInteractionResponseBuilder()
+            //            .AddEmbed(embed)
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", true),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
+            //            })
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
+            //            }));
+            //        return;
+            //    }
+            //    else if (e.Id == "help_fun")
+            //    {
+            //        var embed = new DiscordEmbedBuilder
+            //        {
+            //            Title = $"Help",
+            //            Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
+            //            Color = new DiscordColor(0x0080FF)
+            //        };
+            //        embed.AddField("Fun", "Cat\nDog\nRate\nWikipedia");
+            //        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+            //        new DiscordInteractionResponseBuilder()
+            //            .AddEmbed(embed)
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", true),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
+            //            })
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
+            //            }));
+            //        return;
+            //    }
+            //    else if (e.Id == "help_music")
+            //    {
+            //        var embed = new DiscordEmbedBuilder
+            //        {
+            //            Title = $"Help",
+            //            Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
+            //            Color = new DiscordColor(0x0080FF)
+            //        };
+            //        embed.AddField("Music", "Nowplaying\nPlay\nStop");
+            //        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+            //        new DiscordInteractionResponseBuilder()
+            //            .AddEmbed(embed)
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", true),
+            //            })
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
+            //            }));
+            //        return;
+            //    }
+            //    else if (e.Id == "help_owner")
+            //    {
+            //        var embed = new DiscordEmbedBuilder
+            //        {
+            //            Title = $"Help",
+            //            Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
+            //            Color = new DiscordColor(0x0080FF)
+            //        };
+            //        embed.AddField("Owner", "Leaveserver\nServers\nShutdown");
+            //        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+            //        new DiscordInteractionResponseBuilder()
+            //            .AddEmbed(embed)
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
+            //            })
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", true),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
+            //            }));
+            //        return;
+            //    }
+            //    else if (e.Id == "help_settings")
+            //    {
+            //        var embed = new DiscordEmbedBuilder
+            //        {
+            //            Title = $"Help",
+            //            Description = $"Use `{cfgjson["prefix"]}help <command>` for extended information on a command",
+            //            Color = new DiscordColor(0x0080FF)
+            //        };
+            //        embed.AddField("Settings", "Loggingchannel");
+            //        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+            //        new DiscordInteractionResponseBuilder()
+            //            .AddEmbed(embed)
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_moderation", "Moderation", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_utils", "Utils", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_fun", "Fun", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_music", "Music", false),
+            //            })
+            //            .AddComponents(new DiscordComponent[]
+            //            {
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
+            //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", true)
+            //            }));
+            //        return;
+            //    }
             //};
+            discord.GuildAvailable += async (s, e) =>
+            {
+                string jsonfile = $"Settings/guilds/{e.Guild.Id}.json";
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
+                if (!File.Exists(jsonfile))
+                {
+                    JObject newConfig =
+                        new JObject(
+                            new JProperty("config",
+                            new JObject {
+                                    new JProperty("loggingchannelid", "null"),
+                                    new JProperty("muterole", "null"),
+                                    new JProperty("welcomer", "off"),
+                                    new JProperty("welcomercustommessage", "null")
+                                 }
+                            )
+                        );
+                    string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
+                    File.WriteAllText(jsonfile, dataWrite);
+                }
+
+                List<string> guildslist = new List<string>();
+                foreach (DiscordGuild guild in discord.Guilds.Values)
+                {
+                    guildslist.Add(guild.Id.ToString());
+                }
+
+                List<string> fileslist = new List<string>();
+                foreach (string file in Directory.GetFiles($"{Directory.GetCurrentDirectory()}/Settings/guilds/", "*.json"))
+                {
+                    fileslist.Add(file);
+                }
+                foreach (string file in fileslist)
+                {
+                    if (!guildslist.Contains(Path.GetFileNameWithoutExtension(file)))
+                    {
+                        File.Delete(file);
+                    }
+                }
+                await Task.CompletedTask;
+            };
             //discord.GuildCreated += async (s, e) =>
             //{
             //    string file = $"Settings/guilds/{e.Guild.Id}.json";
@@ -290,7 +287,7 @@ namespace FossiumBot
                 }
                 catch (FileNotFoundException)
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
             };
             // Logging
@@ -306,7 +303,7 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds");
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                if(jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
+                if((string)jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
                 {
                     return;
                 }

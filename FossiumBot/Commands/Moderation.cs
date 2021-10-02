@@ -717,7 +717,7 @@ namespace FossiumBot.Commands
                 {
                     var errEM = new DiscordEmbedBuilder
                     {
-                        Title = "Oops..",
+                        Title = "Oops...",
                         Description = $"{ex}",
                         Color = new DiscordColor(0xFF0000)
                     };
@@ -727,7 +727,7 @@ namespace FossiumBot.Commands
                 var em = new DiscordEmbedBuilder
                 {
                     Title = $"`{member.DisplayName}` has been unmuted",
-                    Color = new DiscordColor(0xFFA500)
+                    Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
