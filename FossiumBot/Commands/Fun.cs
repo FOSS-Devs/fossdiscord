@@ -88,51 +88,66 @@ namespace FossiumBot.Commands
         [SlashCommand("wikipedia", "Get information about something from Wikipedia")]
         public async Task WikiCommand(InteractionContext ctx, [Option("query", "What you want to get information of")] string query)
         {
+            HttpResponseMessage response;
             string content = String.Empty;
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
-                content = await client.GetStringAsync($"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}");
+                response = await client.GetAsync($"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit=1&gsrsearch={query}");
+                content = await response.Content.ReadAsStringAsync();
             }
             JObject jsonData = JObject.Parse(content);
-            try
+            if (response.IsSuccessStatusCode)
             {
-                string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
-                if (pageID == "-1")
+                try
+                {
+                    string pageID = ((JProperty)jsonData["query"]["pages"].First()).Name;
+                    if (pageID == "-1")
+                    {
+                        var errEmbed = new DiscordEmbedBuilder
+                        {
+                            Title = "Oops...",
+                            Description = "The page you've requested might not exist",
+                            Color = new DiscordColor(0xFF0000)
+                        };
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
+                        return;
+                    }
+                    else
+                    {
+                        string pageTitle = (string)jsonData["query"]["pages"][pageID]["title"];
+                        string extract = (string)jsonData["query"]["pages"][pageID]["extract"];
+                        string brief = extract.Substring(0, 260);
+                        var embed = new DiscordEmbedBuilder
+                        {
+                            Title = $"{pageTitle}",
+                            Description = $"{brief}...",
+                            Color = new DiscordColor(0x0080FF)
+                        };
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                    }
+                }
+                catch (Exception)
                 {
                     var errEmbed = new DiscordEmbedBuilder
                     {
                         Title = "Oops...",
-                        Description = "The page you've requested might not exist",
+                        Description = "Page does not exist",
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
                     return;
                 }
-                else
-                {
-                    string pageTitle = (string)jsonData["query"]["pages"][pageID]["title"];
-                    string extract = (string)jsonData["query"]["pages"][pageID]["extract"];
-                    string brief = extract.Substring(0, 260);
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"{pageTitle}",
-                        Description = $"{brief}...",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-                }
             }
-            catch (Exception)
+            else
             {
                 var errEmbed = new DiscordEmbedBuilder
                 {
                     Title = "Oops...",
-                    Description = "Page does not exist",
+                    Description = "Something went wrong...",
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
-                return;
             }
         }
     }
