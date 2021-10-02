@@ -580,7 +580,6 @@ namespace FossiumBot
             }
             try
             {
-            
                 await discord.ConnectAsync(discordActivity);
             }
             catch(Exception e)
