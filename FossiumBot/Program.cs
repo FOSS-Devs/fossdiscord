@@ -605,8 +605,8 @@ namespace FossiumBot
             slash.RegisterCommands<Owner>();
             //slash.RegisterCommands<Moderation>(848464241219338250);
             slash.RegisterCommands<Moderation>();
-            slash.RegisterCommands<Settings>(848464241219338250);
-            //slash.RegisterCommands<Settings>();
+            //slash.RegisterCommands<Settings>(848464241219338250);
+            slash.RegisterCommands<Settings>();
             //slash.RegisterCommands<Utils>(848464241219338250);
             slash.RegisterCommands<Utils>();
             DiscordActivity discordActivity = new DiscordActivity
