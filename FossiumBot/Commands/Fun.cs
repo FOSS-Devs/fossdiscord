@@ -36,43 +36,53 @@ namespace FossiumBot.Commands
         [SlashCommand("cat", "Shows a random picture of a cat")]
         public async Task CatCommand(InteractionContext ctx)
         {
+            HttpResponseMessage response;
             string content = String.Empty;
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
-                content = await client.GetStringAsync("https://api.thecatapi.com/v1/images/search");
+                response = await client.GetAsync("https://api.thecatapi.com/v1/images/search");
+                content = await response.Content.ReadAsStringAsync();
             }
-            JArray jsonData = JArray.Parse(content);
-            var caturl = jsonData[0]["url"];
-            string catpic = (string)caturl;
-            var embed = new DiscordEmbedBuilder
+            if (response.IsSuccessStatusCode)
             {
-                Title = "Cat Picture",
-                ImageUrl = catpic,
-                Color = new DiscordColor(0x0080FF)
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                JArray jsonData = JArray.Parse(content);
+                var caturl = jsonData[0]["url"];
+                string catpic = (string)caturl;
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Cat Picture",
+                    ImageUrl = catpic,
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            }
         }
 
         [SlashCommand("dog", "Shows a random picture of a dog")]
         public async Task DogCommand(InteractionContext ctx)
         {
+            HttpResponseMessage response;
             string content = string.Empty;
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
-                content = await client.GetStringAsync("https://api.thedogapi.com/v1/images/search");
+                response = await client.GetAsync("https://api.thedogapi.com/v1/images/search");
+                content = await response.Content.ReadAsStringAsync();
             }
-            JArray jsonData = JArray.Parse(content);
-            var dogurl = jsonData[0]["url"];
-            string dogpic = (string)dogurl;
-            var embed = new DiscordEmbedBuilder
+            if (response.IsSuccessStatusCode)
             {
-                Title = "Dog Picture",
-                ImageUrl = dogpic,
-                Color = new DiscordColor(0x0080FF)
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                JArray jsonData = JArray.Parse(content);
+                var dogurl = jsonData[0]["url"];
+                string dogpic = (string)dogurl;
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Dog Picture",
+                    ImageUrl = dogpic,
+                    Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            }
         }
 
         [SlashCommand("wikipedia", "Get information about something from Wikipedia")]
