@@ -261,12 +261,12 @@ namespace FossiumBot.Commands
             if (response.IsSuccessStatusCode)
             {
                 JArray responseData = JArray.Parse(responseBody);
-                var lasCommitSHA = responseData[0]["sha"];
-                var lasCommitURL = responseData[0]["html_url"];
-                var committer = responseData[0]["commit"]["committer"]["name"];
-                var commitMessage = responseData[0]["commit"]["message"];
-                var commitAuthor = responseData[0]["commit"]["author"]["name"];
-                //string commitDate = (string)responseData[0]["commit"]["committer"]["date"];
+                string lasCommitSHA = (string)responseData[0]["sha"];
+                string lasCommitURL = (string)responseData[0]["html_url"];
+                string committer = (string)responseData[0]["commit"]["committer"]["name"];
+                string commitMessage = (string)responseData[0]["commit"]["message"];
+                string commitAuthor = (string)responseData[0]["commit"]["author"]["name"];
+                string committerAvatar = (string)responseData[0]["committer"]["avatar_url"];
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"**{repository}**",
@@ -274,6 +274,7 @@ namespace FossiumBot.Commands
                     //Description = $"Testing result: {commitDate}",
                     Color = new DiscordColor(0x0080FF)
                 };
+                embed.WithThumbnail(committerAvatar);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
             else if (((int)response.StatusCode) == 404)
