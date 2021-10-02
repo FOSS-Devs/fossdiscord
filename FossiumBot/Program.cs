@@ -586,6 +586,8 @@ namespace FossiumBot
             slash.RegisterCommands<Moderation>();
             //slash.RegisterCommands<Settings>(848464241219338250);
             slash.RegisterCommands<Settings>();
+            //slash.RegisterCommands<Utils>(848464241219338250);
+            slash.RegisterCommands<Utils>();
             DiscordActivity discordActivity = new DiscordActivity
             {
                 Name = $"{cfgjson["prefix"]}help | {localversion}",
