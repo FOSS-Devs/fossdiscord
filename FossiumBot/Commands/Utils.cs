@@ -247,8 +247,8 @@ namespace FossiumBot.Commands
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [Command("github"), Cooldown(3, 10, CooldownBucketType.User)]
-        public async Task GitHubCommand(CommandContext ctx, [RemainingText] string repository)
+        [SlashCommand("uptime", "Get the uptime of the bot")]
+        public async Task GitHubCommand(InteractionContext ctx, [Option("repository", "What you want to get information of any/any")] string repository)
         {
             HttpResponseMessage response;
             string responseBody;
@@ -269,12 +269,11 @@ namespace FossiumBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{repository}",
-                    Description = $"**Last commit:**\n{lasCommitSHA}\n\n**Author:** {commitAuthor}\n\n**Committer:** {committer}\n\n**Link:**\n{lasCommitURL}\n\n**Commit Message:** ```{commitMessage}```",
+                    Description = $"\n\n**Last commit:**\n{lasCommitSHA}\n\n**Author:** {commitAuthor}\n\n**Committer:** {committer}\n\n**Link:**\n{lasCommitURL}\n\n**Commit Message:** ```{commitMessage}```",
                     //Description = $"Testing result: {content.Content}",
                     Color = new DiscordColor(0x0080FF)
                 };
-                await ctx.RespondAsync(embed);
-                return;
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
             else if (((int)response.StatusCode) == 404)
             {
@@ -284,8 +283,7 @@ namespace FossiumBot.Commands
                     Description = "Page not found",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(notFound);
-                return;
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(notFound));
             }
             else
             {
@@ -297,8 +295,7 @@ namespace FossiumBot.Commands
                     Description = $"{message}",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.RespondAsync(error);
-                return;
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(error));
             }
         }
     }
