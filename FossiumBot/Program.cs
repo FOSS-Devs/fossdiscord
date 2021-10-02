@@ -1,13 +1,9 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
-using DSharpPlus.CommandsNext.Exceptions;
 using System;
 using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using DSharpPlus.EventArgs;
@@ -16,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
 using FossiumBot.Commands;
-using System.Linq;
 
 namespace FossiumBot
 {
@@ -594,18 +589,18 @@ namespace FossiumBot
 
             discord.UseVoiceNext();
             var slash = discord.UseSlashCommands();
-            slash.RegisterCommands<Fun>(848464241219338250);
-            //slash.RegisterCommands<Fun>();
-            slash.RegisterCommands<Music>(848464241219338250);
-            //slash.RegisterCommands<Music>();
-            slash.RegisterCommands<Owner>(848464241219338250);
-            //slash.RegisterCommands<Owner>();
-            slash.RegisterCommands<Moderation>(848464241219338250);
-            //slash.RegisterCommands<Moderation>();
-            slash.RegisterCommands<Settings>(848464241219338250);
-            //slash.RegisterCommands<Settings>();
-            slash.RegisterCommands<Utils>(848464241219338250);
-            //slash.RegisterCommands<Utils>();
+            //slash.RegisterCommands<Fun>(848464241219338250);
+            slash.RegisterCommands<Fun>();
+            //slash.RegisterCommands<Music>(848464241219338250);
+            slash.RegisterCommands<Music>();
+            //slash.RegisterCommands<Owner>(848464241219338250);
+            slash.RegisterCommands<Owner>();
+            //slash.RegisterCommands<Moderation>(848464241219338250);
+            slash.RegisterCommands<Moderation>();
+            //slash.RegisterCommands<Settings>(848464241219338250);
+            slash.RegisterCommands<Settings>();
+            //slash.RegisterCommands<Utils>(848464241219338250);
+            slash.RegisterCommands<Utils>();
             DiscordActivity discordActivity = new DiscordActivity
             {
                 Name = $"{cfgjson["prefix"]}help | {localversion}",

@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Newtonsoft.Json.Linq;
 
 namespace FossiumBot.Commands
 {

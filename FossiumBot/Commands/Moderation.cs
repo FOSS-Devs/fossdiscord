@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using DSharpPlus;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -552,8 +549,8 @@ namespace FossiumBot.Commands
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/guilds");
             string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
-            JObject jsonData = JObject.Parse(File.ReadAllText(loggingfile));
-            if ((string)jsonData["config"]["loggingchannelid"] == "null")
+            JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+            if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
             {
                 return;
             }
@@ -565,7 +562,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500),
                     Timestamp = DateTime.Now
                 };
-                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                ulong loggingchannelid = (ulong)loggingjsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                 loggingembed.AddField("Reason", reason);
@@ -717,7 +714,7 @@ namespace FossiumBot.Commands
                                     Color = new DiscordColor(0x2ECC70),
                                     Timestamp = DateTime.Now
                                 };
-                                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                                ulong loggingchannelid = (ulong)loggingjsonData["config"]["loggingchannelid"];
                                 DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
                                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
@@ -764,7 +761,7 @@ namespace FossiumBot.Commands
                                     Color = new DiscordColor(0x2ECC70),
                                     Timestamp = DateTime.Now
                                 };
-                                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                                ulong loggingchannelid = (ulong)loggingjsonData["config"]["loggingchannelid"];
                                 DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
                                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
@@ -864,7 +861,7 @@ namespace FossiumBot.Commands
                             Color = new DiscordColor(0xFFA500),
                             Timestamp = DateTime.Now
                         };
-                        ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                        ulong loggingchannelid = (ulong)loggingjsonData["config"]["loggingchannelid"];
                         DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
                         loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                         loggingembed.AddField("Time in minutes", mutetime.ToString());
@@ -939,7 +936,7 @@ namespace FossiumBot.Commands
                         Color = new DiscordColor(0x2ECC70),
                         Timestamp = DateTime.Now
                     };
-                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                    ulong loggingchannelid = (ulong)loggingjsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = ctx.Guild.GetChannel(loggingchannelid);
                     loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                     loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
