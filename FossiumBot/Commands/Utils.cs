@@ -248,7 +248,7 @@ namespace FossiumBot.Commands
         }
 
         [SlashCommand("uptime", "Get the uptime of the bot")]
-        public async Task GitHubCommand(InteractionContext ctx, [Option("repository", "What you want to get information of any/any")] string repository)
+        public async Task GitHubCommand(InteractionContext ctx, [Option("repository", "Which repo do you want to get information of `owner/repo`?")] string repository)
         {
             HttpResponseMessage response;
             string responseBody;
