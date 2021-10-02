@@ -117,14 +117,28 @@ namespace FossiumBot.Commands
                     {
                         string pageTitle = (string)jsonData["query"]["pages"][pageID]["title"];
                         string extract = (string)jsonData["query"]["pages"][pageID]["extract"];
-                        string brief = extract.Substring(0, 260);
-                        var embed = new DiscordEmbedBuilder
+                        if (extract.Length >= 260)
                         {
-                            Title = $"{pageTitle}",
-                            Description = $"{brief}...",
-                            Color = new DiscordColor(0x0080FF)
-                        };
-                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                            string brief = extract.Substring(0, 260);
+                            var embed = new DiscordEmbedBuilder
+                            {
+                                Title = $"{pageTitle}",
+                                Description = $"{brief}...",
+                                Color = new DiscordColor(0x0080FF)
+                            };
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                        }
+                        else
+                        {
+                            var embed = new DiscordEmbedBuilder
+                            {
+                                Title = $"{pageTitle}",
+                                Description = $"{extract}",
+                                Color = new DiscordColor(0x0080FF)
+                            };
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                        }
+                        
                     }
                 }
                 catch (Exception ex)
