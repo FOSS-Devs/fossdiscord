@@ -127,17 +127,27 @@ namespace FossiumBot.Commands
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     var errEmbed = new DiscordEmbedBuilder
                     {
                         Title = "Oops...",
-                        Description = "Page does not exist",
+                        Description = $"```{ex}```",
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
                     return;
                 }
+            }
+            else if (((int)response.StatusCode) == 404)
+            {
+                var notFound = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Page not found",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(notFound));
             }
             else
             {
