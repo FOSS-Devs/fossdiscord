@@ -18,6 +18,20 @@ jobs:
       with:
         dotnet-version: '6.0'
         include-prerelease: True
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+    
+    - run: mkdir /home/runner/work/download
+    - run: wget -O /home/runner/work/download/dsharpplus.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus/4.2.0-nightly-01022/dsharpplus.4.2.0-nightly-01022.nupkg
+    - run: wget -O /home/runner/work/download/dsharpplus.interactivity.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.interactivity/4.2.0-nightly-01022/dsharpplus.interactivity.4.2.0-nightly-01022.nupkg
+    - run: wget -O /home/runner/work/download/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
+    - run: wget -O /home/runner/work/download/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
+    - run: mkdir /home/runner/work/localnuget/
+    - run: nuget add /home/runner/work/download/dsharpplus.nupkg -source /home/runner/work/localnuget/
+    - run: nuget add /home/runner/work/download/dsharpplus.interactivity.nupkg -source /home/runner/work/localnuget/
+    - run: nuget add /home/runner/work/download/dsharpplus.voicenext.nupkg -source /home/runner/work/localnuget/
+    - run: nuget add /home/runner/work/download/dsharpplus.slashcommands.nupkg -source /home/runner/work/localnuget/
+    - run: wget -O NuGet.Config https://gist.githubusercontent.com/SKBotNL/ca6c652a47375de7598f1d7812d7436c/raw/6c45b1f6dc29373b991e5c7e8613e0255a9a1cfb/gistfile1.txt
     
     - name: Restore dependencies
       run: dotnet restore
