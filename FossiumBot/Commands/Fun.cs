@@ -52,6 +52,16 @@ namespace FossiumBot.Commands
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
+            else
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Cannot contact The Cat Api",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            }
         }
 
         [SlashCommand("dog", "Shows a random picture of a dog")]
@@ -75,6 +85,16 @@ namespace FossiumBot.Commands
                     Title = "Dog Picture",
                     ImageUrl = dogpic,
                     Color = new DiscordColor(0x0080FF)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+            }
+            else
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = "Cannot contact The Dog Api",
+                    Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
             }
