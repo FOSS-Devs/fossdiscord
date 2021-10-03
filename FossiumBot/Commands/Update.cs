@@ -1,110 +1,61 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.IO.Compression;
-//using System.Linq;
-//using System.Net;
-//using System.Text;
-//using System.Threading.Tasks;
-//using DSharpPlus.CommandsNext;
-//using DSharpPlus.SlashCommands;
-//using DSharpPlus.CommandsNext.Attributes;
-//using DSharpPlus.Entities;
-//using Newtonsoft.Json;
-//using Newtonsoft.Json.Linq;
-//using System.Text.Json;
-//using System.Net.Http;
-//using System.Net.Http.Headers;
-//using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands.Attributes;
+using DSharpPlus.Entities;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
-//namespace FossiumBot.Commands
-//{
-//    public class Update : BaseCommandModule
-//    {
-//        [Command("updatecheck"), Aliases("checkupdate"), RequireOwner]
-//        public async Task UpdatecheckCommand(CommandContext ctx)
-//        {
-//            var checkingembed = new DiscordEmbedBuilder
-//            {
-//                Title = $"{ctx.Client.CurrentUser.Username} is checking for updates...",
-//                Color = new DiscordColor(0xFFA500)
-//            };
-//            var embedmsg = await ctx.RespondAsync(checkingembed);
+namespace FossiumBot.Commands
+{
+    public class Update : ApplicationCommandModule
+    {
+        [SlashCommand("updatecheck", "Check for updates")]
+        [SlashRequireOwner]
+        public async Task UpdatecheckCommand(InteractionContext ctx)
+        {
+            var checkingembed = new DiscordEmbedBuilder
+            {
+                Title = $"{ctx.Client.CurrentUser.Username} is checking for updates...",
+                Color = new DiscordColor(0xFFA500)
+            };
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(checkingembed));
 
-//            string content = String.Empty;
+            string content = String.Empty;
 
-//            using (var client = new HttpClient())
-//            {
-//                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
-//                content = await client.GetStringAsync("https://api.github.com/repos/SKBotNL/FossiumBot-new/releases/latest");
-//            }
-//            JObject jsonData = JObject.Parse(content);
-//            var latestversion = jsonData["tag_name"];
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
+                content = await client.GetStringAsync("https://api.github.com/repos/Fossium-Team/FossiumBot/releases/latest");
+            }
+            JObject jsonData = JObject.Parse(content);
+            string latestversion = jsonData["tag_name"].ToString();
+            string latestreleaseurl = jsonData["html_url"].ToString();
+            
+            int compare = string.Compare(latestversion, Program.localversion);
 
-
-//            var embed = new DiscordEmbedBuilder
-//            {
-//                Title = $"{latestversion}",
-//                Color = new DiscordColor(0xFF0000)
-//            };
-//            await embedmsg.ModifyAsync(null, (DiscordEmbed)embed);
-//        }
-
-//        [Command("updatebot"), Aliases("update"), RequireOwner]
-//        public async Task UpdatebotCommand(CommandContext ctx)
-//        {
-//            var checkingembed = new DiscordEmbedBuilder
-//            {
-//                Title = $"Updating...",
-//                Color = new DiscordColor(0xFFA500)
-//            };
-//            var embedmsg = await ctx.RespondAsync(checkingembed);
-
-//            string content = String.Empty;
-
-//            using (var client = new HttpClient())
-//            {
-//                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("FossiumBot", Program.localversion));
-//                content = await client.GetStringAsync("https://api.github.com/repos/SKBotNL/FossiumBot-updater/releases/latest");
-//            }
-//            string downloadurl = string.Empty;
-//            JObject jsonData = JObject.Parse(content);
-//            var latestversion = jsonData["tag_name"];
-
-//            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-//            {
-//                downloadurl = $"https://github.com/SKBotNL/FossiumBot-updater/releases/download/{latestversion}/FossiumBot-Updater-Windows.zip";
-//            }
-//            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-//            {
-//                downloadurl = $"https://github.com/SKBotNL/FossiumBot-updater/releases/download/{latestversion}/FossiumBot-Updater-Linux.zip";
-//            }
-//            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-//            {
-//                var macosembed = new DiscordEmbedBuilder
-//                {
-//                    Title = $"Updater is not (yet) available for MacOS",
-//                    Color = new DiscordColor(0xFF0000)
-//                };
-
-//                await embedmsg.ModifyAsync(null, (DiscordEmbed)macosembed);
-//            }
-
-//            Directory.CreateDirectory(@"updatertemp/");
-//            using (var client = new WebClient())
-//            {
-//                client.DownloadFile(downloadurl, @"updatertemp/FossiumBot.zip");
-//            }
-//            ZipFile.ExtractToDirectory(@"updatertemp/FossiumBot.zip", @"updatertemp/updaterzip/");
-//            Directory.CreateDirectory(@"backup/");
-//            File.Move($"{System.Diagnostics.Process.GetCurrentProcess().ProcessName}.exe", @"backup/", true);
-//            File.Move("libopus.dll", @"backup/libopus.dll", true);
-//            File.Move("libsodium.dll", @"backup/libsodium.dll", true);
-//            File.Move(@"updatertemp/zip/FossiumBot.exe", @"FossiumBot.exe", true);
-//            File.Move(@"updatertemp/zip/libopus.dll", @"libopus.dll", true);
-//            File.Move(@"updatertemp/zip/libsodium.dll", @"libsodium.dll", true);
-//            File.Move(@"updatertemp/zip/no-u.dll", @"no-u.dll", true);
-//            File.Move(@"updatertemp.zip/no-u.runtimeconfig.json", @"no-u.runtimeconfig.json", true);
-//        }
-//    }
-//}
+            if (compare > 0)
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Update available",
+                    Description = $"Download the latest release at {latestreleaseurl}",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+            }
+            else
+            {
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"No updates available",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+            }
+        }
+    }
+}

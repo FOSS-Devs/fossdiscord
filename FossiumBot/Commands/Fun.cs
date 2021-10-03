@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.Entities;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;

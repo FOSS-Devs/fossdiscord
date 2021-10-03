@@ -4,10 +4,9 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
 using FossiumBot.Commands;
@@ -17,7 +16,7 @@ namespace FossiumBot
     class Program
     {
         // Set the local version, change when making a release
-        public static string localversion = "v1.0-Beta";
+        public static string localversion = "v1.1-Dev";
         public VoiceNextExtension Voice { get; set; }
         static void Main(string[] args)
         {
@@ -27,8 +26,9 @@ namespace FossiumBot
         {
             if (!File.Exists("config.json"))
             {
-                Console.WriteLine("No config found\nStarting config creator...\n");
+                Console.WriteLine("No config found\nStarting the config creator...\n");
                 WriteConfig();
+                Console.Clear();
                 Console.WriteLine("Starting the bot...");
             }
 
@@ -593,10 +593,12 @@ namespace FossiumBot
             slash.RegisterCommands<Settings>();
             //slash.RegisterCommands<Utils>(848464241219338250);
             slash.RegisterCommands<Utils>();
+            //slash.RegisterCommands<Update>(848464241219338250);
+            slash.RegisterCommands<Update>();
             DiscordActivity discordActivity = new DiscordActivity
             {
-                Name = $"{cfgjson["prefix"]}help | {localversion}",
-                ActivityType = ActivityType.Playing
+                Name = $"for commands | {localversion}",
+                ActivityType = ActivityType.Watching
             };
             if (Directory.Exists(@"Settings/lck/"))
             {
@@ -618,9 +620,10 @@ namespace FossiumBot
                 if (answer == "r")
                 {
                     Console.Clear();
-                    Console.WriteLine("Starting config creator...\n");
+                    Console.WriteLine("Starting the config creator...\n");
                     WriteConfig();
                     Console.Clear();
+                    Console.WriteLine("Starting the bot...");
                     MainAsync().GetAwaiter().GetResult();
 
                 }
