@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.VoiceNext;
 using Newtonsoft.Json;
@@ -21,7 +20,7 @@ namespace FossiumBot.Commands
     {
         int ffmpegpid = 0;
 
-        [SlashCommand("play", "Play audio from a YouTube video"), Cooldown(1, 5, CooldownBucketType.User)]
+        [SlashCommand("play", "Play audio from a YouTube video")]
         public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource);
