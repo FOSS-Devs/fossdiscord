@@ -21,15 +21,20 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
 
-    - run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus/4.2.0-nightly-01022/dsharpplus.4.2.0-nightly-01022.nupkg
-    - run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.interactivity.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.interactivity/4.2.0-nightly-01022/dsharpplus.interactivity.4.2.0-nightly-01022.nupkg
-    - run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
-    - run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
+    #- run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus/4.2.0-nightly-01022/dsharpplus.4.2.0-nightly-01022.nupkg
+    #- run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.interactivity.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.interactivity/4.2.0-nightly-01022/dsharpplus.interactivity.4.2.0-nightly-01022.nupkg
+    #- run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
+    #- run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
     
-    - run: Install-Package dsharpplus.nupkg
-    - run: Install-Package dsharpplus.interactivity.nupkg
-    - run: Install-Package dsharpplus.voicenext.nupkg
-    - run: Install-Package dsharpplus.slashcommands.nupkg
+    #- run: Install-Package dsharpplus.nupkg
+    #- run: Install-Package dsharpplus.interactivity.nupkg
+    #- run: Install-Package dsharpplus.voicenext.nupkg
+    #- run: Install-Package dsharpplus.slashcommands.nupkg
+    
+    - run: dotnet add package DSharpPlus --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
+    - run: dotnet add package DSharpPlus.Interactivity --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
+    - run: dotnet add package DSharpPlus.VoiceNext --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
+    - run: dotnet add package DSharpPlus.SlashCommands --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
     
     - name: Restore dependencies
       run: dotnet restore
