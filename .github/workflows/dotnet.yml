@@ -38,13 +38,13 @@ jobs:
     - name: Test build
       run: dotnet build --no-restore
     - name: Publish Windows
-      run: dotnet publish -c Release -r win-x64
+      run: dotnet publish -c Release -r win-x64 --self-contained
     - name: Publish Linux
-      run: dotnet publish -c Release -r linux-x64
+      run: dotnet publish -c Release -r linux-x64 --self-contained
     - run: ls /home/runner/work/FossiumBot
     - run: ls /home/runner/work/FossiumBot/FossiumBot
-    - run: ls /home/runner/work/FossiumBot/FossiumBot/bin
-    - run: ls /home/runner/work/FossiumBot/FossiumBot/bin/Release
+    - run: ls /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin
+    - run: ls /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release
     #- name: Upload a Build Artifact
       #uses: actions/upload-artifact@v2.2.4
       #with:
