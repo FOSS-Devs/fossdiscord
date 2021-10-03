@@ -51,5 +51,5 @@ jobs:
     - name: Upload artifact Linux
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: artifact-win-x64
+        name: artifact-linux-x64
         path: /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish
