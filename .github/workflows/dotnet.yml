@@ -26,7 +26,7 @@ jobs:
     #- run: wget -O /home/runner/work/download/dsharpplus.interactivity.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.interactivity/4.2.0-nightly-01022/dsharpplus.interactivity.4.2.0-nightly-01022.nupkg
     #- run: wget -O /home/runner/work/download/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
     #- run: wget -O /home/runner/work/download/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
-    - run: wget -O /home/runner/work/DownloadLatestDSPnupkg https://fossium-team.netlify.app/DownloadLatestDSPnupkg
+    - run: wget -O /home/runner/work/DownloadLatestDSPnupkg https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/DownloadLatestDSPnupkg
     - run: chmod +x /home/runner/work/DownloadLatestDSPnupkg
     - run: /home/runner/work/DownloadLatestDSPnupkg
     - run: mkdir /home/runner/work/localnuget/
@@ -38,12 +38,10 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore
-    - name: Test build
-      run: dotnet build --no-restore
-    - name: Publish Windows
-      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained
-    - name: Publish Linux
-      run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained
+    - name: Build Windows
+      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained --no-restore
+    - name: Build Linux
+      run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained --no-restore
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/FossiumBot.pdb
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/FossiumBot.pdb
     - run: mkdir /home/runner/work/Windows/
