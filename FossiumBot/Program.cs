@@ -43,13 +43,6 @@ namespace FossiumBot
                 // Remove this when making a release
                 MinimumLogLevel = LogLevel.Debug
             });
-            var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
-            {
-                StringPrefixes = new[] { cfgjson["prefix"].ToString() },
-                EnableMentionPrefix = true,
-                EnableDms = false,
-                EnableDefaultHelp = false
-            });
             //discord.ComponentInteractionCreated += async (s, e) =>
             //{
             //    if (e.Id == "help_moderation")
