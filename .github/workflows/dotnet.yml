@@ -37,13 +37,13 @@ jobs:
       with:
         args: -O dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install dsharpplus.nupkg
+      run: nuget install ./dsharpplus.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install dsharpplus.interactivity.nupkg
+      run: nuget install ./dsharpplus.interactivity.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install dsharpplus.voicenext.nupkg
+      run: nuget install ./dsharpplus.voicenext.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install dsharpplus.slashcommands.nupkg
+      run: nuget install ./dsharpplus.slashcommands.nupkg
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
