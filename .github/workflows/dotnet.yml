@@ -35,9 +35,17 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
+    - name: Test build
       run: dotnet build --no-restore
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        path: /home/runner/work/FossiumBot/FossiumBot/bin/Release/net6.0/
+    - name: Publish Windows
+      run: dotnet publish -c Release -r win-x64
+    - name: Publish Linux
+      run: dotnet publish -c Release -r linux-x64
+    - run: ls /home/runner/work/FossiumBot
+    - run: ls /home/runner/work/FossiumBot/FossiumBot
+    - run: ls /home/runner/work/FossiumBot/FossiumBot/bin
+    - run: ls /home/runner/work/FossiumBot/FossiumBot/bin/Release
+    #- name: Upload a Build Artifact
+      #uses: actions/upload-artifact@v2.2.4
+      #with:
+        #path: /home/runner/work/FossiumBot/FossiumBot/bin/Release/net6.0/
