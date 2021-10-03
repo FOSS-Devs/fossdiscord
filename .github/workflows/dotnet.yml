@@ -23,27 +23,27 @@ jobs:
     - name: Github Action f or wget
       uses: wei/wget@v1.1.1
       with:
-        args: -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus/4.2.0-nightly-01022/dsharpplus.4.2.0-nightly-01022.nupkg
+        args: -O /home/runner/work/dsharpplus.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus/4.2.0-nightly-01022/dsharpplus.4.2.0-nightly-01022.nupkg
     - name: GitHub Action for wget
       uses: wei/wget@v1.1.1
       with:
-        args: -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.interactivity.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.interactivity/4.2.0-nightly-01022/dsharpplus.interactivity.4.2.0-nightly-01022.nupkg
+        args: -O /home/runner/work/dsharpplus.interactivity.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.interactivity/4.2.0-nightly-01022/dsharpplus.interactivity.4.2.0-nightly-01022.nupkg
     - name: GitHub Action for wget
       uses: wei/wget@v1.1.1
       with:
-        args: -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
+        args: -O /home/runner/work/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
     - name: GitHub Action for wget
       uses: wei/wget@v1.1.1
       with:
-        args: -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
+        args: -O /home/runner/work/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install ./dsharpplus.nupkg
+      run: nuget install /home/runner/work/dsharpplus.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install ./dsharpplus.interactivity.nupkg
+      run: nuget install /home/runner/work/dsharpplus.interactivity.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install ./dsharpplus.voicenext.nupkg
+      run: nuget install /home/runner/work/dsharpplus.voicenext.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: nuget install ./dsharpplus.slashcommands.nupkg
+      run: nuget install /home/runner/work/dsharpplus.slashcommands.nupkg
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
