@@ -36,14 +36,12 @@ jobs:
     - run: nuget add /home/runner/work/download/dsharpplus.slashcommands.nupkg -source /home/runner/work/localnuget/
     - run: wget -O NuGet.Config https://gist.githubusercontent.com/SKBotNL/ca6c652a47375de7598f1d7812d7436c/raw/6c45b1f6dc29373b991e5c7e8613e0255a9a1cfb/gistfile1.txt
     
-    - name: Build
-      run: dotnet build --no-restore
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish Windows
-      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained --no-restore
+      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained
     - name: Publish Linux
-      run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained --no-restore
+      run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/FossiumBot.pdb
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/FossiumBot.pdb
     - run: mkdir /home/runner/work/Windows/
