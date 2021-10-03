@@ -38,25 +38,84 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore
+      
     - name: Publish Windows
       run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained
+    - name: Publish Windows 32-bit
+      run: dotnet publish -c Release -r win-x86 -p:PublishSingleFile=true --self-contained
+    - name: Publish Windows ARM
+      run: dotnet publish -c Release -r win-arm -p:PublishSingleFile=true --self-contained
+    - name: Publish Windows ARM64
+      run: dotnet publish -c Release -r win-arm64 -p:PublishSingleFile=true --self-contained
     - name: Publish Linux
       run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained
+    - name: Publish Linux ARM
+      run: dotnet publish -c Release -r linux-arm -p:PublishSingleFile=true --self-contained
+    - name: Publish MacOS
+      run: dotnet publish -c Release -r osx-x64 -p:PublishSingleFile=true --self-contained
+      
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/FossiumBot.pdb
+    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x86/publish/FossiumBot.pdb
+    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm/publish/FossiumBot.pdb
+    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm64/publish/FossiumBot.pdb
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/FossiumBot.pdb
-    - run: mkdir /home/runner/work/Windows/
-    - run: mkdir /home/runner/work/Windows/FossiumBot/
-    - run: mkdir /home/runner/work/Linux/
-    - run: mkdir /home/runner/work/Linux/FossiumBot/
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/* /home/runner/work/Windows/FossiumBot/
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/* /home/runner/work/Linux/FossiumBot/
+    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-arm/publish/FossiumBot.pdb
+    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/osx-x64/publish/FossiumBot.pdb
+    
+    - run: mkdir /home/runner/work/FossiumBot-Windows/
+    - run: mkdir /home/runner/work/FossiumBot-Windows/FossiumBot
+    - run: mkdir /home/runner/work/FossiumBot-Windows-32-bit/
+    - run: mkdir /home/runner/work/FossiumBot-Windows-32-bit/FossiumBot
+    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM/
+    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM/FossiumBot
+    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM64/
+    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM64/FossiumBot
+    - run: mkdir /home/runner/work/FossiumBot-Linux/
+    - run: mkdir /home/runner/work/FossiumBot-Linux/FossiumBot
+    - run: mkdir /home/runner/work/FossiumBot-Linux-ARM/
+    - run: mkdir /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
+    - run: mkdir /home/runner/work/FossiumBot-OSX/
+    - run: mkdir /home/runner/work/FossiumBot-OSX/FossiumBot
+    
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/* /home/runner/work/FossiumBot-Windows/FossiumBot
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x86/publish/* /home/runner/work/FossiumBot-Windows-32-bit/FossiumBot
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm/publish/* /home/runner/work/FossiumBot-Windows-ARM/FossiumBot
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm64/publish/* /home/runner/work/FossiumBot-Windows-ARM64/FossiumBot
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/* /home/runner/work/Linux/FossiumBot-Linux/FossiumBot
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-arm/publish/* /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/osx-x64/publish/* /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
     - name: Upload artifact Windows
       uses: actions/upload-artifact@v2.2.4
       with:
         name: artifact-win-x64
-        path: /home/runner/work/Windows/
+        path: /home/runner/work/FossiumBot-Windows/
+    - name: Upload artifact Windows 32-bit
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: artifact-win-x86
+        path: /home/runner/work/FossiumBot-Windows-32-bit/
+    - name: Upload artifact Windows ARM
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: artifact-win-x86
+        path: /home/runner/work/FossiumBot-Windows-ARM/
+    - name: Upload artifact Windows ARM64
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: artifact-win-x86
+        path: /home/runner/work/FossiumBot-Windows-ARM64/
     - name: Upload artifact Linux
       uses: actions/upload-artifact@v2.2.4
       with:
         name: artifact-linux-x64
-        path: /home/runner/work/Linux/
+        path: /home/runner/work/FossiumBot-Linux/
+    - name: Upload artifact Linux ARM
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: artifact-linux-x64
+        path: /home/runner/work/FossiumBot-Linux-ARM/
+    - name: Upload artifact MacOS
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: artifact-macos-x64
+        path: /home/runner/work/FossiumBot-OSX/
