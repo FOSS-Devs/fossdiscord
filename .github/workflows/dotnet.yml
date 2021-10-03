@@ -45,6 +45,8 @@ jobs:
     - run: ls /home/runner/work/FossiumBot/FossiumBot
     - run: ls /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin
     - run: ls /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release
+    - run: ls /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0
+    - run: ls /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/publish
     #- name: Upload a Build Artifact
       #uses: actions/upload-artifact@v2.2.4
       #with:
