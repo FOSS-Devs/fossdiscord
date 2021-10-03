@@ -126,33 +126,20 @@ namespace FossiumBot.Commands
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("emoji", "Get information about an emoji")]
-        public async Task EmojiCommand(InteractionContext ctx, [Option("emoji", "Emoji to get information")] DiscordEmoji emoji = null)
+        [SlashCommand("emojiinfo", "Get information about an emoji")]
+        public async Task EmojiinfoCommand(InteractionContext ctx, [Option("emoji", "Emoji to get information")] DiscordEmoji emoji)
         {
-            if(emoji == null)
+            var embed = new DiscordEmbedBuilder
             {
-                var embed = new DiscordEmbedBuilder
-                {
-                    Title = "Missing argument",
-                    Description = $"Usage:\n/emoji <emoji>",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-            }
-            else
-            {
-                var embed = new DiscordEmbedBuilder
-                {
-                    Color = new DiscordColor(0x0080FF)
-                };
-                embed.WithAuthor(emoji.Name, null, emoji.Url);
-                embed.WithThumbnail(emoji.Url);
-                embed.AddField("ID", emoji.Id.ToString());
-                string emojicreation = emoji.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
-                embed.AddField("Created on", emojicreation);
-                embed.AddField("URL", emoji.Url);
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-            }
+                Color = new DiscordColor(0x0080FF)
+            };
+            embed.WithAuthor(emoji.Name, null, emoji.Url);
+            embed.WithThumbnail(emoji.Url);
+            embed.AddField("ID", emoji.Id.ToString());
+            string emojicreation = emoji.CreationTimestamp.ToString("G", CultureInfo.CreateSpecificCulture("es-ES"));
+            embed.AddField("Created on", emojicreation);
+            embed.AddField("URL", emoji.Url);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
 
         [SlashCommand("poll", "Make a poll with multiple options")]
