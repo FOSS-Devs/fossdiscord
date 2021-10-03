@@ -43,13 +43,17 @@ jobs:
       run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/FossiumBot.pdb
     - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/FossiumBot.pdb
+    - run: mkdir /home/runner/work/Windows/FossiumBot/
+    - run: mkdir /home/runner/work/Linux/FossiumBot/
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/* /home/runner/work/Windows/FossiumBot/
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/* /home/runner/work/Linux/FossiumBot/
     - name: Upload artifact Windows
       uses: actions/upload-artifact@v2.2.4
       with:
         name: artifact-win-x64
-        path: /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish
+        path: /home/runner/work/Windows/
     - name: Upload artifact Linux
       uses: actions/upload-artifact@v2.2.4
       with:
         name: artifact-linux-x64
-        path: /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish
+        path: /home/runner/work/Linux/

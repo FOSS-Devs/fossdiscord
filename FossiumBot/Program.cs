@@ -661,24 +661,12 @@ namespace FossiumBot
                 Console.WriteLine("Re-running config creator\n");
                 WriteConfig();
             }
-            Console.Clear();
-            Console.Write("Enter the prefix you want the bot to use: ");
-            string prefix = Console.ReadLine();
-            Console.Write($"Is this correct? \"{prefix}\"\n(y)es\n(n)o\n");
-            string confirmation2 = Console.ReadLine();
-            if (confirmation2 != "y")
-            {
-                Console.Clear();
-                Console.WriteLine("Re-running config creator\n");
-                WriteConfig();
-            }
             Console.WriteLine("Writing config...");
 
             JObject data = new JObject(
-                new JProperty("token", $"{token}"),
-                new JProperty("prefix", $"{prefix}")
+                new JProperty("token", $"{token}")
                 );
-            string configjson = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
+            string configjson = JsonConvert.SerializeObject(data, Formatting.Indented);
             string path = @"config.json";
             using (TextWriter tw = new StreamWriter(path))
             {
