@@ -31,6 +31,7 @@ jobs:
     #- run: Install-Package dsharpplus.voicenext.nupkg
     #- run: Install-Package dsharpplus.slashcommands.nupkg
     
+    - run: ls
     - run: dotnet add package DSharpPlus --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
     - run: dotnet add package DSharpPlus.Interactivity --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
     - run: dotnet add package DSharpPlus.VoiceNext --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
