@@ -97,12 +97,12 @@ jobs:
     - name: Upload artifact Windows ARM
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: artifact-win-x86
+        name: artifact-win-arm
         path: /home/runner/work/FossiumBot-Windows-ARM/
     - name: Upload artifact Windows ARM64
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: artifact-win-x86
+        name: artifact-win-arm64
         path: /home/runner/work/FossiumBot-Windows-ARM64/
     - name: Upload artifact Linux
       uses: actions/upload-artifact@v2.2.4
@@ -112,7 +112,7 @@ jobs:
     - name: Upload artifact Linux ARM
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: artifact-linux-x64
+        name: artifact-linux-arm
         path: /home/runner/work/FossiumBot-Linux-ARM/
     - name: Upload artifact MacOS
       uses: actions/upload-artifact@v2.2.4
