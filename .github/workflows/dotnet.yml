@@ -26,10 +26,10 @@ jobs:
     - run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
     - run: wget -O /home/runner/work/FossiumBot/FossiumBot/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
     
-    - run: nuget install dsharpplus.nupkg
-    - run: nuget install dsharpplus.interactivity.nupkg
-    - run: nuget install dsharpplus.voicenext.nupkg
-    - run: nuget install dsharpplus.slashcommands.nupkg
+    - run: nuget install ./dsharpplus.nupkg
+    - run: nuget install ./dsharpplus.interactivity.nupkg
+    - run: nuget install ./dsharpplus.voicenext.nupkg
+    - run: nuget install ./dsharpplus.slashcommands.nupkg
     
     - name: Restore dependencies
       run: dotnet restore
