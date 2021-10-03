@@ -32,10 +32,10 @@ jobs:
     #- run: Install-Package dsharpplus.slashcommands.nupkg
     
     - run: ls
-    - run: dotnet add package DSharpPlus --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
-    - run: dotnet add package DSharpPlus.Interactivity --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
-    - run: dotnet add package DSharpPlus.VoiceNext --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
-    - run: dotnet add package DSharpPlus.SlashCommands --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
+    - run: dotnet add FossiumBot/ package DSharpPlus --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
+    - run: dotnet add FossiumBot/ package DSharpPlus.Interactivity --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
+    - run: dotnet add FossiumBot/ package DSharpPlus.VoiceNext --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
+    - run: dotnet add FossiumBot/ package DSharpPlus.SlashCommands --source https://nuget.emzi0767.com/api/v3/index.json --prerelease
     
     - name: Restore dependencies
       run: dotnet restore
