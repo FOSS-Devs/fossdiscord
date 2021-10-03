@@ -18,7 +18,9 @@ jobs:
       with:
         dotnet-version: '6.0'
         include-prerelease: True
-    - name: Github Action for wget
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+    - name: Github Action f or wget
       uses: wei/wget@v1.1.1
       with:
         args: -O dsharpplus.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus/4.2.0-nightly-01022/dsharpplus.4.2.0-nightly-01022.nupkg
@@ -35,13 +37,13 @@ jobs:
       with:
         args: -O dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: dotnet add package dsharpplus.nupkg
+      run: nuget install dsharpplus.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: dotnet add package dsharpplus.interactivity.nupkg
+      run: nuget install dsharpplus.interactivity.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: dotnet add package dsharpplus.voicenext.nupkg
+      run: nuget install dsharpplus.voicenext.nupkg
     - name: Install DSharpPlus Nightly packages
-      run: dotnet add package dsharpplus.slashcommands.nupkg
+      run: nuget install dsharpplus.slashcommands.nupkg
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
