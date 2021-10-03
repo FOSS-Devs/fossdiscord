@@ -81,7 +81,7 @@ jobs:
     - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x86/publish/* /home/runner/work/FossiumBot-Windows-32-bit/FossiumBot
     - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm/publish/* /home/runner/work/FossiumBot-Windows-ARM/FossiumBot
     - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm64/publish/* /home/runner/work/FossiumBot-Windows-ARM64/FossiumBot
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/* /home/runner/work/Linux/FossiumBot-Linux/FossiumBot
+    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/* /home/runner/work/FossiumBot-Linux/FossiumBot
     - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-arm/publish/* /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
     - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/osx-x64/publish/* /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
     - name: Upload artifact Windows
