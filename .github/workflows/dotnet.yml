@@ -21,20 +21,39 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
     
-    - run: mkdir /home/runner/work/download
-    #- run: wget -O /home/runner/work/download/dsharpplus.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus/4.2.0-nightly-01022/dsharpplus.4.2.0-nightly-01022.nupkg
-    #- run: wget -O /home/runner/work/download/dsharpplus.interactivity.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.interactivity/4.2.0-nightly-01022/dsharpplus.interactivity.4.2.0-nightly-01022.nupkg
-    #- run: wget -O /home/runner/work/download/dsharpplus.voicenext.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.voicenext/4.2.0-nightly-01022/dsharpplus.voicenext.4.2.0-nightly-01022.nupkg
-    #- run: wget -O /home/runner/work/download/dsharpplus.slashcommands.nupkg https://nuget.emzi0767.com/api/v3/flatcontainer/dsharpplus.slashcommands/4.2.0-nightly-01022/dsharpplus.slashcommands.4.2.0-nightly-01022.nupkg
-    - run: wget -O /home/runner/work/DownloadLatestDSPnupkg https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/DownloadLatestDSPnupkg
-    - run: chmod +x /home/runner/work/DownloadLatestDSPnupkg
-    - run: /home/runner/work/DownloadLatestDSPnupkg
-    - run: mkdir /home/runner/work/localnuget/
-    - run: nuget add /home/runner/work/download/dsharpplus.nupkg -source /home/runner/work/localnuget/
-    - run: nuget add /home/runner/work/download/dsharpplus.interactivity.nupkg -source /home/runner/work/localnuget/
-    - run: nuget add /home/runner/work/download/dsharpplus.voicenext.nupkg -source /home/runner/work/localnuget/
-    - run: nuget add /home/runner/work/download/dsharpplus.slashcommands.nupkg -source /home/runner/work/localnuget/
-    - run: wget -O NuGet.Config https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/NuGet.Config
+    - name: Create all needed directories
+      run: |
+        mkdir /home/runner/work/download
+        mkdir /home/runner/work/FossiumBot-Windows/
+        mkdir /home/runner/work/FossiumBot-Windows/FossiumBot
+        mkdir /home/runner/work/FossiumBot-Windows-32-bit/
+        mkdir /home/runner/work/FossiumBot-Windows-32-bit/FossiumBot
+        mkdir /home/runner/work/FossiumBot-Windows-ARM/
+        mkdir /home/runner/work/FossiumBot-Windows-ARM/FossiumBot
+        mkdir /home/runner/work/FossiumBot-Windows-ARM64/
+        mkdir /home/runner/work/FossiumBot-Windows-ARM64/FossiumBot
+        mkdir /home/runner/work/FossiumBot-Linux/
+        mkdir /home/runner/work/FossiumBot-Linux/FossiumBot
+        mkdir /home/runner/work/FossiumBot-Linux-ARM/
+        mkdir /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
+        mkdir /home/runner/work/FossiumBot-OSX/
+        mkdir /home/runner/work/FossiumBot-OSX/FossiumBot
+        mkdir /home/runner/work/localnuget/
+    - name: Download custom script
+      run: wget -O /home/runner/work/DownloadLatestDSPnupkg https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/DownloadLatestDSPnupkg
+    - name: Run custom script
+      run: |
+        chmod +x /home/runner/work/DownloadLatestDSPnupkg
+        /home/runner/work/DownloadLatestDSPnupkg
+    
+    - name: Add all NuGet packages to local NuGet repository
+      run: |
+        nuget add /home/runner/work/download/dsharpplus.nupkg -source /home/runner/work/localnuget/
+        nuget add /home/runner/work/download/dsharpplus.interactivity.nupkg -source /home/runner/work/localnuget/
+        nuget add /home/runner/work/download/dsharpplus.voicenext.nupkg -source /home/runner/work/localnuget/
+        nuget add /home/runner/work/download/dsharpplus.slashcommands.nupkg -source /home/runner/work/localnuget/
+    - name: Download custom NuGet.Config
+      run: wget -O NuGet.Config https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/NuGet.Config
     
     - name: Restore dependencies
       run: dotnet restore
@@ -54,36 +73,25 @@ jobs:
     - name: Publish MacOS
       run: dotnet publish -c Release -r osx-x64 -p:PublishSingleFile=true --self-contained
       
-    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/FossiumBot.pdb
-    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x86/publish/FossiumBot.pdb
-    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm/publish/FossiumBot.pdb
-    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm64/publish/FossiumBot.pdb
-    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/FossiumBot.pdb
-    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-arm/publish/FossiumBot.pdb
-    - run: rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/osx-x64/publish/FossiumBot.pdb
+    - name: Remove unneeded .pdb files
+      run: |
+        rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/FossiumBot.pdb
+        rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x86/publish/FossiumBot.pdb
+        rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm/publish/FossiumBot.pdb
+        rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm64/publish/FossiumBot.pdb
+        rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/FossiumBot.pdb
+        rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-arm/publish/FossiumBot.pdb
+        rm /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/osx-x64/publish/FossiumBot.pdb
     
-    - run: mkdir /home/runner/work/FossiumBot-Windows/
-    - run: mkdir /home/runner/work/FossiumBot-Windows/FossiumBot
-    - run: mkdir /home/runner/work/FossiumBot-Windows-32-bit/
-    - run: mkdir /home/runner/work/FossiumBot-Windows-32-bit/FossiumBot
-    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM/
-    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM/FossiumBot
-    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM64/
-    - run: mkdir /home/runner/work/FossiumBot-Windows-ARM64/FossiumBot
-    - run: mkdir /home/runner/work/FossiumBot-Linux/
-    - run: mkdir /home/runner/work/FossiumBot-Linux/FossiumBot
-    - run: mkdir /home/runner/work/FossiumBot-Linux-ARM/
-    - run: mkdir /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
-    - run: mkdir /home/runner/work/FossiumBot-OSX/
-    - run: mkdir /home/runner/work/FossiumBot-OSX/FossiumBot
-    
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/* /home/runner/work/FossiumBot-Windows/FossiumBot
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x86/publish/* /home/runner/work/FossiumBot-Windows-32-bit/FossiumBot
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm/publish/* /home/runner/work/FossiumBot-Windows-ARM/FossiumBot
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm64/publish/* /home/runner/work/FossiumBot-Windows-ARM64/FossiumBot
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/* /home/runner/work/FossiumBot-Linux/FossiumBot
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-arm/publish/* /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
-    - run: mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/osx-x64/publish/* /home/runner/work/FossiumBot-OSX/FossiumBot
+    - name: Move files to their own directory
+      run: |
+        mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x64/publish/* /home/runner/work/FossiumBot-Windows/FossiumBot
+        mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-x86/publish/* /home/runner/work/FossiumBot-Windows-32-bit/FossiumBot
+        mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm/publish/* /home/runner/work/FossiumBot-Windows-ARM/FossiumBot
+        mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/win-arm64/publish/* /home/runner/work/FossiumBot-Windows-ARM64/FossiumBot
+        mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-x64/publish/* /home/runner/work/FossiumBot-Linux/FossiumBot
+        mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/linux-arm/publish/* /home/runner/work/FossiumBot-Linux-ARM/FossiumBot
+        mv /home/runner/work/FossiumBot/FossiumBot/FossiumBot/bin/Release/net6.0/osx-x64/publish/* /home/runner/work/FossiumBot-OSX/FossiumBot
     - name: Upload artifact Windows
       uses: actions/upload-artifact@v2.2.4
       with:
