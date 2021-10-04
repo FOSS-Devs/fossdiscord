@@ -46,7 +46,7 @@ jobs:
         chmod +x /home/runner/work/DownloadLatestDSPnupkg
         /home/runner/work/DownloadLatestDSPnupkg
     
-    - name: Add all NuGet packages to local NuGet repository
+    - name: Add all downloaded NuGet packages to local NuGet repository
       run: |
         nuget add /home/runner/work/download/dsharpplus.nupkg -source /home/runner/work/localnuget/
         nuget add /home/runner/work/download/dsharpplus.interactivity.nupkg -source /home/runner/work/localnuget/
