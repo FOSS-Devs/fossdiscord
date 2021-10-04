@@ -18,7 +18,9 @@ The bot has a lot of features, including but not limited to:
   - Purge
   - Autodelete
 - Utils
-  - Avatar, userinfo, serverinfo, emojiinfo, poll, quickpoll
+  - Avatar
+  - Userinfo, serverinfo, emojiinfo,
+  - Poll, quickpoll
 - Fun
   - Dog, cat
   - GitHub
