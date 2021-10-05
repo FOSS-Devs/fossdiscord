@@ -28,4 +28,4 @@ The bot has a lot of features, including but not limited to:
   - Wikipedia
 
 ## Support Server
-[![Join the support server](https://discord.com/api/guilds/848464241219338250/widget.png?style=banner2)](http://discord.gg/myzbqnVUFN)
+[![Join the support server](https://discord.com/api/guilds/848464241219338250/widget.png?style=banner2)](https://discord.gg/myzbqnVUFN)
