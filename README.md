@@ -1,3 +1,4 @@
+![FossiumBot](https://raw.githubusercontent.com/Fossium-Team/FossiumBot/main/images/FossiumBot_Full_White.png)
 # FossiumBot
 Welcome to the GitHub page of FossiumBot!
 The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.io).
