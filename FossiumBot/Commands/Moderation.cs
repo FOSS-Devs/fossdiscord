@@ -361,23 +361,7 @@ namespace FossiumBot.Commands
             }
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/lck/");
-            if (time == "off" && File.Exists($"Settings/lck/{channel.Id}.lck"))
-            {
-                File.Delete($"Settings/lck/{channel.Id}.lck");
-                await Task.CompletedTask;
-            }
-            else if (Int16.Parse(time) >= 1 && File.Exists($"Settings/lck/{channel.Id}.lck"))
-            {
-                var em = new DiscordEmbedBuilder
-                {
-                    Title = $"Oops...",
-                    Description = "That channel already configured to auto delete messages",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                await Task.CompletedTask;
-            }
-            else if (time == "off" && !File.Exists($"Settings/lck/{channel.Id}.lck"))
+            if (time == "off" && !File.Exists($"Settings/lck/{channel.Id}.lck"))
             {
                 var em = new DiscordEmbedBuilder
                 {
@@ -388,44 +372,52 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
                 await Task.CompletedTask;
             }
-            if (!File.Exists($"Settings/lck/{channel.Id}.lck"))
+            else if (time == "off")
             {
-                if (time != "off" && short.Parse(time) >= 1)
+                File.Delete(@$"Settings/lck/{channel.Id}.lck");
+                var em = new DiscordEmbedBuilder
                 {
-                    var em = new DiscordEmbedBuilder
+                    Title = $"Successfully stopped autodelete for `#{channel.Name}`",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                await Task.CompletedTask;
+            }
+            if (time != "off" && short.Parse(time) >= 1)
+            {
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"Autodelete has started...",
+                    Description = $"`{channel.Name}` is now configured to auto delete messages every {time} hour(s)",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                File.Create(@$"Settings/lck/{channel.Id}.lck").Dispose();
+                while (File.Exists($"Settings/lck/{channel.Id}.lck"))
+                {
+                    var messages = await channel.GetMessagesAsync();
+                    foreach (var message in messages)
                     {
-                        Title = $"Autodelete has started...",
-                        Description = $"`{channel.Name}` is now configured to auto delete messages every {time} hour(s)",
-                        Color = new DiscordColor(0xFFA500)
-                    };
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                    File.Create($"Settings/lck/{channel.Id}.lck").Dispose();
-                    while (File.Exists($"Settings/lck/{channel.Id}.lck"))
-                    {
-                        var messages = await channel.GetMessagesAsync();
-                        foreach (var message in messages)
+                        var msgTime = message.Timestamp.UtcDateTime;
+                        var sysTime = DateTime.UtcNow;
+                        if (sysTime.Subtract(msgTime).TotalHours > short.Parse(time) && sysTime.Subtract(msgTime).TotalHours < 336)
                         {
-                            var msgTime = message.Timestamp.UtcDateTime;
-                            var sysTime = DateTime.UtcNow;
-                            if (sysTime.Subtract(msgTime).TotalHours > short.Parse(time) && sysTime.Subtract(msgTime).TotalHours < 336)
-                            {
-                                await channel.DeleteMessageAsync(message);
-                                await Task.Delay(3000);
-                            }
+                        await channel.DeleteMessageAsync(message);
+                        await Task.Delay(3000);
                         }
-                        await Task.Delay(1000);
                     }
+                    await Task.Delay(1000);
                 }
-                else
+            }
+            else
+            {
+                var em = new DiscordEmbedBuilder
                 {
-                    var em = new DiscordEmbedBuilder
-                    {
-                        Title = $"Oops...",
-                        Description = "You command syntax is not right",
-                        Color = new DiscordColor(0xFF0000)
-                    };
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                }
+                    Title = $"Oops...",
+                    Description = "You command syntax is not right",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
             await Task.CompletedTask;
         }
