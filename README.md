@@ -1,3 +1,4 @@
+![FossiumBot](https://raw.githubusercontent.com/Fossium-Team/FossiumBot/main/images/FossiumBot_Full_White.png)
 # FossiumBot
 Welcome to the GitHub page of FossiumBot!
 The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.io).
@@ -10,7 +11,7 @@ If you want to use the latest build of the bot for whatever reason check out the
 For experimental MacOS, ARM and ARM64 builds also check out the [actions](https://github.com/Fossium-Team/FossiumBot/actions) (again, you need to be logged in to GitHub).
 
 ## Features
-The bot has a lot of features, including but not limited to:
+The bot has lots of features, including but not limited to:
 - Moderation
   - Warning system
   - Mute system
@@ -25,6 +26,7 @@ The bot has a lot of features, including but not limited to:
   - Dog, cat
   - GitHub
   - Wikipedia
+- Music
 
 ## Support Server
-[![Join the support server](https://discord.com/api/guilds/848464241219338250/widget.png?style=banner2)](http://discord.gg/myzbqnVUFN)
+[![Join the support server](https://discord.com/api/guilds/848464241219338250/widget.png?style=banner2)](https://discord.gg/myzbqnVUFN)

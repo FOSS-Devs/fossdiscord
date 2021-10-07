@@ -51,7 +51,7 @@ namespace FossiumBot.Commands
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                    return;
+                    await Task.CompletedTask;
                 }
                 else if (loggingchannel == null && File.Exists(file))
                 {
@@ -66,7 +66,7 @@ namespace FossiumBot.Commands
                         Color = new DiscordColor(0x2ECC70)
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(disableembed));
-                    return;
+                    await Task.CompletedTask;
                 }
                 else if (loggingchannel != null && File.Exists(file))
                 {

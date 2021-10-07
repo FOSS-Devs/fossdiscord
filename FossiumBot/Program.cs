@@ -10,8 +10,9 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
 using DSharpPlus.Interactivity;
+using DSharpPlus.Lavalink;
+using DSharpPlus.Net;
 using FossiumBot.Commands;
-using DSharpPlus.Interactivity.Extensions;
 
 namespace FossiumBot
 {
@@ -72,7 +73,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //    else if (e.Id == "help_utils")
             //    {
@@ -98,7 +99,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //    else if (e.Id == "help_fun")
             //    {
@@ -124,7 +125,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //    else if (e.Id == "help_music")
             //    {
@@ -150,7 +151,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //    else if (e.Id == "help_owner")
             //    {
@@ -176,7 +177,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", true),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //    else if (e.Id == "help_settings")
             //    {
@@ -202,7 +203,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", true)
             //            }));
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //};
             discord.GuildAvailable += async (s, e) =>
@@ -247,27 +248,29 @@ namespace FossiumBot
                 }
                 await Task.CompletedTask;
             };
-            //discord.GuildCreated += async (s, e) =>
-            //{
-            //    string file = $"Settings/guilds/{e.Guild.Id}.json";
-            //    Directory.CreateDirectory(@"Settings/");
-            //    Directory.CreateDirectory(@"Settings/guilds/");
-            //    if (!File.Exists(file))
-            //    {
-            //        JObject newConfig =
-            //              new JObject(
-            //                  new JProperty("config",
-            //                  new JObject {
-            //                        new JProperty("loggingchannelid", null),
-            //                        new JProperty("muterole", null),
-            //                       }
-            //                  )
-            //              );
-            //        string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-            //        File.WriteAllText(file, dataWrite);
-            //    }
-            //    return;
-            //};
+            discord.GuildCreated += async (s, e) =>
+            {
+                string jsonfile = $"Settings/guilds/{e.Guild.Id}.json";
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
+                if (!File.Exists(jsonfile))
+                {
+                    JObject newConfig =
+                        new JObject(
+                            new JProperty("config",
+                            new JObject {
+                                    new JProperty("loggingchannelid", "null"),
+                                    new JProperty("muterole", "null"),
+                                    new JProperty("welcomer", "off"),
+                                    new JProperty("welcomercustommessage", "null")
+                                 }
+                            )
+                        );
+                    string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
+                    File.WriteAllText(jsonfile, dataWrite);
+                }
+                await Task.CompletedTask;
+            };
             discord.GuildDeleted += async (s, e) =>
             {
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
@@ -295,7 +298,7 @@ namespace FossiumBot
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if((string)jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 else 
                 {
@@ -305,7 +308,7 @@ namespace FossiumBot
                     embed.AddField("Content", e.Message.Content);
                     embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
                     await loggingchannel.SendMessageAsync(embed);
-                    return;
+                    await Task.CompletedTask;
                 }
             };
             discord.MessageUpdated += async (s, e) =>
@@ -313,7 +316,7 @@ namespace FossiumBot
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
                 if (e.Message.IsEdited == false || e.Message.Embeds.Count >= 1)
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 else
                 {
@@ -328,12 +331,12 @@ namespace FossiumBot
                     Directory.CreateDirectory(@"Settings/guilds/");
                     if (!File.Exists(file))
                     {
-                        return;
+                        await Task.CompletedTask;
                     }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
                     if ((string)jsonData["config"]["loggingchannelid"] == "null")
                     {
-                        return;
+                        await Task.CompletedTask;
                     }
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -357,12 +360,12 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -385,12 +388,12 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -416,12 +419,12 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -443,12 +446,12 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -490,12 +493,12 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/guilds/");
                 if (!File.Exists(file))
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 JObject jsonData = JObject.Parse(File.ReadAllText(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
                 ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                 DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -517,19 +520,19 @@ namespace FossiumBot
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
                 if (!File.Exists(file))
                 {
-                    return;
+                    await Task.CompletedTask;
                 }
 
                 string json = File.ReadAllText(file);
                 dynamic jsonData = JsonConvert.DeserializeObject(json);
                     if (jsonData["config"]["welcomer"] == "off")
                     {
-                        return;
+                        await Task.CompletedTask;
                     }
 
                     if (jsonData["config"]["welcomerchannel"] == "null")
                     {
-                        return;
+                        await Task.CompletedTask;
                     }
 
                     if (jsonData["config"]["welcomercustommessage"] == "null")
@@ -559,7 +562,7 @@ namespace FossiumBot
             //            Color = new DiscordColor(0xFF0000)
             //        };
             //        await e.Context.RespondAsync(commandnotfoundembed);
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //    else if (e.Exception.Message == "Could not find a suitable overload for the command.")
             //    {
@@ -571,7 +574,7 @@ namespace FossiumBot
             //            Color = new DiscordColor(0xFF0000)
             //        };
             //        await e.Context.RespondAsync(overloadembed);
-            //        return;
+            //        await Task.CompletedTask;
             //    }
             //    var embed = new DiscordEmbedBuilder
             //    {
@@ -605,13 +608,26 @@ namespace FossiumBot
                 Name = $"for commands | {localversion}",
                 ActivityType = ActivityType.Watching
             };
+            var endpoint = new ConnectionEndpoint
+            {
+                Hostname = "127.0.0.1",
+                Port = 2333
+            };
+            var lavalinkConfig = new LavalinkConfiguration
+            {
+                Password = "defaultpassword",
+                RestEndpoint = endpoint,
+                SocketEndpoint = endpoint
+            };
             if (Directory.Exists(@"Settings/lck/"))
             {
                 Directory.Delete("Settings/lck/", true);
             }
             try
             {
+                var lavalink = discord.UseLavalink();
                 await discord.ConnectAsync(discordActivity);
+                await lavalink.ConnectAsync(lavalinkConfig);
             }
             catch(Exception e)
             {
