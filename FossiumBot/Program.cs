@@ -658,29 +658,28 @@ namespace FossiumBot
             };
 
         }
-            private static void WriteConfig()
+        private static void WriteConfig()
+        {
+            Console.Write("Enter your bot token: ");
+            string token = Console.ReadLine();
+            Console.Write($"Is this correct? \"{token}\"\n(y)es\n(n)o\n");
+            string confirmation = Console.ReadLine();
+            if (confirmation != "y")
             {
-                Console.Write("Enter your bot token: ");
-                string token = Console.ReadLine();
-                Console.Write($"Is this correct? \"{token}\"\n(y)es\n(n)o\n");
-                string confirmation = Console.ReadLine();
-                if (confirmation != "y")
-                {
-                    Console.Clear();
-                    Console.WriteLine("Re-running config creator\n");
-                    WriteConfig();
-                }
-                Console.WriteLine("Writing config...");
-
-                JObject data = new JObject(
-                    new JProperty("token", $"{token}")
-                    );
-                string configjson = JsonConvert.SerializeObject(data, Formatting.Indented);
-                string path = @"config.json";
-                using (TextWriter tw = new StreamWriter(path))
-                {
-                    tw.WriteLine(configjson);
-                }
+                Console.Clear();
+                Console.WriteLine("Re-running config creator\n");
+                WriteConfig();
+            }
+            Console.WriteLine("Writing config...");
+            JObject data = new JObject(
+                new JProperty("token", $"{token}")
+            );
+            string configjson = JsonConvert.SerializeObject(data, Formatting.Indented);
+            string path = @"config.json";
+            using (TextWriter tw = new StreamWriter(path))
+            {
+                tw.WriteLine(configjson);
             }
         }
+    }
 }
