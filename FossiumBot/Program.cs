@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
+using DSharpPlus.Interactivity;
 using FossiumBot.Commands;
+using DSharpPlus.Interactivity.Extensions;
 
 namespace FossiumBot
 {
@@ -18,6 +20,7 @@ namespace FossiumBot
         // Set the local version, change when making a release
         public static string localversion = "v1.1-Dev";
         public VoiceNextExtension Voice { get; set; }
+        public InteractivityExtension Interactivity {  get; set; }
         static void Main(string[] args)
         {
             MainAsync().GetAwaiter().GetResult();
@@ -580,6 +583,8 @@ namespace FossiumBot
             //};
 
             discord.UseVoiceNext();
+            discord.UseInteractivity();
+
             var slash = discord.UseSlashCommands();
             //slash.RegisterCommands<Fun>(848464241219338250);
             slash.RegisterCommands<Fun>();
@@ -647,7 +652,7 @@ namespace FossiumBot
             }
             Console.WriteLine("--------------------");
             Console.WriteLine("Connected!");
-            Console.WriteLine($"Please use {cfgjson["prefix"]}shutdown to properly shut down the bot");
+            Console.WriteLine($"Please use /shutdown to properly shut down the bot");
             Console.WriteLine("--------------------");
             await Task.Delay(-1);
         }
