@@ -9,6 +9,7 @@ using DSharpPlus.SlashCommands.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using DSharpPlus.Interactivity.Extensions;
 
 namespace FossiumBot.Commands
 {
