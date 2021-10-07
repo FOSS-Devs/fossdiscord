@@ -417,12 +417,12 @@ namespace FossiumBot
                     Directory.CreateDirectory(@"Settings/guilds/");
                     if (!File.Exists(file))
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
                     if ((string)jsonData["config"]["loggingchannelid"] == "null")
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -444,12 +444,12 @@ namespace FossiumBot
                     Directory.CreateDirectory(@"Settings/guilds/");
                     if (!File.Exists(file))
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
                     if ((string)jsonData["config"]["loggingchannelid"] == "null")
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -491,12 +491,12 @@ namespace FossiumBot
                     Directory.CreateDirectory(@"Settings/guilds/");
                     if (!File.Exists(file))
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
                     JObject jsonData = JObject.Parse(File.ReadAllText(file));
                     if ((string)jsonData["config"]["loggingchannelid"] == "null")
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
@@ -518,19 +518,19 @@ namespace FossiumBot
                     string file = $"Settings/guilds/{e.Guild.Id}.json";
                     if (!File.Exists(file))
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
 
                     string json = File.ReadAllText(file);
                     dynamic jsonData = JsonConvert.DeserializeObject(json);
                     if (jsonData["config"]["welcomer"] == "off")
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
 
                     if (jsonData["config"]["welcomerchannel"] == "null")
                     {
-                        await Task.CompletedTask; ;
+                        await Task.CompletedTask;
                     }
 
                     if (jsonData["config"]["welcomercustommessage"] == "null")
