@@ -246,10 +246,10 @@ namespace FossiumBot
             };
             discord.GuildCreated += async (s, e) =>
             {
-                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                string jsonfile = $"Settings/guilds/{e.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guilds/");
-                if (!File.Exists(file))
+                if (!File.Exists(jsonfile))
                 {
                     JObject newConfig =
                         new JObject(
@@ -263,7 +263,7 @@ namespace FossiumBot
                             )
                         );
                     string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText(file, dataWrite);
+                    File.WriteAllText(jsonfile, dataWrite);
                 }
                 await Task.CompletedTask;
             };
