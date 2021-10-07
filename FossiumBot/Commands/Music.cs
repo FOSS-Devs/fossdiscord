@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VideoLibrary;
 using System.Text.RegularExpressions;
+using DSharpPlus.Lavalink;
 
 namespace FossiumBot.Commands
 {
@@ -22,7 +23,7 @@ namespace FossiumBot.Commands
         [SlashCommand("play", "Play audio from a YouTube video")]
         public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource);
+            /*await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource);
             var vstat = ctx.Member?.VoiceState;
             if (vstat == null)
             {
@@ -58,10 +59,8 @@ namespace FossiumBot.Commands
                 vnc.Dispose();
             }
             vnc = await vnext.ConnectAsync(chn);
-
             var youTube = YouTube.Default;
             var video = youTube.GetVideo(url);
-
             var downloadembed = new DiscordEmbedBuilder
             {
                 Title = $"Downloading `{video.Title}`...",
@@ -105,9 +104,42 @@ namespace FossiumBot.Commands
                 Color = new DiscordColor(0x2ECC70)
             };
 
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));*/
 
-            try
+            //testing
+            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
+            {
+                var test = new DiscordEmbedBuilder
+                {
+                    Title = "You are not in a voice channel.",
+                    //Description = "",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(test));
+                return;
+            }
+            var lava = ctx.Client.GetLavalink();
+            var node = lava.ConnectedNodes.Values.First();
+            var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
+            //if (connection != null)
+            //{
+                var loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
+                var track = loadResult.Tracks.First();
+                var musicEmbed = new DiscordEmbedBuilder
+                {
+                    Title = $"{track.Title}",
+                    Description = $"{track.Uri}",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
+                await connection.PlayAsync(track);
+                //await connection.PlayAsync(track);
+            //}
+
+            //var loadResult = await lava.Rest.GetTracksAsync(search, LavalinkSearchType.Youtube);
+            //
+
+            /*try
             {
                 await vnc.SendSpeakingAsync(true);
 
@@ -150,7 +182,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(finishedembed));
-            }
+            }*/
         }
 
         [SlashCommand("stop", "Stop playing and leave the voice channel")]

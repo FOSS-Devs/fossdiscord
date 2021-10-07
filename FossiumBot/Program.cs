@@ -10,6 +10,8 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using DSharpPlus.VoiceNext;
 using FossiumBot.Commands;
+using DSharpPlus.Lavalink;
+using DSharpPlus.Net;
 
 namespace FossiumBot
 {
@@ -602,13 +604,26 @@ namespace FossiumBot
                 Name = $"for commands | {localversion}",
                 ActivityType = ActivityType.Watching
             };
+            var endpoint = new ConnectionEndpoint
+            {
+                Hostname = "127.0.0.1",
+                Port = 2333
+            };
+            var lavalinkConfig = new LavalinkConfiguration
+            {
+                Password = "defaultpassword",
+                RestEndpoint = endpoint,
+                SocketEndpoint = endpoint
+            };
             if (Directory.Exists(@"Settings/lck/"))
             {
                 Directory.Delete("Settings/lck/", true);
             }
             try
             {
+                var lavalink = discord.UseLavalink();
                 await discord.ConnectAsync(discordActivity);
+                await lavalink.ConnectAsync(lavalinkConfig);
             }
             catch(Exception e)
             {
