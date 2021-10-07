@@ -28,7 +28,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
@@ -39,7 +39,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (ctx.Guild.Id != member.Guild.Id)
             {
@@ -50,7 +50,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                await Task.CompletedTask;
+                return;
             }
             else if (reason.Length > 350)
             {
@@ -61,7 +61,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
-                await Task.CompletedTask;
+                return;
             }
             var embed = new DiscordEmbedBuilder
             {
@@ -78,7 +78,7 @@ namespace FossiumBot.Commands
             JObject jsonData = JObject.Parse(File.ReadAllText(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -93,7 +93,7 @@ namespace FossiumBot.Commands
                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                 await loggingchannel.SendMessageAsync(loggingembed);
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -110,7 +110,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
@@ -121,7 +121,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (reason.Length > 350)
             {
@@ -132,7 +132,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
-                await Task.CompletedTask;
+                return;
             }
             var banlist = ctx.Guild.GetBansAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (banlist.Any(x => x.User.Id == member.Id))
@@ -143,7 +143,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -163,7 +163,7 @@ namespace FossiumBot.Commands
             JObject jsonData = JObject.Parse(File.ReadAllText(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -178,7 +178,7 @@ namespace FossiumBot.Commands
                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                 await loggingchannel.SendMessageAsync(loggingembed);
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -195,7 +195,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (ctx.Member.Hierarchy <= member.Hierarchy)
             {
@@ -206,7 +206,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (ctx.Guild.Id != member.Guild.Id)
             {
@@ -217,7 +217,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                await Task.CompletedTask;
+                return;
             }
             else if (reason.Length > 350)
             {
@@ -228,7 +228,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -249,7 +249,7 @@ namespace FossiumBot.Commands
             JObject jsonData = JObject.Parse(File.ReadAllText(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -264,7 +264,7 @@ namespace FossiumBot.Commands
                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                 await loggingchannel.SendMessageAsync(loggingembed);
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -299,7 +299,7 @@ namespace FossiumBot.Commands
             JObject jsonData = JObject.Parse(File.ReadAllText(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -314,7 +314,7 @@ namespace FossiumBot.Commands
                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                 await loggingchannel.SendMessageAsync(loggingembed);
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -330,7 +330,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             var messages = await ctx.Channel.GetMessagesAsync((int)amount + 1);
             await ctx.Channel.DeleteMessagesAsync(messages);
@@ -358,7 +358,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                await Task.CompletedTask;
+                return;
             }
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/lck/");
@@ -371,7 +371,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                await Task.CompletedTask;
+                return;
             }
             else if (time == "off")
             {
@@ -382,7 +382,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                await Task.CompletedTask;
+                return;
             }
             if (time != "off" && short.Parse(time) >= 1)
             {
@@ -420,7 +420,7 @@ namespace FossiumBot.Commands
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
-            await Task.CompletedTask;
+            return;
         }
 
         [SlashCommand("warn", "Warn a user")]
@@ -437,7 +437,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                await Task.CompletedTask;
+                return;
             }
             else if (ctx.Member.Id == member.Id)
             {
@@ -448,7 +448,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (reason.Length > 350)
             {
@@ -459,7 +459,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lengthError));
-                await Task.CompletedTask;
+                return;
             }
             string file = $"Data/Warnings/{ctx.Guild.Id}.json";
             Directory.CreateDirectory(@"Data/");
@@ -545,7 +545,7 @@ namespace FossiumBot.Commands
             JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
             if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
             {
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -561,7 +561,7 @@ namespace FossiumBot.Commands
                 loggingembed.AddField("Reason", reason);
                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                 await loggingchannel.SendMessageAsync(loggingembed);
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -641,7 +641,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorEM));
-                await Task.CompletedTask;
+                return;
             };
         }
 
@@ -660,7 +660,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
-                await Task.CompletedTask;
+                return;
             }
             else {
                 try
@@ -697,7 +697,7 @@ namespace FossiumBot.Commands
                             JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
                             if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                             {
-                                await Task.CompletedTask;
+                                return;
                             }
                             else
                             {
@@ -712,7 +712,7 @@ namespace FossiumBot.Commands
                                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                                 await loggingchannel.SendMessageAsync(loggingembed);
-                                await Task.CompletedTask;
+                                return;
                             }
                         }
                         else if (jsonData[$"{member.Id}"][$"{caseID}"] == null)
@@ -724,7 +724,7 @@ namespace FossiumBot.Commands
                                 Color = new DiscordColor(0xFF0000)
                             };
                             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
-                            await Task.CompletedTask;
+                            return;
                         }
                         else
                         {
@@ -744,7 +744,7 @@ namespace FossiumBot.Commands
                             JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
                             if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                             {
-                                await Task.CompletedTask;
+                                return;
                             }
                             else
                             {
@@ -759,7 +759,7 @@ namespace FossiumBot.Commands
                                 loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                                 loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                                 await loggingchannel.SendMessageAsync(loggingembed);
-                                await Task.CompletedTask;
+                                return;
                             }
                         }
                     }
@@ -772,7 +772,7 @@ namespace FossiumBot.Commands
                             Color = new DiscordColor(0x0080FF)
                         };
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nonexistEM));
-                        await Task.CompletedTask;
+                        return;
                     }
                         
                 }
@@ -785,7 +785,7 @@ namespace FossiumBot.Commands
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorEM));
-                    await Task.CompletedTask;
+                    return;
                 };
             }
         }
@@ -804,7 +804,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000),
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             else if (member.Id == ctx.Member.Id)
             {
@@ -814,7 +814,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errembed));
-                await Task.CompletedTask;
+                return;
             }
             string file = $"Settings/guilds/{ctx.Guild.Id}.json";
             if (File.Exists(file))
@@ -844,7 +844,7 @@ namespace FossiumBot.Commands
                     JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
                     if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                     {
-                        await Task.CompletedTask;
+                        return;
                     }
                     else
                     {
@@ -860,7 +860,7 @@ namespace FossiumBot.Commands
                         loggingembed.AddField("Time in minutes", mutetime.ToString());
                         loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                         await loggingchannel.SendMessageAsync(loggingembed);
-                        await Task.CompletedTask;
+                        return;
                     }
                 }
             }
@@ -873,7 +873,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(roleNotExist));
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -904,7 +904,7 @@ namespace FossiumBot.Commands
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEM));
-                    await Task.CompletedTask;
+                    return;
                 }
                 var em = new DiscordEmbedBuilder
                 {
@@ -919,7 +919,7 @@ namespace FossiumBot.Commands
                 JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
                 if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                 {
-                    await Task.CompletedTask;
+                    return;
                 }
                 else
                 {
@@ -934,7 +934,7 @@ namespace FossiumBot.Commands
                     loggingembed.WithAuthor($"{user.Username}#{user.Discriminator}", null, user.AvatarUrl);
                     loggingembed.AddField("Moderator", $"{ctx.Member.Username}#{ctx.Member.Discriminator}");
                     await loggingchannel.SendMessageAsync(loggingembed);
-                    await Task.CompletedTask;
+                    return;
                 }
             }
             else
@@ -946,7 +946,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(roleNotExist));
-                await Task.CompletedTask;
+                return;
             }
         }
     }

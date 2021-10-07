@@ -158,7 +158,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                return;
+                return;;
             }
 
             string[] number = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "keycap_ten"};

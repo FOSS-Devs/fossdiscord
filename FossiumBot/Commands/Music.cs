@@ -33,7 +33,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                await Task.CompletedTask;
+                return;
             }
             string videoid = String.Empty;
             Match match1 = Regex.Match(url, @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
@@ -49,7 +49,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                await Task.CompletedTask;
+                return;
             }
             var chn = vstat.Channel;
             var vnext = ctx.Client.GetVoiceNext();
@@ -107,6 +107,32 @@ namespace FossiumBot.Commands
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));*/
 
             //testing
+
+            string urltype = string.Empty;
+
+            Match youtubematch = Regex.Match(url, @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
+            if (youtubematch.Success)
+            {
+                urltype = "YouTube";
+            }
+            else
+            {
+                Match soundcloudmatch = Regex.Match(url, @"^(https?:\/\/)?(www.)?(m\.)?soundcloud\.com\/[\w\-\.]+(\/)+[\w\-\.]+/?$");
+                if (soundcloudmatch.Success)
+                {
+                    urltype = "SoundCloud";
+                }
+                else
+                {
+                    var errorembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"That isn't a YouTube or SoundCloud url",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
+                    return;
+                }
+            }
             if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
                 var test = new DiscordEmbedBuilder
@@ -116,25 +142,35 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(test));
-                return;
+                return;;
             }
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
+            var vstat = ctx.Member?.VoiceState;
+            var channel = vstat.Channel;
+            await node.ConnectAsync(channel);
             var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
-            //if (connection != null)
-            //{
-                var loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
-                var track = loadResult.Tracks.First();
-                var musicEmbed = new DiscordEmbedBuilder
-                {
-                    Title = $"{track.Title}",
-                    Description = $"{track.Uri}",
-                    Color = new DiscordColor(0xFFA500)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
-                await connection.PlayAsync(track);
-                //await connection.PlayAsync(track);
-            //}
+
+            dynamic loadResult = null;
+            if (urltype == "YouTube")
+            {
+                loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
+            }
+            else if (urltype == "SoundCloud")
+            {
+                loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
+            }
+            
+            var track = loadResult.Tracks.First();
+            var musicEmbed = new DiscordEmbedBuilder
+            {
+                Title = $"Now playing {track.Title}",
+                Description = $"{track.Uri}",
+                Color = new DiscordColor(0xFFA500)
+            };
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
+            await connection.PlayAsync(track);
+            Console.WriteLine(connection.CurrentState.PlaybackPosition);
 
             //var loadResult = await lava.Rest.GetTracksAsync(search, LavalinkSearchType.Youtube);
             //
@@ -206,7 +242,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -216,7 +252,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -232,7 +268,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nothingplayingembed));
-                await Task.CompletedTask;
+                return;
             }
 
             JObject jsonData = JObject.Parse(File.ReadAllText(@"Music/nowplaying.json"));
