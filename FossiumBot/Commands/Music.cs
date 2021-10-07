@@ -32,7 +32,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                await Task.CompletedTask;
+                return;
             }
             string videoid = String.Empty;
             Match match1 = Regex.Match(url, @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
@@ -48,7 +48,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                await Task.CompletedTask;
+                return;
             }
             var chn = vstat.Channel;
             var vnext = ctx.Client.GetVoiceNext();
@@ -174,7 +174,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-                await Task.CompletedTask;
+                return;
             }
             else
             {
@@ -184,7 +184,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                await Task.CompletedTask;
+                return;
             }
         }
 
@@ -200,7 +200,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nothingplayingembed));
-                await Task.CompletedTask;
+                return;
             }
 
             JObject jsonData = JObject.Parse(File.ReadAllText(@"Music/nowplaying.json"));

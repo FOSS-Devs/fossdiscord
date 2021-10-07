@@ -69,7 +69,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        await Task.CompletedTask;;
+            //        return;
             //    }
             //    else if (e.Id == "help_utils")
             //    {
@@ -95,7 +95,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        await Task.CompletedTask;;
+            //        return;
             //    }
             //    else if (e.Id == "help_fun")
             //    {
@@ -121,7 +121,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        await Task.CompletedTask;;
+            //        return;
             //    }
             //    else if (e.Id == "help_music")
             //    {
@@ -147,7 +147,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        await Task.CompletedTask;;
+            //        return;
             //    }
             //    else if (e.Id == "help_owner")
             //    {
@@ -173,7 +173,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", true),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", false)
             //            }));
-            //        await Task.CompletedTask;;
+            //        return;
             //    }
             //    else if (e.Id == "help_settings")
             //    {
@@ -199,7 +199,7 @@ namespace FossiumBot
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_owner", "Owner", false),
             //                new DiscordButtonComponent(ButtonStyle.Primary, "help_settings", "Settings", true)
             //            }));
-            //        await Task.CompletedTask;;
+            //        return;
             //    }
             //};
             discord.GuildAvailable += async (s, e) =>
@@ -244,293 +244,289 @@ namespace FossiumBot
                 }
                 await Task.CompletedTask;
             };
-            discord.GuildCreated += async (s, e) =>
+            //discord.GuildCreated += async (s, e) =>
+            //{
+            //    string file = $"Settings/guilds/{e.Guild.Id}.json";
+            //    Directory.CreateDirectory(@"Settings/");
+            //    Directory.CreateDirectory(@"Settings/guilds/");
+            //    if (!File.Exists(file))
+            //    {
+            //        JObject newConfig =
+            //              new JObject(
+            //                  new JProperty("config",
+            //                  new JObject {
+            //                        new JProperty("loggingchannelid", null),
+            //                        new JProperty("muterole", null),
+            //                       }
+            //                  )
+            //              );
+            //        string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
+            //        File.WriteAllText(file, dataWrite);
+            //    }
+            //    return;
+            //};
+            discord.GuildDeleted += async (s, e) =>
             {
-                string jsonfile = $"Settings/guilds/{e.Guild.Id}.json";
-                Directory.CreateDirectory(@"Settings/");
-                Directory.CreateDirectory(@"Settings/guilds/");
-                if (!File.Exists(jsonfile))
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                try
                 {
-                    if (!File.Exists(jsonfile))
-                    {
-                        JObject newConfig =
-                            new JObject(
-                                new JProperty("config",
-                                new JObject {
-                                    new JProperty("loggingchannelid", "null"),
-                                    new JProperty("muterole", "null"),
-                                    new JProperty("welcomer", "off"),
-                                    new JProperty("welcomercustommessage", "null")
-                                }
-                                )
-                            );
-                        string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                        File.WriteAllText(jsonfile, dataWrite);
-                    }
+                    File.Delete(file);
+                }
+                catch (FileNotFoundException)
+                {
                     await Task.CompletedTask;
-                };
-                discord.GuildDeleted += async (s, e) =>
+                }
+            };
+            // Logging
+            discord.MessageDeleted += async (s, e) =>
+            {
+                var embed = new DiscordEmbedBuilder
                 {
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    try
-                    {
-                        File.Delete(file);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        await Task.CompletedTask;
-                    }
+                    Title = $"Message deleted in #{e.Channel.Name}",
+                    Color = new DiscordColor(0xFF0000),
+                    Timestamp = e.Message.Timestamp
                 };
-                // Logging
-                discord.MessageDeleted += async (s, e) =>
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                if((string)jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
+                {
+                    return;
+                }
+                else 
+                {
+                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
+                    embed.AddField("Content", e.Message.Content);
+                    embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
+                    await loggingchannel.SendMessageAsync(embed);
+                    return;
+                }
+            };
+            discord.MessageUpdated += async (s, e) =>
+            {
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                if (e.Message.IsEdited == false || e.Message.Embeds.Count >= 1)
+                {
+                    return;
+                }
+                else
                 {
                     var embed = new DiscordEmbedBuilder
                     {
-                        Title = $"Message deleted in #{e.Channel.Name}",
-                        Color = new DiscordColor(0xFF0000),
+                        Title = $"Message edited in #{e.Channel.Name}",
+                        Description = $"[Jump To Message]({e.Message.JumpLink})",
+                        Color = new DiscordColor(0xFFA500),
                         Timestamp = e.Message.Timestamp
                     };
                     Directory.CreateDirectory(@"Settings/");
-                    Directory.CreateDirectory(@"Settings/guilds");
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if ((string)jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
+                    Directory.CreateDirectory(@"Settings/guilds/");
+                    if (!File.Exists(file))
                     {
-                        await Task.CompletedTask;
+                        return;
+                    }
+                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
+                    {
+                        return;
+                    }
+                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                    embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
+                    embed.AddField("Before", e.MessageBefore.Content);
+                    embed.AddField("After", e.Message.Content);
+                    embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
+                    await loggingchannel.SendMessageAsync(embed);
+                }
+            };
+            discord.GuildMemberAdded += async (s, e) =>
+            {
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Member joined",
+                    Color = new DiscordColor(0x2ECC70),
+                    Timestamp = e.Member.JoinedAt
+                };
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
+                if (!File.Exists(file))
+                {
+                    return;
+                }
+                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
+                embed.AddField("ID", e.Member.Id.ToString());
+                long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Registered", $"<t:{membercreation}:F>");
+                await loggingchannel.SendMessageAsync(embed);
+            };
+            discord.GuildMemberRemoved += async (s, e) =>
+            {
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Member left",
+                    Color = new DiscordColor(0xFF0000),
+                    Timestamp = DateTime.Now
+                };
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
+                if (!File.Exists(file))
+                {
+                    return;
+                }
+                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
+                embed.AddField("ID", e.Member.Id.ToString());
+                long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Registered", $"<t:{membercreation}:F>");
+                long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
+                embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
+                await loggingchannel.SendMessageAsync(embed);
+            };
+            discord.ChannelCreated += async (s, e) =>
+            {
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Channel created",
+                    Description = e.Channel.Mention,
+                    Color = new DiscordColor(0x2ECC70),
+                    Timestamp = e.Channel.CreationTimestamp
+                };
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
+                if (!File.Exists(file))
+                {
+                    return;
+                }
+                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                embed.AddField("Type", e.Channel.Type.ToString());
+                embed.AddField("ID", e.Channel.Id.ToString());
+                await loggingchannel.SendMessageAsync(embed);
+            };
+            discord.ChannelUpdated += async (s, e) =>
+            {
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Channel updated",
+                    Description = e.ChannelAfter.Mention,
+                    Color = new DiscordColor(0x2ECC70),
+                    Timestamp = DateTime.Now
+                };
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
+                if (!File.Exists(file))
+                {
+                    return;
+                }
+                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
+                {
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                if(e.ChannelBefore.Name != e.ChannelAfter.Name)
+                {
+                    embed.AddField("Name", $"**Before**: {e.ChannelBefore.Name}\n**After**: {e.ChannelAfter.Name}");
+                }
+                if(e.ChannelAfter.Type == ChannelType.Text && e.ChannelBefore.Topic != e.ChannelAfter.Topic)
+                {
+                    if(e.ChannelBefore.Topic == null)
+                    {
+                        embed.AddField("Topic", $"**Before**: <none>\n**After**: `{e.ChannelAfter.Topic}`");
+                    }
+                    else if(e.ChannelAfter.Topic == null)
+                    {
+                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: <none>");
                     }
                     else
                     {
-                        ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                        DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                        embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
-                        embed.AddField("Content", e.Message.Content);
-                        embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
-                        await loggingchannel.SendMessageAsync(embed);
-                        await Task.CompletedTask;
+                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: `{e.ChannelAfter.Topic}`");
                     }
-                };
-                discord.MessageUpdated += async (s, e) =>
+                }
+                long channelcreation = e.ChannelBefore.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Type", e.ChannelAfter.Type.ToString());
+                embed.AddField("Creation date", $"<t:{channelcreation}:F>");
+                embed.AddField("ID", e.ChannelAfter.Id.ToString());
+                await loggingchannel.SendMessageAsync(embed);
+            };
+            discord.ChannelDeleted += async (s, e) =>
+            {
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                var embed = new DiscordEmbedBuilder
                 {
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    if (e.Message.IsEdited == false || e.Message.Embeds.Count >= 1)
-                    {
-                        await Task.CompletedTask;
-                    }
-                    else
-                    {
-                        var embed = new DiscordEmbedBuilder
-                        {
-                            Title = $"Message edited in #{e.Channel.Name}",
-                            Description = $"[Jump To Message]({e.Message.JumpLink})",
-                            Color = new DiscordColor(0xFFA500),
-                            Timestamp = e.Message.Timestamp
-                        };
-                        Directory.CreateDirectory(@"Settings/");
-                        Directory.CreateDirectory(@"Settings/guilds/");
-                        if (!File.Exists(file))
-                        {
-                            await Task.CompletedTask;
-                        }
-                        JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                        if ((string)jsonData["config"]["loggingchannelid"] == "null")
-                        {
-                            await Task.CompletedTask;
-                        }
-                        ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                        DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                        embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
-                        embed.AddField("Before", e.MessageBefore.Content);
-                        embed.AddField("After", e.Message.Content);
-                        embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
-                        await loggingchannel.SendMessageAsync(embed);
-                    }
+                    Title = $"Channel deleted",
+                    Color = new DiscordColor(0xFF0000),
+                    Timestamp = DateTime.Now
                 };
-                discord.GuildMemberAdded += async (s, e) =>
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds/");
+                if (!File.Exists(file))
                 {
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Member joined",
-                        Color = new DiscordColor(0x2ECC70),
-                        Timestamp = e.Member.JoinedAt
-                    };
-                    Directory.CreateDirectory(@"Settings/");
-                    Directory.CreateDirectory(@"Settings/guilds/");
-                    if (!File.Exists(file))
-                    {
-                        await Task.CompletedTask;
-                    }
-                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
-                    {
-                        await Task.CompletedTask;
-                    }
-                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                    embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
-                    embed.AddField("ID", e.Member.Id.ToString());
-                    long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
-                    embed.AddField("Registered", $"<t:{membercreation}:F>");
-                    await loggingchannel.SendMessageAsync(embed);
-                };
-                discord.GuildMemberRemoved += async (s, e) =>
+                    return;
+                }
+                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Member left",
-                        Color = new DiscordColor(0xFF0000),
-                        Timestamp = DateTime.Now
-                    };
-                    Directory.CreateDirectory(@"Settings/");
-                    Directory.CreateDirectory(@"Settings/guilds/");
-                    if (!File.Exists(file))
-                    {
-                        await Task.CompletedTask;
-                    }
-                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
-                    {
-                        await Task.CompletedTask;
-                    }
-                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                    embed.WithAuthor($"{e.Member.Username}#{e.Member.Discriminator}", null, e.Member.AvatarUrl);
-                    embed.AddField("ID", e.Member.Id.ToString());
-                    long membercreation = e.Member.CreationTimestamp.ToUnixTimeSeconds();
-                    embed.AddField("Registered", $"<t:{membercreation}:F>");
-                    long memberjoinedat = e.Member.JoinedAt.ToUnixTimeSeconds();
-                    embed.AddField("Joined Server", $"<t:{memberjoinedat}:F>");
-                    await loggingchannel.SendMessageAsync(embed);
-                };
-                discord.ChannelCreated += async (s, e) =>
+                    return;
+                }
+                ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
+                DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
+                long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
+                embed.AddField("Name", e.Channel.Name.ToString());
+                if(e.Channel.Type == ChannelType.Text && e.Channel.Topic != null)
                 {
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Channel created",
-                        Description = e.Channel.Mention,
-                        Color = new DiscordColor(0x2ECC70),
-                        Timestamp = e.Channel.CreationTimestamp
-                    };
-                    Directory.CreateDirectory(@"Settings/");
-                    Directory.CreateDirectory(@"Settings/guilds/");
-                    if (!File.Exists(file))
-                    {
-                        await Task.CompletedTask;
-                    }
-                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
-                    {
-                        await Task.CompletedTask;
-                    }
-                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                    embed.AddField("Type", e.Channel.Type.ToString());
-                    embed.AddField("ID", e.Channel.Id.ToString());
-                    await loggingchannel.SendMessageAsync(embed);
-                };
-                discord.ChannelUpdated += async (s, e) =>
+                    embed.AddField("Topic", e.Channel.Topic);
+                }
+                embed.AddField("Type", e.Channel.Type.ToString());
+                embed.AddField("Creation date", $"<t:{channelcreation}:F>");
+                embed.AddField("ID", e.Channel.Id.ToString());
+                await loggingchannel.SendMessageAsync(embed);
+            };
+            discord.GuildMemberAdded += async (s, e) =>
+            {
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/guilds");
+                string file = $"Settings/guilds/{e.Guild.Id}.json";
+                if (!File.Exists(file))
                 {
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Channel updated",
-                        Description = e.ChannelAfter.Mention,
-                        Color = new DiscordColor(0x2ECC70),
-                        Timestamp = DateTime.Now
-                    };
-                    Directory.CreateDirectory(@"Settings/");
-                    Directory.CreateDirectory(@"Settings/guilds/");
-                    if (!File.Exists(file))
-                    {
-                        await Task.CompletedTask;
-                    }
-                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
-                    {
-                        await Task.CompletedTask;
-                    }
-                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                    if (e.ChannelBefore.Name != e.ChannelAfter.Name)
-                    {
-                        embed.AddField("Name", $"**Before**: {e.ChannelBefore.Name}\n**After**: {e.ChannelAfter.Name}");
-                    }
-                    if (e.ChannelAfter.Type == ChannelType.Text && e.ChannelBefore.Topic != e.ChannelAfter.Topic)
-                    {
-                        if (e.ChannelBefore.Topic == null)
-                        {
-                            embed.AddField("Topic", $"**Before**: <none>\n**After**: `{e.ChannelAfter.Topic}`");
-                        }
-                        else if (e.ChannelAfter.Topic == null)
-                        {
-                            embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: <none>");
-                        }
-                        else
-                        {
-                            embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: `{e.ChannelAfter.Topic}`");
-                        }
-                    }
-                    long channelcreation = e.ChannelBefore.CreationTimestamp.ToUnixTimeSeconds();
-                    embed.AddField("Type", e.ChannelAfter.Type.ToString());
-                    embed.AddField("Creation date", $"<t:{channelcreation}:F>");
-                    embed.AddField("ID", e.ChannelAfter.Id.ToString());
-                    await loggingchannel.SendMessageAsync(embed);
-                };
-                discord.ChannelDeleted += async (s, e) =>
-                {
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    var embed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Channel deleted",
-                        Color = new DiscordColor(0xFF0000),
-                        Timestamp = DateTime.Now
-                    };
-                    Directory.CreateDirectory(@"Settings/");
-                    Directory.CreateDirectory(@"Settings/guilds/");
-                    if (!File.Exists(file))
-                    {
-                        await Task.CompletedTask;
-                    }
-                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
-                    if ((string)jsonData["config"]["loggingchannelid"] == "null")
-                    {
-                        await Task.CompletedTask;
-                    }
-                    ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
-                    DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
-                    long channelcreation = e.Channel.CreationTimestamp.ToUnixTimeSeconds();
-                    embed.AddField("Name", e.Channel.Name.ToString());
-                    if (e.Channel.Type == ChannelType.Text && e.Channel.Topic != null)
-                    {
-                        embed.AddField("Topic", e.Channel.Topic);
-                    }
-                    embed.AddField("Type", e.Channel.Type.ToString());
-                    embed.AddField("Creation date", $"<t:{channelcreation}:F>");
-                    embed.AddField("ID", e.Channel.Id.ToString());
-                    await loggingchannel.SendMessageAsync(embed);
-                };
-                discord.GuildMemberAdded += async (s, e) =>
-                {
-                    Directory.CreateDirectory(@"Settings/");
-                    Directory.CreateDirectory(@"Settings/guilds");
-                    string file = $"Settings/guilds/{e.Guild.Id}.json";
-                    if (!File.Exists(file))
-                    {
-                        await Task.CompletedTask;
-                    }
+                    return;
+                }
 
-                    string json = File.ReadAllText(file);
-                    dynamic jsonData = JsonConvert.DeserializeObject(json);
+                string json = File.ReadAllText(file);
+                dynamic jsonData = JsonConvert.DeserializeObject(json);
                     if (jsonData["config"]["welcomer"] == "off")
                     {
-                        await Task.CompletedTask;
+                        return;
                     }
 
                     if (jsonData["config"]["welcomerchannel"] == "null")
                     {
-                        await Task.CompletedTask;
+                        return;
                     }
 
                     if (jsonData["config"]["welcomercustommessage"] == "null")
@@ -546,118 +542,116 @@ namespace FossiumBot
                         string custommessage = jsonData["config"]["welcomercustommessage"];
                         string custommessagereplaced = custommessage.Replace("{user}", e.Member.Username).Replace("{usermention}", e.Member.Mention).Replace("{servername}", e.Guild.Name);
                         await welcomerchannel.SendMessageAsync(custommessagereplaced);
-                    }
-                };
-                //commands.CommandErrored += async (s, e) =>
-                //{
-                //    if (e.Exception is CommandNotFoundException)
-                //    {
-                //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "");
-                //        var commandnotfoundembed = new DiscordEmbedBuilder
-                //        {
-                //            Title = "Oops...",
-                //            Description = $"The command `{messagecommand}` was not found",
-                //            Color = new DiscordColor(0xFF0000)
-                //        };
-                //        await e.Context.RespondAsync(commandnotfoundembed);
-                //        await Task.CompletedTask;;
-                //    }
-                //    else if (e.Exception.Message == "Could not find a suitable overload for the command.")
-                //    {
-                //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "").Split(" ")[0].ToString();
-                //        var overloadembed = new DiscordEmbedBuilder
-                //        {
-                //            Title = "Oops...",
-                //            Description = $"One or more arguments are not needed or missing\nRun `{cfgjson["prefix"]}help {messagecommand}` to see all the arguments",
-                //            Color = new DiscordColor(0xFF0000)
-                //        };
-                //        await e.Context.RespondAsync(overloadembed);
-                //        await Task.CompletedTask;;
-                //    }
-                //    var embed = new DiscordEmbedBuilder
-                //    {
-                //        Title = "Oops...",
-                //        Description = $"Something went wrong:\n`{e.Exception.Message}`",
-                //        Color = new DiscordColor(0xFF0000)
-                //    };
-                //    await e.Context.RespondAsync(embed);
-                //};
+                    }   
+            };
+            //commands.CommandErrored += async (s, e) =>
+            //{
+            //    if (e.Exception is CommandNotFoundException)
+            //    {
+            //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "");
+            //        var commandnotfoundembed = new DiscordEmbedBuilder
+            //        {
+            //            Title = "Oops...",
+            //            Description = $"The command `{messagecommand}` was not found",
+            //            Color = new DiscordColor(0xFF0000)
+            //        };
+            //        await e.Context.RespondAsync(commandnotfoundembed);
+            //        return;
+            //    }
+            //    else if (e.Exception.Message == "Could not find a suitable overload for the command.")
+            //    {
+            //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "").Split(" ")[0].ToString();
+            //        var overloadembed = new DiscordEmbedBuilder
+            //        {
+            //            Title = "Oops...",
+            //            Description = $"One or more arguments are not needed or missing\nRun `{cfgjson["prefix"]}help {messagecommand}` to see all the arguments",
+            //            Color = new DiscordColor(0xFF0000)
+            //        };
+            //        await e.Context.RespondAsync(overloadembed);
+            //        return;
+            //    }
+            //    var embed = new DiscordEmbedBuilder
+            //    {
+            //        Title = "Oops...",
+            //        Description = $"Something went wrong:\n`{e.Exception.Message}`",
+            //        Color = new DiscordColor(0xFF0000)
+            //    };
+            //    await e.Context.RespondAsync(embed);
+            //};
 
-                discord.UseVoiceNext();
-                var slash = discord.UseSlashCommands();
-                //slash.RegisterCommands<Fun>(848464241219338250);
-                slash.RegisterCommands<Fun>();
-                //slash.RegisterCommands<Music>(848464241219338250);
-                slash.RegisterCommands<Music>();
-                //slash.RegisterCommands<Owner>(848464241219338250);
-                slash.RegisterCommands<Owner>();
-                //slash.RegisterCommands<Moderation>(848464241219338250);
-                slash.RegisterCommands<Moderation>();
-                //slash.RegisterCommands<Settings>(848464241219338250);
-                slash.RegisterCommands<Settings>();
-                //slash.RegisterCommands<Utils>(848464241219338250);
-                slash.RegisterCommands<Utils>();
-                //slash.RegisterCommands<Update>(848464241219338250);
-                slash.RegisterCommands<Update>();
-                DiscordActivity discordActivity = new DiscordActivity
-                {
-                    Name = $"for commands | {localversion}",
-                    ActivityType = ActivityType.Watching
-                };
-                if (Directory.Exists(@"Settings/lck/"))
-                {
-                    Directory.Delete("Settings/lck/", true);
-                }
-                try
-                {
-                    await discord.ConnectAsync(discordActivity);
-                }
-                catch (Exception ex)
+            discord.UseVoiceNext();
+            var slash = discord.UseSlashCommands();
+            //slash.RegisterCommands<Fun>(848464241219338250);
+            slash.RegisterCommands<Fun>();
+            //slash.RegisterCommands<Music>(848464241219338250);
+            slash.RegisterCommands<Music>();
+            //slash.RegisterCommands<Owner>(848464241219338250);
+            slash.RegisterCommands<Owner>();
+            //slash.RegisterCommands<Moderation>(848464241219338250);
+            slash.RegisterCommands<Moderation>();
+            //slash.RegisterCommands<Settings>(848464241219338250);
+            slash.RegisterCommands<Settings>();
+            //slash.RegisterCommands<Utils>(848464241219338250);
+            slash.RegisterCommands<Utils>();
+            //slash.RegisterCommands<Update>(848464241219338250);
+            slash.RegisterCommands<Update>();
+            DiscordActivity discordActivity = new DiscordActivity
+            {
+                Name = $"for commands | {localversion}",
+                ActivityType = ActivityType.Watching
+            };
+            if (Directory.Exists(@"Settings/lck/"))
+            {
+                Directory.Delete("Settings/lck/", true);
+            }
+            try
+            {
+                await discord.ConnectAsync(discordActivity);
+            }
+            catch(Exception e)
+            {
+                Console.Clear();
+                Console.WriteLine("Oops...\nSomething went wrong");
+                Console.WriteLine("In most cases this means that the token is invalid");
+                goto Ask;
+            Ask:
+                Console.Write("Do you want to\n(r)ewrite the config\n(s)how more info\n(q)uit\n");
+                string answer = Console.ReadLine();
+                if (answer == "r")
                 {
                     Console.Clear();
-                    Console.WriteLine("Oops...\nSomething went wrong");
-                    Console.WriteLine("In most cases this means that the token is invalid");
-                    Console.WriteLine($"{ex}");
-                    goto Ask;
-                Ask:
-                    Console.Write("Do you want to\n(r)ewrite the config\n(s)how more info\n(q)uit\n");
-                    string answer = Console.ReadLine();
-                    if (answer == "r")
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Starting the config creator...\n");
-                        WriteConfig();
-                        Console.Clear();
-                        Console.WriteLine("Starting the bot...");
-                        MainAsync().GetAwaiter().GetResult();
+                    Console.WriteLine("Starting the config creator...\n");
+                    WriteConfig();
+                    Console.Clear();
+                    Console.WriteLine("Starting the bot...");
+                    MainAsync().GetAwaiter().GetResult();
 
-                    }
-                    else if (answer == "s")
-                    {
-                        Console.WriteLine("-----Detailed Error-----");
-                        Console.WriteLine(e);
-                        Console.WriteLine("-------------------------");
-                        Console.Write("\n");
-                        goto Ask;
-                    }
-                    else if (answer == "q")
-                    {
-                        Environment.Exit(1);
-                    }
-                    else
-                    {
-                        Console.WriteLine("That option does not exist\n");
-                        goto Ask;
-                    }
                 }
-                Console.WriteLine("--------------------");
-                Console.WriteLine("Connected!");
-                Console.WriteLine($"Please use {cfgjson["prefix"]}shutdown to properly shut down the bot");
-                Console.WriteLine("--------------------");
-                await Task.Delay(-1);
-            };
-
+                else if (answer == "s")
+                {
+                    Console.WriteLine("-----Detailed Error-----");
+                    Console.WriteLine(e);
+                    Console.WriteLine("-------------------------");
+                    Console.Write("\n");
+                    goto Ask;
+                }
+                else if (answer == "q")
+                {
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    Console.WriteLine("That option does not exist\n");
+                    goto Ask;
+                }
+            }
+            Console.WriteLine("--------------------");
+            Console.WriteLine("Connected!");
+            Console.WriteLine($"Please use {cfgjson["prefix"]}shutdown to properly shut down the bot");
+            Console.WriteLine("--------------------");
+            await Task.Delay(-1);
         }
+
         private static void WriteConfig()
         {
             Console.Write("Enter your bot token: ");
@@ -671,15 +665,16 @@ namespace FossiumBot
                 WriteConfig();
             }
             Console.WriteLine("Writing config...");
+
             JObject data = new JObject(
                 new JProperty("token", $"{token}")
-            );
+                );
             string configjson = JsonConvert.SerializeObject(data, Formatting.Indented);
             string path = @"config.json";
             using (TextWriter tw = new StreamWriter(path))
             {
                 tw.WriteLine(configjson);
-            }
+            };
         }
     }
 }
