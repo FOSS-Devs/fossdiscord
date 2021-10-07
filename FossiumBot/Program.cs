@@ -617,6 +617,7 @@ namespace FossiumBot
                     Console.Clear();
                     Console.WriteLine("Oops...\nSomething went wrong");
                     Console.WriteLine("In most cases this means that the token is invalid");
+                    Console.WriteLine($"{ex}");
                     goto Ask;
                 Ask:
                     Console.Write("Do you want to\n(r)ewrite the config\n(s)how more info\n(q)uit\n");

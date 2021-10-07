@@ -123,7 +123,7 @@ namespace FossiumBot.Commands
                             Color = new DiscordColor(0xFF0000)
                         };
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
-                        return;
+                        await Task.CompletedTask;
                     }
                     else
                     {
@@ -162,7 +162,7 @@ namespace FossiumBot.Commands
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
-                    return;
+                    await Task.CompletedTask;
                 }
             }
             else if (((int)response.StatusCode) == 404)
