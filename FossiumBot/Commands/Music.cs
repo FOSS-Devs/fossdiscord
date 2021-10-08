@@ -142,7 +142,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(test));
-                return;;
+                return;
             }
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
