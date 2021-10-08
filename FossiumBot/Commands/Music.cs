@@ -233,7 +233,7 @@ namespace FossiumBot.Commands
             //var channel = vstat.Channel;
             if (connection != null)
             {
-                connection.DisconnectAsync();
+                await connection.DisconnectAsync();
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"Stopped playing and left the channel",
