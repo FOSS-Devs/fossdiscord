@@ -18,7 +18,7 @@ namespace FossiumBot.Commands
 {
     public class Music : ApplicationCommandModule
     {
-        int ffmpegpid = 0;
+        //int ffmpegpid = 0;
 
         [SlashCommand("play", "Play audio from a YouTube video")]
         public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
