@@ -224,10 +224,36 @@ namespace FossiumBot.Commands
         [SlashCommand("stop", "Stop playing and leave the voice channel")]
         public async Task StopCommand(InteractionContext ctx)
         {
-            var vnext = ctx.Client.GetVoiceNext();
-            var vnc = vnext.GetConnection(ctx.Guild);
+            //var vnext = ctx.Client.GetVoiceNext();
+            //var vnc = vnext.GetConnection(ctx.Guild);
+            var lava = ctx.Client.GetLavalink();
+            var node = lava.ConnectedNodes.Values.First();
+            var connection = node.GetGuildConnection(ctx.Member.Guild);
+            //var vstat = ctx.Member?.VoiceState;
+            //var channel = vstat.Channel;
+            if (connection != null)
+            {
+                connection.DisconnectAsync();
+                var embed = new DiscordEmbedBuilder
+                {
+                    Title = $"Stopped playing and left the channel",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                return;
+            }
+            else
+            {
+                var errorembed = new DiscordEmbedBuilder
+                {
+                    Title = $"Nothing is playing",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
+                return;
+            }
 
-            if (vnc != null)
+            /*if (vnc != null)
             {
                 vnc.Dispose();
                 Process ps = Process.GetProcessById(ffmpegpid);
@@ -253,7 +279,7 @@ namespace FossiumBot.Commands
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
                 return;
-            }
+            }*/
         }
 
         [SlashCommand("nowplaying", "Show what's currently playing")]
