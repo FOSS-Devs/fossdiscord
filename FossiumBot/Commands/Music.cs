@@ -151,7 +151,7 @@ namespace FossiumBot.Commands
             await node.ConnectAsync(channel);
             var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
 
-            dynamic loadResult = null;
+            LavalinkLoadResult loadResult = null;
             if (urltype == "YouTube")
             {
                 loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
