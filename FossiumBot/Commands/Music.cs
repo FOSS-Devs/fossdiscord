@@ -148,42 +148,59 @@ namespace FossiumBot.Commands
             var node = lava.ConnectedNodes.Values.First();
             var vstat = ctx.Member?.VoiceState;
             var channel = vstat.Channel;
-            await node.ConnectAsync(channel);
-            var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
-            LavalinkLoadResult loadResult = null;
-            if (urltype == "YouTube")
+            //Check if the bot already playing music.
+            var check = node.GetGuildConnection(ctx.Guild);
+            if (check == null)
             {
-                loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
-            }
-            else if (urltype == "SoundCloud")
-            {
-                loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
-            }
-            if (connection != null)
-            {
-                try
+                await node.ConnectAsync(channel);
+                var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
+                LavalinkLoadResult loadResult = null;
+                if (urltype == "YouTube")
                 {
-                    var track = loadResult.Tracks.First();
-                    var musicEmbed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Now playing {track.Title}",
-                        Description = $"{track.Uri}",
-                        Color = new DiscordColor(0xFFA500)
-                    };
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
-                    await connection.PlayAsync(track);
-                    Console.WriteLine(connection.CurrentState.PlaybackPosition);
+                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
                 }
-                catch (Exception e)
+                else if (urltype == "SoundCloud")
                 {
-                    await connection.DisconnectAsync();
-                    Console.WriteLine(e);
+                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
+                }
+                if (connection != null)
+                {
+                    try
+                    {
+                        var track = loadResult.Tracks.First();
+                        var musicEmbed = new DiscordEmbedBuilder
+                        {
+                            Title = $"Now playing {track.Title}",
+                            Description = $"{track.Uri}",
+                            Color = new DiscordColor(0xFFA500)
+                        };
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
+                        await connection.PlayAsync(track);
+                        Console.WriteLine(connection.CurrentState.PlaybackPosition);
+                    }
+                    catch (Exception e)
+                    {
+                        await connection.DisconnectAsync();
+                        Console.WriteLine(e);
+                        return;
+                    };
+
+                }
+                else
+                {
                     return;
                 };
-
             }
+            //Tell the user the bot is already playing.
             else
             {
+                var alreadyplayingEM = new DiscordEmbedBuilder
+                {
+                    Title = $"The bot is already in the voice channel playing music...",
+                    Description = $"Current track: `{check.CurrentState.CurrentTrack.Title}`",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(alreadyplayingEM));
                 return;
             };
 
