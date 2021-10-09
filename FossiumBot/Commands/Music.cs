@@ -108,7 +108,7 @@ namespace FossiumBot.Commands
 
             //testing
 
-            string urltype = string.Empty;
+            string urltype;
 
             Match youtubematch = Regex.Match(url, @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
             if (youtubematch.Success)
@@ -135,13 +135,13 @@ namespace FossiumBot.Commands
             }
             if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
-                var test = new DiscordEmbedBuilder
+                var connectionnull = new DiscordEmbedBuilder
                 {
                     Title = "You are not in a voice channel.",
                     //Description = "",
-                    Color = new DiscordColor(0xFFA500)
+                    Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(test));
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(connectionnull));
                 return;
             }
             var lava = ctx.Client.GetLavalink();
@@ -166,11 +166,10 @@ namespace FossiumBot.Commands
             {
                 Title = $"Now playing {track.Title}",
                 Description = $"{track.Uri}",
-                Color = new DiscordColor(0xFFA500)
+                Color = new DiscordColor(0x2ECC70)
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
             await connection.PlayAsync(track);
-            Console.WriteLine(connection.CurrentState.PlaybackPosition);
 
             //var loadResult = await lava.Rest.GetTracksAsync(search, LavalinkSearchType.Youtube);
             //
@@ -231,8 +230,32 @@ namespace FossiumBot.Commands
             var connection = node.GetGuildConnection(ctx.Member.Guild);
             //var vstat = ctx.Member?.VoiceState;
             //var channel = vstat.Channel;
-            if (connection != null)
+            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
+                var connectionnull = new DiscordEmbedBuilder
+                {
+                    Title = "You are not in a voice channel.",
+                    //Description = "",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(connectionnull));
+                return;
+            }
+
+            if (connection == null)
+            {
+                var nothingplayingembed = new DiscordEmbedBuilder
+                {
+                    Title = "Nothing is playing",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nothingplayingembed));
+                return;
+            }
+
+            else
+            {
+                await node.StopAsync();
                 await connection.DisconnectAsync();
                 var embed = new DiscordEmbedBuilder
                 {
@@ -242,16 +265,7 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                 return;
             }
-            else
-            {
-                var errorembed = new DiscordEmbedBuilder
-                {
-                    Title = $"Nothing is playing",
-                    Color = new DiscordColor(0xFFA500)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errorembed));
-                return;
-            }
+            
 
             /*if (vnc != null)
             {
@@ -285,8 +299,23 @@ namespace FossiumBot.Commands
         [SlashCommand("nowplaying", "Show what's currently playing")]
         public async Task NowplayingCommand(InteractionContext ctx)
         {
-            Directory.CreateDirectory(@"Music/");
-            if (!File.Exists(@"Music/nowplaying.json"))
+            var lava = ctx.Client.GetLavalink();
+            var node = lava.ConnectedNodes.Values.First();
+            var connection = node.GetGuildConnection(ctx.Member.Guild);
+            
+            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
+            {
+                var connectionnull = new DiscordEmbedBuilder
+                {
+                    Title = "You are not in a voice channel.",
+                    //Description = "",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(connectionnull));
+                return;
+            }
+
+            if (connection == null)
             {
                 var nothingplayingembed = new DiscordEmbedBuilder
                 {
@@ -297,15 +326,17 @@ namespace FossiumBot.Commands
                 return;
             }
 
-            JObject jsonData = JObject.Parse(File.ReadAllText(@"Music/nowplaying.json"));
-
-            var embed = new DiscordEmbedBuilder 
-            { 
-                Title = jsonData["name"].ToString(),
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = connection.CurrentState.CurrentTrack.Title,
+                Description = $"{connection.CurrentState.PlaybackPosition.ToString("mm\\:ss")}/{connection.CurrentState.CurrentTrack.Length.ToString("mm\\:ss")}",
                 Color = new DiscordColor(0x0080FF)
             };
-            string videoid = jsonData["videoid"].ToString();
-            embed.WithThumbnail($"http://i3.ytimg.com/vi/{videoid}/maxresdefault.jpg");
+            Match youtubematch = Regex.Match(connection.CurrentState.CurrentTrack.Uri.ToString(), @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
+            if (youtubematch.Success)
+            {
+                embed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
+            }
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
     }
