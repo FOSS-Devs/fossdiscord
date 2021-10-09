@@ -148,28 +148,61 @@ namespace FossiumBot.Commands
             var node = lava.ConnectedNodes.Values.First();
             var vstat = ctx.Member?.VoiceState;
             var channel = vstat.Channel;
-            await node.ConnectAsync(channel);
-            var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
+            //Check if the bot already playing music.
+            var check = node.GetGuildConnection(ctx.Guild);
+            if (check == null)
+            {
+                await node.ConnectAsync(channel);
+                var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
+                LavalinkLoadResult loadResult = null;
+                if (urltype == "YouTube")
+                {
+                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
+                }
+                else if (urltype == "SoundCloud")
+                {
+                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
+                }
+                if (connection != null)
+                {
+                    try
+                    {
+                        var track = loadResult.Tracks.First();
+                        var musicEmbed = new DiscordEmbedBuilder
+                        {
+                            Title = $"Now playing {track.Title}",
+                            Description = $"{track.Uri}",
+                            Color = new DiscordColor(0x0080FF)
+                        };
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
+                        await connection.PlayAsync(track);
+                        Console.WriteLine(connection.CurrentState.PlaybackPosition);
+                    }
+                    catch (Exception e)
+                    {
+                        await connection.DisconnectAsync();
+                        Console.WriteLine(e);
+                        return;
+                    };
 
-            LavalinkLoadResult loadResult = null;
-            if (urltype == "YouTube")
-            {
-                loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
+                }
+                else
+                {
+                    return;
+                };
             }
-            else if (urltype == "SoundCloud")
+            //Tell the user the bot is already playing.
+            else
             {
-                loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
-            }
-            
-            var track = loadResult.Tracks.First();
-            var musicEmbed = new DiscordEmbedBuilder
-            {
-                Title = $"Now playing {track.Title}",
-                Description = $"{track.Uri}",
-                Color = new DiscordColor(0x2ECC70)
+                var alreadyplayingEM = new DiscordEmbedBuilder
+                {
+                    Title = $"The bot is already in the voice channel playing music...",
+                    Description = $"Current track: `{check.CurrentState.CurrentTrack.Title}`",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(alreadyplayingEM));
+                return;
             };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
-            await connection.PlayAsync(track);
 
             //var loadResult = await lava.Rest.GetTracksAsync(search, LavalinkSearchType.Youtube);
             //
@@ -265,7 +298,7 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
                 return;
             }
-            
+
 
             /*if (vnc != null)
             {
@@ -302,7 +335,7 @@ namespace FossiumBot.Commands
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
             var connection = node.GetGuildConnection(ctx.Member.Guild);
-            
+
             if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
                 var connectionnull = new DiscordEmbedBuilder
