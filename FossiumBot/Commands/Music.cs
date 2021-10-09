@@ -172,7 +172,7 @@ namespace FossiumBot.Commands
                         {
                             Title = $"Now playing {track.Title}",
                             Description = $"{track.Uri}",
-                            Color = new DiscordColor(0xFFA500)
+                            Color = new DiscordColor(0x0080FF)
                         };
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(musicEmbed));
                         await connection.PlayAsync(track);
