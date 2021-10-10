@@ -70,6 +70,7 @@ namespace FossiumBot.Commands
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
             var vstat = ctx.Member?.VoiceState;
+            await node.ConnectAsync(vstat.Channel);
             var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
             if (connection == null)
             {
@@ -156,8 +157,8 @@ namespace FossiumBot.Commands
                 return;
             }
 
-            await node.StopAsync();
             await connection.DisconnectAsync();
+            await node.StopAsync();
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"Stopped playing and left the channel",
