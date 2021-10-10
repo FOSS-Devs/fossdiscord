@@ -163,7 +163,6 @@ namespace FossiumBot.Commands
                     };
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(errEmbed));
                     return;
-                    Console.WriteLine(ex);
                 }
             }
             else if (((int)response.StatusCode) == 404)
