@@ -54,10 +54,7 @@ jobs:
         nuget add /home/runner/work/download/dsharpplus.slashcommands.nupkg -source /home/runner/work/localnuget/
     - name: Download custom NuGet.Config
       run: wget -O NuGet.Config https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/NuGet.Config
-    
-    - name: Restore dependencies
-      run: dotnet restore
-      
+
     - name: Publish Windows
       run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained
     - name: Publish Windows 32-bit
