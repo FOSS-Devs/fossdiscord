@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
-using DSharpPlus.VoiceNext;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Lavalink;
@@ -22,7 +21,6 @@ namespace FossiumBot
     {
         // Set the local version, change when making a release
         public static string localversion = "v1.1-Dev";
-        public VoiceNextExtension Voice { get; set; }
         public InteractivityExtension Interactivity {  get; set; }
         static void Main(string[] args)
         {
@@ -588,7 +586,6 @@ namespace FossiumBot
             //    await e.Context.RespondAsync(embed);
             //};
 
-            discord.UseVoiceNext();
             discord.UseInteractivity();
 
             var slash = discord.UseSlashCommands();

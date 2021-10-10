@@ -21,9 +21,7 @@
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.2.0-nightly-01024" />
     <PackageReference Include="DSharpPlus.Lavalink" Version="4.2.0-nightly-01024" />
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01024" />
-    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.2.0-nightly-01024" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="VideoLibrary" Version="3.1.2" />
   </ItemGroup>
 
   <ItemGroup>

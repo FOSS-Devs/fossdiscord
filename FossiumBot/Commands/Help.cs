@@ -11,7 +11,6 @@
 //using DSharpPlus.SlashCommands;
 //using DSharpPlus.CommandsNext.Attributes;
 //using DSharpPlus.Entities;
-//using DSharpPlus.VoiceNext;
 //using Newtonsoft.Json;
 //using Newtonsoft.Json.Linq;
 //using VideoLibrary;
