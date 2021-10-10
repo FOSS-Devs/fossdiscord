@@ -50,7 +50,7 @@ jobs:
       run: |
         nuget add /home/runner/work/download/dsharpplus.nupkg -source /home/runner/work/localnuget/
         nuget add /home/runner/work/download/dsharpplus.interactivity.nupkg -source /home/runner/work/localnuget/
-        nuget add /home/runner/work/download/dsharpplus.voicenext.nupkg -source /home/runner/work/localnuget/
+        nuget add /home/runner/work/download/dsharpplus.lavalink.nupkg -source /home/runner/work/localnuget/
         nuget add /home/runner/work/download/dsharpplus.slashcommands.nupkg -source /home/runner/work/localnuget/
     - name: Download custom NuGet.Config
       run: wget -O NuGet.Config https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/NuGet.Config
