@@ -66,55 +66,68 @@ namespace FossiumBot.Commands
                 return;
             }
 
-
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
             var vstat = ctx.Member?.VoiceState;
             await node.ConnectAsync(vstat.Channel);
-            var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
-            if (connection == null)
-            {
-                var lavalinkerror = new DiscordEmbedBuilder
+            try {
+                var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
+                if (connection == null)
                 {
-                    Title = "Something went wrong while trying to connect to Lavalink",
+                    var lavalinkerror = new DiscordEmbedBuilder
+                    {
+                        Title = "Something went wrong while trying to connect to Lavalink",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
+                    return;
+                }
+
+                if (connection.CurrentState.CurrentTrack == null)
+                {
+                    LavalinkLoadResult loadResult = null;
+                    if (urltype == "YouTube")
+                    {
+                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
+                    }
+                    else if (urltype == "SoundCloud")
+                    {
+                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
+                    }
+                    var track = loadResult.Tracks.First();
+                    var playingembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Now playing {track.Title}",
+                        Description = $"{track.Uri}",
+                        Color = new DiscordColor(0x0080FF)
+                    };
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
+                    await connection.PlayAsync(track);
+                }
+                else
+                {
+                    var alreadyplayingembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"The bot is already in {connection.Channel.Mention} playing music",
+                        Description = $"Current track: `{connection.CurrentState.CurrentTrack.Title}`",
+                        Color = new DiscordColor(0xFFA500)
+                    };
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(alreadyplayingembed));
+                    return;
+                };
+            }
+            catch (Exception ex)
+            {
+                var errorEM = new DiscordEmbedBuilder
+                {
+                    Title = "Something Went Wrong...",
                     Color = new DiscordColor(0xFF0000)
                 };
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(errorEM));
+                await node.StopAsync();
+                Console.WriteLine(ex);
                 return;
             }
-
-            if (connection.CurrentState.CurrentTrack == null)
-            {
-                LavalinkLoadResult loadResult = null;
-                if (urltype == "YouTube")
-                {
-                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
-                }
-                else if (urltype == "SoundCloud")
-                {
-                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
-                }
-                var track = loadResult.Tracks.First();
-                var playingembed = new DiscordEmbedBuilder
-                {
-                    Title = $"Now playing {track.Title}",
-                    Description = $"{track.Uri}",
-                    Color = new DiscordColor(0x0080FF)
-                };
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                await connection.PlayAsync(track);
-            }
-            else
-            {
-                var alreadyplayingembed = new DiscordEmbedBuilder
-                {
-                    Title = $"The bot is already in {connection.Channel.Mention} playing music",
-                    Description = $"Current track: `{connection.CurrentState.CurrentTrack.Title}`",
-                    Color = new DiscordColor(0xFFA500)
-                };
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(alreadyplayingembed));
-                return;
-            };
         }
 
         [SlashCommand("stop", "Stop playing and leave the voice channel")]
@@ -122,7 +135,7 @@ namespace FossiumBot.Commands
         {
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
-            var connection = node.GetGuildConnection(ctx.Member.Guild);
+            var connection = node.GetGuildConnection(ctx.Guild);
 
             if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
@@ -158,7 +171,7 @@ namespace FossiumBot.Commands
             }
 
             await connection.DisconnectAsync();
-            await node.StopAsync();
+            //await node.StopAsync();
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"Stopped playing and left the channel",
