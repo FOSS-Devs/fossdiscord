@@ -13,7 +13,7 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Lavalink;
 using DSharpPlus.Net;
 using FossiumBot.Commands;
-using System.Diagnostics;
+using System.Net.Sockets;
 
 namespace FossiumBot
 {
@@ -613,16 +613,16 @@ namespace FossiumBot
             //LavalinkProcess.StartInfo.FileName = "java";
             //LavalinkProcess.StartInfo.Arguments = "-jar Lavalink/Lavalink.jar";
             //LavalinkProcess.Start();
-            var endpoint = new ConnectionEndpoint
+            var localendpoint = new ConnectionEndpoint
             {
                 Hostname = "127.0.0.1",
                 Port = 2333
             };
-            var lavalinkConfig = new LavalinkConfiguration
+            var locallavalinkConfig = new LavalinkConfiguration
             {
-                Password = "youshallnotpass",
-                RestEndpoint = endpoint,
-                SocketEndpoint = endpoint
+                Password = "whatdidyousay",
+                RestEndpoint = localendpoint,
+                SocketEndpoint = localendpoint
             };
             var lavalink = discord.UseLavalink();
             if (Directory.Exists(@"Settings/lck/"))
@@ -636,7 +636,9 @@ namespace FossiumBot
             catch(Exception e)
             {
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Oops...\nSomething went wrong");
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("In most cases this means that the token is invalid");
                 goto Ask;
             Ask:
@@ -670,11 +672,82 @@ namespace FossiumBot
                     goto Ask;
                 }
             }
-            Console.WriteLine("--------------------");
+            Console.WriteLine("----------------------------------------");
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Connected!");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine($"Please use /shutdown to properly shut down the bot");
-            Console.WriteLine("--------------------");
-            await lavalink.ConnectAsync(lavalinkConfig);
+            Console.WriteLine("----------------------------------------");
+            TcpClient tcpClient = new TcpClient();
+            try
+            {
+                await tcpClient.ConnectAsync(localendpoint.Hostname, localendpoint.Port);
+                tcpClient.Dispose();
+                await lavalink.ConnectAsync(locallavalinkConfig);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Connected to Lavalink");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("No local Lavalink instance found.\nIf you do, make sure the port is \"2333\" and the password is \"whatdidyousay\"");
+                Console.ForegroundColor = ConsoleColor.White;
+                var mainendpoint = new ConnectionEndpoint
+                {
+                    Hostname = "lavalink.darrennathanael.com",
+                    Port = 2095
+                };
+                var mainlavalinkConfig = new LavalinkConfiguration
+                {
+                    Password = "whatwasthelastingyousaid",
+                    RestEndpoint = mainendpoint,
+                    SocketEndpoint = mainendpoint
+                };
+
+                try
+                {
+                    await tcpClient.ConnectAsync(mainendpoint.Hostname, mainendpoint.Port);
+                    tcpClient.Dispose();
+                    await lavalink.ConnectAsync(mainlavalinkConfig);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Connected to Lavalink");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                catch
+                {
+                    var fallbackendpoint = new ConnectionEndpoint
+                    {
+                        Hostname = "lava.darrennathanael.com",
+                        Port = 2095
+                    };
+                    var fallbacklavalinkConfig = new LavalinkConfiguration
+                    {
+                        Password = "whatwasthelastingyousaid",
+                        RestEndpoint = fallbackendpoint,
+                        SocketEndpoint = fallbackendpoint
+                    };
+
+                    try
+                    {
+                        await tcpClient.ConnectAsync(fallbackendpoint.Hostname, fallbackendpoint.Port);
+                        tcpClient.Dispose();
+                        await lavalink.ConnectAsync(fallbacklavalinkConfig);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Connected to Lavalink");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("----------------------------------------");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Could not find a working local or hosted Lavalink instance");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("If you continue you won't have any music functionality");
+                        Console.WriteLine("----------------------------------------");
+                    }
+                }
+            }
             await Task.Delay(-1);
         }
 
