@@ -63,6 +63,7 @@ namespace FossiumBot.Commands
             var node = lava.ConnectedNodes.Values.First();
             var vstat = ctx.Member?.VoiceState;
             await node.ConnectAsync(vstat.Channel);
+            var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
             try {
                 var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
                 if (connection == null)
@@ -117,7 +118,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFF0000)
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(errorEM));
-                await node.StopAsync();
+                await connection.DisconnectAsync();
                 Console.WriteLine(ex);
                 return;
             }
