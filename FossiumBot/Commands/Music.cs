@@ -75,28 +75,51 @@ namespace FossiumBot.Commands
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
                     return;
                 }
-
+                LavalinkLoadResult loadResult = null;
+                if (urltype == "YouTube")
+                {
+                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
+                }
+                else if (urltype == "SoundCloud")
+                {
+                    loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
+                }
+                var track = loadResult.Tracks.First();
                 if (connection.CurrentState.CurrentTrack == null)
                 {
-                    LavalinkLoadResult loadResult = null;
-                    if (urltype == "YouTube")
-                    {
-                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
-                    }
-                    else if (urltype == "SoundCloud")
-                    {
-                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
-                    }
-                    var track = loadResult.Tracks.First();
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = $"Now playing {track.Title}",
                         Description = $"{track.Uri}",
                         Color = new DiscordColor(0x0080FF)
                     };
+                    if (urltype == "YouTube")
+                    {
+                        Match youtubeThumbnail = Regex.Match(track.Uri.ToString(), @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
+                        String youtubeThumbnailURL = $"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg";
+                        playingembed.WithThumbnail(youtubeThumbnailURL);
+                    }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     await connection.PlayAsync(track);
+
                 }
+                /*else
+                {
+                    var playingembed = new DiscordEmbedBuilder
+                    {
+                        Title = "Added to queue...",
+                        Description = $"{track.Title}",
+                        Color = new DiscordColor(0x0080FF)
+                    };
+                    if (urltype == "YouTube")
+                    {
+                        Match youtubeThumbnail = Regex.Match(track.Uri.ToString(), @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
+                        String youtubeThumbnailURL = $"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg";
+                        playingembed.WithThumbnail(youtubeThumbnailURL);
+                    }
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
+                    await connection.PlayAsync(track);
+                };*/
                 else
                 {
                     var alreadyplayingembed = new DiscordEmbedBuilder
