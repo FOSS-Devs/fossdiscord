@@ -615,12 +615,12 @@ namespace FossiumBot
             //LavalinkProcess.Start();
             var endpoint = new ConnectionEndpoint
             {
-                Hostname = "lavalink.darrennathanael.com",
-                Port = 2095
+                Hostname = "127.0.0.1",
+                Port = 2333
             };
             var lavalinkConfig = new LavalinkConfiguration
             {
-                Password = "whatwasthelastingyousaid",
+                Password = "youshallnotpass",
                 RestEndpoint = endpoint,
                 SocketEndpoint = endpoint
             };

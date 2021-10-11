@@ -102,14 +102,10 @@ namespace FossiumBot.Commands
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     await connection.PlayAsync(track);
-                    Thread.Sleep(2);
                 }
                 else
                 {
-                    double trackLength = connection.CurrentState.CurrentTrack.Position.TotalSeconds;
-                    double currentPosition = connection.CurrentState.PlaybackPosition.TotalSeconds;
-                    int threadSleepTimer = (int)trackLength - (int)currentPosition;
-                    Thread.Sleep(threadSleepTimer - 1);
+
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = "Added to queue...",
@@ -122,8 +118,18 @@ namespace FossiumBot.Commands
                         String youtubeThumbnailURL = $"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg";
                         playingembed.WithThumbnail(youtubeThumbnailURL);
                     }
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed)); int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
+                    int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
+                    int threadSleepTimer = trackLength - currentPosition;
+                    Thread.Sleep(threadSleepTimer - 1000);
                     await connection.PlayAsync(track);
+                    /*var playingembed = new DiscordEmbedBuilder
+                    {
+                        Title = "Testing",
+                        Description = $"{threadSleepTimer}",
+                        Color = new DiscordColor(0x0080FF)
+                    };
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));*/
                 };
                 /*else
                 {
