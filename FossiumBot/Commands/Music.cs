@@ -65,7 +65,6 @@ namespace FossiumBot.Commands
             await node.ConnectAsync(vstat.Channel);
             var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
             try {
-                var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
                 if (connection == null)
                 {
                     var lavalinkerror = new DiscordEmbedBuilder
