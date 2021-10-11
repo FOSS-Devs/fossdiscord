@@ -6,6 +6,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.Entities;
 using System.Text.RegularExpressions;
 using DSharpPlus.Lavalink;
+using System.Threading;
 
 namespace FossiumBot.Commands
 {
@@ -101,10 +102,14 @@ namespace FossiumBot.Commands
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     await connection.PlayAsync(track);
-
+                    Thread.Sleep(2);
                 }
-                /*else
+                else
                 {
+                    double trackLength = connection.CurrentState.CurrentTrack.Position.TotalSeconds;
+                    double currentPosition = connection.CurrentState.PlaybackPosition.TotalSeconds;
+                    int threadSleepTimer = (int)trackLength - (int)currentPosition;
+                    Thread.Sleep(threadSleepTimer - 1);
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = "Added to queue...",
@@ -119,8 +124,8 @@ namespace FossiumBot.Commands
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     await connection.PlayAsync(track);
-                };*/
-                else
+                };
+                /*else
                 {
                     var alreadyplayingembed = new DiscordEmbedBuilder
                     {
@@ -130,7 +135,7 @@ namespace FossiumBot.Commands
                     };
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(alreadyplayingembed));
                     return;
-                };
+                };*/
             }
             catch (Exception ex)
             {
