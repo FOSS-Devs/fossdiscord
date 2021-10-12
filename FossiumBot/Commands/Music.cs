@@ -96,9 +96,7 @@ namespace FossiumBot.Commands
                     };
                     if (urltype == "YouTube")
                     {
-                        Match youtubeThumbnail = Regex.Match(track.Uri.ToString(), @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
-                        String youtubeThumbnailURL = $"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg";
-                        playingembed.WithThumbnail(youtubeThumbnailURL);
+                        playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     await connection.PlayAsync(track);
@@ -114,9 +112,7 @@ namespace FossiumBot.Commands
                     };
                     if (urltype == "YouTube")
                     {
-                        Match youtubeThumbnail = Regex.Match(track.Uri.ToString(), @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
-                        String youtubeThumbnailURL = $"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg";
-                        playingembed.WithThumbnail(youtubeThumbnailURL);
+                        playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed)); int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
                     int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
