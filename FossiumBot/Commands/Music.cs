@@ -114,7 +114,8 @@ namespace FossiumBot.Commands
                     {
                         playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
                     }
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed)); int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
+                    int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
                     int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
                     int threadSleepTimer = trackLength - currentPosition;
                     Thread.Sleep(threadSleepTimer - 1000);
