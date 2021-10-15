@@ -127,10 +127,10 @@ namespace FossiumBot.Commands
                     //Console.WriteLine(thisTrack);
                     while (DateTime.UtcNow <= thisTrack)
                     {
-                        Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
+                        //Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
                         Thread.Sleep(1000);
                     }
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = "Added to queue...",
@@ -218,11 +218,11 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nothingplayingembed));
                 return;
             }
+            await connection.DisconnectAsync();
             if(File.Exists(file))
             {
                 File.Delete(file);
             }
-            await connection.DisconnectAsync();
             //await node.StopAsync();
             var embed = new DiscordEmbedBuilder
             {
