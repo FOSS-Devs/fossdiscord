@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -7,6 +8,8 @@ using DSharpPlus.Entities;
 using System.Text.RegularExpressions;
 using DSharpPlus.Lavalink;
 using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FossiumBot.Commands
 {
@@ -17,6 +20,7 @@ namespace FossiumBot.Commands
         [SlashCommand("play", "Play audio from a YouTube video")]
         public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
         {
+            Directory.CreateDirectory(@"Data/");
             var preparingembed = new DiscordEmbedBuilder
             {
                 Title = $"Preparing for playing...",
@@ -88,6 +92,15 @@ namespace FossiumBot.Commands
                 var track = loadResult.Tracks.First();
                 if (connection.CurrentState.CurrentTrack == null)
                 {
+                    if(File.Exists($"Data/{ctx.Guild.Id}.json"))
+                    {
+                        File.Delete($"Data/{ctx.Guild.Id}.json");
+                    } 
+                    DateTime nextTrackTime = DateTime.Now;
+                    String parseNextTrackTime = nextTrackTime.Add(track.Length).ToString();
+                    JObject trackTime = new JObject(new JProperty("time", parseNextTrackTime));
+                    string timeData = JsonConvert.SerializeObject(trackTime, Formatting.Indented);
+                    File.WriteAllText($"Data/{ctx.Guild.Id}.json", timeData);
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = $"Now playing {track.Title}",
