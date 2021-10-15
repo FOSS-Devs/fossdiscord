@@ -124,13 +124,6 @@ namespace FossiumBot.Commands
                     jsonData["time"] = thisTrack.Add(track.Length);
                     string timeData = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
                     File.WriteAllText(file, timeData);
-                    //Console.WriteLine(thisTrack);
-                    while (DateTime.UtcNow <= thisTrack)
-                    {
-                        //Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
-                        Thread.Sleep(1000);
-                    }
-                    //Thread.Sleep(500);
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = "Added to queue...",
@@ -142,6 +135,11 @@ namespace FossiumBot.Commands
                         playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
+                    while (DateTime.UtcNow <= thisTrack)
+                    {
+                        //Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
+                        Thread.Sleep(1000);
+                    }
                     //int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
                     //int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
                     //int threadSleepTimer = trackLength - currentPosition;
