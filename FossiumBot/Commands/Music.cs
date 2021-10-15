@@ -21,6 +21,7 @@ namespace FossiumBot.Commands
         public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
         {
             Directory.CreateDirectory(@"Data/");
+            string file = $"Data/{ctx.Guild.Id}.json";
             var preparingembed = new DiscordEmbedBuilder
             {
                 Title = $"Preparing for playing...",
@@ -92,15 +93,15 @@ namespace FossiumBot.Commands
                 var track = loadResult.Tracks.First();
                 if (connection.CurrentState.CurrentTrack == null)
                 {
-                    if(File.Exists($"Data/{ctx.Guild.Id}.json"))
-                    {
-                        File.Delete($"Data/{ctx.Guild.Id}.json");
-                    } 
-                    DateTime nextTrackTime = DateTime.Now;
+                    DateTime nextTrackTime = DateTime.UtcNow;
                     String parseNextTrackTime = nextTrackTime.Add(track.Length).ToString();
                     JObject trackTime = new JObject(new JProperty("time", parseNextTrackTime));
+                    if(File.Exists(file))
+                    {
+                        File.Delete(file);
+                    }
                     string timeData = JsonConvert.SerializeObject(trackTime, Formatting.Indented);
-                    File.WriteAllText($"Data/{ctx.Guild.Id}.json", timeData);
+                    File.WriteAllText(file, timeData);
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = $"Now playing {track.Title}",
@@ -116,7 +117,25 @@ namespace FossiumBot.Commands
                 }
                 else
                 {
-
+                    String fileData = File.ReadAllText(file);
+                    JObject jsonData = JObject.Parse(fileData);
+                    DateTime thisTrack = DateTime.Parse((string)jsonData["time"]);
+                    jsonData["time"] = thisTrack.Add(track.Length);
+                    string timeData = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+                    File.WriteAllText(file, timeData);
+                    Console.WriteLine(thisTrack);
+                    while (DateTime.UtcNow != thisTrack)
+                    {
+                        if (DateTime.UtcNow != thisTrack)
+                        {
+                            Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
+                            Thread.Sleep(1000);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                     var playingembed = new DiscordEmbedBuilder
                     {
                         Title = "Added to queue...",
@@ -128,10 +147,10 @@ namespace FossiumBot.Commands
                         playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                    int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
-                    int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
-                    int threadSleepTimer = trackLength - currentPosition;
-                    Thread.Sleep(threadSleepTimer - 1000);
+                    //int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
+                    //int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
+                    //int threadSleepTimer = trackLength - currentPosition;
+                    //Thread.Sleep(threadSleepTimer - 1000);
                     await connection.PlayAsync(track);
                     /*var playingembed = new DiscordEmbedBuilder
                     {
@@ -173,7 +192,7 @@ namespace FossiumBot.Commands
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
             var connection = node.GetGuildConnection(ctx.Guild);
-
+            string file = $"Data/{ctx.Guild.Id}.json";
             if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
                 var voicestatenull = new DiscordEmbedBuilder
@@ -184,7 +203,6 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(voicestatenull));
                 return;
             }
-
             if (connection == null)
             {
                 var lavalinkerror = new DiscordEmbedBuilder
@@ -195,7 +213,10 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lavalinkerror));
                 return;
             }
-
+            if(File.Exists(file))
+            {
+                File.Delete(file);
+            }
             if (connection.CurrentState.CurrentTrack == null)
             {
                 var nothingplayingembed = new DiscordEmbedBuilder
@@ -206,7 +227,6 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(nothingplayingembed));
                 return;
             }
-
             await connection.DisconnectAsync();
             //await node.StopAsync();
             var embed = new DiscordEmbedBuilder

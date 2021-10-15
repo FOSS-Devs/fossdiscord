@@ -711,7 +711,7 @@ namespace FossiumBot
                     tcpClient.Dispose();
                     await lavalink.ConnectAsync(mainlavalinkConfig);
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Connected to Lavalink");
+                    Console.WriteLine("Connected to remote Lavalink");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 catch
@@ -734,7 +734,7 @@ namespace FossiumBot
                         tcpClient.Dispose();
                         await lavalink.ConnectAsync(fallbacklavalinkConfig);
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Connected to Lavalink");
+                        Console.WriteLine("Connected to remote Lavalink");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     catch
