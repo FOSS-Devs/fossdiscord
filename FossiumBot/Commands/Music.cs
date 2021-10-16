@@ -135,7 +135,7 @@ namespace FossiumBot.Commands
                         playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                    while (DateTime.UtcNow <= thisTrack)
+                    while (DateTime.UtcNow < thisTrack)
                     {
                         //Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
                         Thread.Sleep(1000);
