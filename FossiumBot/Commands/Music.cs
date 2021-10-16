@@ -287,3 +287,4 @@ namespace FossiumBot.Commands
         }
     }
 }
+//Test signing.
