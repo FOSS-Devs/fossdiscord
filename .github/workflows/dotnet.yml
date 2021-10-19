@@ -56,19 +56,19 @@ jobs:
       run: wget -O NuGet.Config https://gitlab.com/SKBotNL/fossium-stuff/-/raw/main/NuGet.Config
 
     - name: Publish Windows
-      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained
+      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained true
     - name: Publish Windows 32-bit
-      run: dotnet publish -c Release -r win-x86 -p:PublishSingleFile=true --self-contained
+      run: dotnet publish -c Release -r win-x86 -p:PublishSingleFile=true --self-contained true
     - name: Publish Windows ARM
-      run: dotnet publish -c Release -r win-arm -p:PublishSingleFile=true --self-contained
+      run: dotnet publish -c Release -r win-arm -p:PublishSingleFile=true --self-contained true
     - name: Publish Windows ARM64
-      run: dotnet publish -c Release -r win-arm64 -p:PublishSingleFile=true --self-contained
+      run: dotnet publish -c Release -r win-arm64 -p:PublishSingleFile=true --self-contained true
     - name: Publish Linux
-      run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained
+      run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained true
     - name: Publish Linux ARM
-      run: dotnet publish -c Release -r linux-arm -p:PublishSingleFile=true --self-contained
+      run: dotnet publish -c Release -r linux-arm -p:PublishSingleFile=true --self-contained true
     - name: Publish MacOS
-      run: dotnet publish -c Release -r osx-x64 -p:PublishSingleFile=true --self-contained
+      run: dotnet publish -c Release -r osx-x64 -p:PublishSingleFile=true --self-contained true
       
     - name: Remove unneeded .pdb files
       run: |
