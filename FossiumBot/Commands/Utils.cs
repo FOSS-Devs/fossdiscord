@@ -12,9 +12,6 @@ namespace FossiumBot.Commands
 {
     public class Utils : ApplicationCommandModule
     {
-        // For the uptime command
-        DateTimeOffset StartTime = DateTime.Now;
-
         [SlashCommand("ping", "Get the ping of the bot")]
         public async Task PingCommand(InteractionContext ctx)
         {
