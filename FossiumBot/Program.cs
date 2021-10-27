@@ -748,6 +748,8 @@ namespace FossiumBot
                     }
                 }
             }
+            // For the uptime command
+            public static DateTimeOffset StartTime = DateTime.Now;
             await Task.Delay(-1);
         }
 
