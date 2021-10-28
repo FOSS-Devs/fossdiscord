@@ -30,7 +30,3 @@ The bot has lots of features, including but not limited to:
 
 ## Support Server
 [![Join the support server](https://discord.com/api/guilds/848464241219338250/widget.png?style=banner2)](https://discord.gg/myzbqnVUFN)
-
-## Repos
-The GitLab repo is [here](https://gitlab.com/Fossium/FossiumBot)\
-The mirrored GitHub repo is [here](https://github.com/Fossium-Team/FossiumBot)
