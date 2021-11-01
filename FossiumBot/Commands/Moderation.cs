@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
+using DSharpPlus.Interactivity;
 using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -947,6 +948,60 @@ namespace FossiumBot.Commands
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(roleNotExist));
                 return;
+            }
+        }
+
+        [SlashCommand("reactionroles", "Reaction roles")]
+        public async Task ReactionrolesCommand(InteractionContext ctx, [Option("channel", "The channel to make a reaction roles message")] DiscordChannel channel)
+        {
+            ulong rolecount = 1;
+            InteractivityExtension interactivity = ctx.Client.GetInteractivity();
+            var addrole = new DiscordEmbedBuilder
+            {
+                Title = "Reaction roles",
+                Description = $"Add a role\nSyntax: `<role id> | <emoji>` or `cancel`\n Timeout in 30 seconds",
+                Color = new DiscordColor(0x0080FF)
+            };
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(addrole));
+            var response = await interactivity.WaitForMessageAsync(x => x.Channel == ctx.Channel && x.Author == ctx.Member, TimeSpan.FromSeconds(30));
+            if (response.TimedOut || response.Result.Content == "cancel")
+            {
+                var error = new DiscordEmbedBuilder
+                {
+                    Title = "Oops...",
+                    Description = $"Timed out or cancelled",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(error));
+                return;
+            }
+            else
+            {
+                Directory.CreateDirectory(@"Settings/");
+                Directory.CreateDirectory(@"Settings/reactionroles/");
+
+                string[] responsesplit = response.Result.Content.Split(" | ");
+
+                DiscordEmoji discordemoji = DiscordEmoji.FromName(ctx.Client, $":{responsesplit[0]}:");
+                DiscordRole discordrole = ctx.Guild.GetRole(ulong.Parse(responsesplit[1]));
+
+                JObject reactionrolesConfig =
+                        new JObject(
+                            new JProperty("reactionroles",
+                            new JObject {
+                                new JProperty($"{channel}", new JObject
+                                {
+                                    new JProperty($"{rolecount}", new JObject
+                                    {
+                                        new JProperty($"emoji", $"{discordemoji}"),
+                                        new JProperty($"role", $"{discordrole}")
+                                    })
+                                }),
+                                    }
+                            )
+                        );
+                string reactionrolesWrite = JsonConvert.SerializeObject(reactionrolesConfig, Formatting.Indented);
+                File.WriteAllText($"Settings/reactionroles/{ctx.Guild.Id}.json", reactionrolesWrite);
             }
         }
     }
