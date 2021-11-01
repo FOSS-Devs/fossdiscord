@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +23,6 @@ namespace FossiumBot.Commands
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/playback/");
             string file = $"Settings/playback/{ctx.Guild.Id}.json";
-            string songlist = $"Settings/playback/{ctx.Guild.Id}-songlist.json";
             var preparingembed = new DiscordEmbedBuilder
             {
                 Title = $"Preparing for playing...",
@@ -32,17 +30,6 @@ namespace FossiumBot.Commands
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(preparingembed));
 
-            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
-            {
-                var voicestatenull = new DiscordEmbedBuilder
-                {
-                    Title = "You are not in a voice channel.",
-                    //Description = "",
-                    Color = new DiscordColor(0xFFA500)
-                };
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(voicestatenull));
-                return;
-            }
             string urltype;
             Match youtubematch = Regex.Match(url, @"(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)");
             if (youtubematch.Success)
@@ -67,55 +54,23 @@ namespace FossiumBot.Commands
                     return;
                 }
             }
+            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
+            {
+                var voicestatenull = new DiscordEmbedBuilder
+                {
+                    Title = "You are not in a voice channel.",
+                    //Description = "",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(voicestatenull));
+                return;
+            }
 
-            JArray readData = JArray.Parse(File.ReadAllText(songlist));
-            JObject addtoSonglist = new JObject($"{urltype}", url);
-            readData[readData.Count + 1] = addtoSonglist;
-            string writeJSON = JsonConvert.SerializeObject(readData, Formatting.Indented);
-            File.WriteAllText(songlist, writeJSON);
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
             var vstat = ctx.Member?.VoiceState;
             await node.ConnectAsync(vstat.Channel);
             var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
-            if (connection == null)
-            {
-                var lavalinkerror = new DiscordEmbedBuilder
-                {
-                    Title = "Something went wrong while trying to connect to Lavalink",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
-                return;
-            }
-            LavalinkLoadResult loadResult = null;
-            while (File.Exists(songlist) && connection !=null)
-            {
-                JObject fileData = JObject.Parse(File.ReadAllText(songlist));
-                foreach (KeyValuePair<string, JToken> item in fileData)
-                {
-                    string urltypefromJSON = item.Key;
-                    string songurl = (string)item.Value;
-                    if (songurl == "YouTube")
-                    {
-                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
-                    }
-                    else
-                    {
-                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
-                    }
-                    LavalinkTrack track = loadResult.Tracks.First();
-                    var playingembed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Now playing {track.Title}",
-                        Description = $"{track.Uri}",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    await connection.PlayAsync(track);
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                }
-            }
-            /*
             try {
                 if (connection == null)
                 {
@@ -184,20 +139,20 @@ namespace FossiumBot.Commands
                     {
                         //Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
                         Thread.Sleep(1000);
-                    }*/
+                    }
                     //int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
                     //int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
                     //int threadSleepTimer = trackLength - currentPosition;
                     //Thread.Sleep(threadSleepTimer - 1000);
-                    //await connection.PlayAsync(track);
+                    await connection.PlayAsync(track);
                     /*var playingembed = new DiscordEmbedBuilder
                     {
                         Title = "Testing",
                         Description = $"{threadSleepTimer}",
                         Color = new DiscordColor(0x0080FF)
                     };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                };*/
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));*/
+                };
                 /*else
                 {
                     var alreadyplayingembed = new DiscordEmbedBuilder
@@ -208,7 +163,7 @@ namespace FossiumBot.Commands
                     };
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(alreadyplayingembed));
                     return;
-                };
+                };*/
             }
             catch (Exception ex)
             {
@@ -221,7 +176,7 @@ namespace FossiumBot.Commands
                 await connection.DisconnectAsync();
                 Console.WriteLine(ex);
                 return;
-            }*/
+            }
         }
 
         [SlashCommand("stop", "Stop playing and leave the voice channel")]
