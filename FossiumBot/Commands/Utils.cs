@@ -12,9 +12,6 @@ namespace FossiumBot.Commands
 {
     public class Utils : ApplicationCommandModule
     {
-        // For the uptime command
-        DateTimeOffset StartTime = DateTime.Now;
-
         [SlashCommand("ping", "Get the ping of the bot")]
         public async Task PingCommand(InteractionContext ctx)
         {
@@ -217,8 +214,8 @@ namespace FossiumBot.Commands
         [SlashCommand("uptime", "Get the uptime of the bot")]
         public async Task UptimeCommand(InteractionContext ctx)
         {
-            var uptime = (DateTime.Now - StartTime);
-            long onlinesince = StartTime.ToUnixTimeSeconds();
+            var uptime = (DateTime.Now - Program.StartTime);
+            long onlinesince = Program.StartTime.ToUnixTimeSeconds();
             var embed = new DiscordEmbedBuilder
             {
                 Title = "Uptime",

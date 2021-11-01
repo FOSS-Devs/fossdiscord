@@ -21,6 +21,9 @@ namespace FossiumBot
     {
         // Set the local version, change when making a release
         public static string localversion = "v1.1-Dev";
+
+        // For the uptime command
+        public static DateTimeOffset StartTime = DateTime.Now;
         public InteractivityExtension Interactivity {  get; set; }
         static void Main(string[] args)
         {
@@ -748,6 +751,8 @@ namespace FossiumBot
                     }
                 }
             }
+            // For the uptime command
+            
             await Task.Delay(-1);
         }
 
