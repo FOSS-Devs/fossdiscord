@@ -22,6 +22,17 @@ namespace FossiumBot.Commands
         {
             Directory.CreateDirectory(@"Data/");
             Directory.CreateDirectory(@"Data/playback/");
+            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
+            {
+                var voicestatenull = new DiscordEmbedBuilder
+                {
+                    Title = "You are not in a voice channel.",
+                    //Description = "",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(voicestatenull));
+                return;
+            }
             string file = $"Data/playback/{ctx.Guild.Id}.json";
             LavalinkLoadResult loadResult = null;
             var lava = ctx.Client.GetLavalink();
