@@ -96,6 +96,16 @@ namespace FossiumBot.Commands
                 jsonData["playlist"][$"{jsonData["playlist"].Count() + 1}"] = new JObject(new JProperty("title", track.Title), new JProperty("urltype", urltype), new JProperty("url", url), new JProperty("time", track.Length), new JProperty("thumbnail", thumbnail));
                 string playlistAdd = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
                 File.WriteAllText(file, playlistAdd);
+                var playingembed = new DiscordEmbedBuilder
+                {
+                    Title = "Added to queue...",
+                    Description = $"{track.Title}",
+                    Color = new DiscordColor(0x0080FF)
+                };
+                if (urltype == "YouTube")
+                {
+                    playingembed.WithThumbnail(thumbnail);
+                }
                 return;
             }
             await node.ConnectAsync(vstat.Channel);
