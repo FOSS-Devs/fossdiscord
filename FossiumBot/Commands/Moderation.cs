@@ -11,6 +11,7 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using DSharpPlus.Interactivity.Extensions;
+using System.Text.RegularExpressions;
 
 namespace FossiumBot.Commands
 {
@@ -983,9 +984,36 @@ namespace FossiumBot.Commands
                 }
                 if (response.Result.Content.ToLower() == "done")
                 {
-                    break;
+                    if (!discordroles.Any()) 
+                    {
+                        var emptyembed = new DiscordEmbedBuilder
+                        {
+                            Title = $"Oops...",
+                            Description = $"Please add at least one role\nRestart the command to try again",
+                            Color = new DiscordColor(0xFF0000)
+                        };
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(emptyembed));
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                
+
+                var syntaxmatch = Regex.Match(response.Result.Content, @"\d* \| [a-z_\-A-Z]*");
+
+                if (!Regex.IsMatch(response.Result.Content, @"\d* \| [a-z_\-A-Z]*"))
+                {
+                    var syntaxembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Wrong syntax",
+                        Description = $"Syntax: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(syntaxembed));
+                    continue;
+                }
 
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/reactionroles/");
@@ -999,8 +1027,8 @@ namespace FossiumBot.Commands
 
                 var addedembed = new DiscordEmbedBuilder
                 {
-                    Title = $"Added {discordrole.Name}",
-                    Description = $"{discordemoji.Name}\nSyntax: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
+                    Title = $"Added role `{discordrole.Name}` with emoij {discordemoji.Name}",
+                    Description = $"Syntax: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(addedembed));
@@ -1023,7 +1051,7 @@ namespace FossiumBot.Commands
                 //string reactionrolesWrite = JsonConvert.SerializeObject(reactionrolesConfig, Formatting.Indented);
                 //File.WriteAllText($"Settings/reactionroles/{ctx.Guild.Id}.json", reactionrolesWrite);
             }
-
+            text = text.Replace("\\n", "\r\n");
             var msg = await channel.SendMessageAsync(text);
             DiscordEmoji[] discordemojisarray = discordemojis.ToArray();
             ulong repeatforeach = 0;
