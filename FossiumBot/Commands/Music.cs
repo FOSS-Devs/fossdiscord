@@ -297,7 +297,11 @@ namespace FossiumBot.Commands
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
             var connection = node.GetGuildConnection(ctx.Guild);
-            string file = $"Settings/playback/{ctx.Guild.Id}.json";
+            string file = $"Data/playback/{ctx.Guild.Id}.json";
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
             if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
                 var voicestatenull = new DiscordEmbedBuilder
@@ -329,18 +333,12 @@ namespace FossiumBot.Commands
                 return;
             }
             await connection.DisconnectAsync();
-            if(File.Exists(file))
-            {
-                File.Delete(file);
-            }
-            //await node.StopAsync();
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"Stopped playing and left the channel",
                 Color = new DiscordColor(0x2ECC70)
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-            return;
         }
 
         [SlashCommand("nowplaying", "Show what's currently playing")]
