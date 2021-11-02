@@ -54,7 +54,30 @@ namespace FossiumBot.Commands
                     return;
                 }
             }
-            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
+            if (!File.Exists(file)){
+                JObject playlist =
+                    new JObject(
+                        new JProperty("playlist",
+                            new JObject {
+                                new JProperty("1", 
+                                    new JObject(
+                                        new JProperty("urltype", urltype),
+                                        new JProperty("url", url)
+                                        )
+                                ),
+                            }
+                        )
+                    );
+                var test = new DiscordEmbedBuilder
+                {
+                    Title = $"{playlist["playlist"].Count()}",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(test));
+                string playlistWrite = JsonConvert.SerializeObject(playlist, Formatting.Indented);
+                File.WriteAllText(file, playlistWrite);
+            };
+            /*if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
                 var voicestatenull = new DiscordEmbedBuilder
                 {
@@ -137,33 +160,10 @@ namespace FossiumBot.Commands
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     while (DateTime.UtcNow < thisTrack)
                     {
-                        //Console.WriteLine($"Now: {DateTime.UtcNow}\nTarget: {thisTrack}");
                         Thread.Sleep(1000);
                     }
-                    //int trackLength = (int)connection.CurrentState.CurrentTrack.Length.TotalMilliseconds;
-                    //int currentPosition = (int)connection.CurrentState.PlaybackPosition.Milliseconds;
-                    //int threadSleepTimer = trackLength - currentPosition;
-                    //Thread.Sleep(threadSleepTimer - 1000);
                     await connection.PlayAsync(track);
-                    /*var playingembed = new DiscordEmbedBuilder
-                    {
-                        Title = "Testing",
-                        Description = $"{threadSleepTimer}",
-                        Color = new DiscordColor(0x0080FF)
-                    };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));*/
                 };
-                /*else
-                {
-                    var alreadyplayingembed = new DiscordEmbedBuilder
-                    {
-                        Title = $"The bot is already in {connection.Channel.Mention} playing music",
-                        Description = $"Current track: `{connection.CurrentState.CurrentTrack.Title}`",
-                        Color = new DiscordColor(0xFFA500)
-                    };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(alreadyplayingembed));
-                    return;
-                };*/
             }
             catch (Exception ex)
             {
@@ -176,7 +176,7 @@ namespace FossiumBot.Commands
                 await connection.DisconnectAsync();
                 Console.WriteLine(ex);
                 return;
-            }
+            }*/
         }
 
         [SlashCommand("stop", "Stop playing and leave the voice channel")]
