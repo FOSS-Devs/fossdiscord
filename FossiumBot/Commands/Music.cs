@@ -20,8 +20,8 @@ namespace FossiumBot.Commands
         [SlashCommand("play", "Play audio from a YouTube video")]
         public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
         {
-            Directory.CreateDirectory(@"Settings/");
-            Directory.CreateDirectory(@"Settings/playback/");
+            Directory.CreateDirectory(@"Data/");
+            Directory.CreateDirectory(@"Data/playback/");
             string file = $"Settings/playback/{ctx.Guild.Id}.json";
             LavalinkLoadResult loadResult = null;
             var lava = ctx.Client.GetLavalink();
