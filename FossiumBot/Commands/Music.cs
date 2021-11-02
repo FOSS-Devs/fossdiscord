@@ -22,15 +22,27 @@ namespace FossiumBot.Commands
         {
             Directory.CreateDirectory(@"Data/");
             Directory.CreateDirectory(@"Data/playback/");
+            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
+            {
+                var voicestatenull = new DiscordEmbedBuilder
+                {
+                    Title = "You are not in a voice channel.",
+                    //Description = "",
+                    Color = new DiscordColor(0xFFA500)
+                };
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(voicestatenull));
+                return;
+            }
             string file = $"Data/playback/{ctx.Guild.Id}.json";
             LavalinkLoadResult loadResult = null;
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
+            var connection = node.GetGuildConnection(ctx.Guild);
             var vstat = ctx.Member?.VoiceState;
             var preparingembed = new DiscordEmbedBuilder
             {
                 Title = $"Preparing for playing...",
-                Color = new DiscordColor(0xFFA500)
+                Color = new DiscordColor(0x0080FF)
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(preparingembed));
             string urltype;
@@ -91,6 +103,17 @@ namespace FossiumBot.Commands
             }
             else
             {
+                if (connection == null)
+                {
+                    File.Delete(file);
+                    var lavalinkerror = new DiscordEmbedBuilder
+                    {
+                        Title = "Something went wrong while trying to connect to Lavalink",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
+                    return;
+                }
                 string read = File.ReadAllText(file);
                 JObject jsonData = JObject.Parse(read);
                 jsonData["playlist"][$"{jsonData["playlist"].Count() + 1}"] = new JObject(new JProperty("title", track.Title), new JProperty("urltype", urltype), new JProperty("url", url), new JProperty("time", track.Length), new JProperty("thumbnail", thumbnail));
@@ -100,7 +123,7 @@ namespace FossiumBot.Commands
                 {
                     Title = "Added to queue...",
                     Description = $"{track.Title}",
-                    Color = new DiscordColor(0x0080FF)
+                    Color = new DiscordColor(0x2ECC70)
                 };
                 if (urltype == "YouTube")
                 {
@@ -110,7 +133,7 @@ namespace FossiumBot.Commands
                 return;
             }
             await node.ConnectAsync(vstat.Channel);
-            var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
+            connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
             int lastplaybackIndex = 0;
             while (connection != null && File.Exists(file))
             {
@@ -138,7 +161,7 @@ namespace FossiumBot.Commands
                         {
                             Title = "Now playing",
                             Description = $"{track.Title}",
-                            Color = new DiscordColor(0x0080FF)
+                            Color = new DiscordColor(0x2ECC70)
                         };
                         if (urltype == "YouTube")
                         {
@@ -174,7 +197,7 @@ namespace FossiumBot.Commands
                     {
                         Title = "Now playing",
                         Description = $"{track.Title}",
-                        Color = new DiscordColor(0x0080FF)
+                        Color = new DiscordColor(0x2ECC70)
                     };
                     if (urltype == "YouTube")
                     {
