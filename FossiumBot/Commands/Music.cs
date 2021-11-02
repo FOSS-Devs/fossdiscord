@@ -108,7 +108,7 @@ namespace FossiumBot.Commands
                     File.Delete(file);
                     var lavalinkerror = new DiscordEmbedBuilder
                     {
-                        Title = "Something went wrong while trying to connect to Lavalink",
+                        Title = "Something went wrong at our end, please try again.",
                         Color = new DiscordColor(0xFF0000)
                     };
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
@@ -216,111 +216,6 @@ namespace FossiumBot.Commands
                     }
                 } 
             }
-            
-            
-            
-            
-            
-                /*if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
-                {
-                    var voicestatenull = new DiscordEmbedBuilder
-                    {
-                        Title = "You are not in a voice channel.",
-                        //Description = "",
-                        Color = new DiscordColor(0xFFA500)
-                    };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(voicestatenull));
-                    return;
-                }
-    
-                var lava = ctx.Client.GetLavalink();
-                var node = lava.ConnectedNodes.Values.First();
-                var vstat = ctx.Member?.VoiceState;
-                await node.ConnectAsync(vstat.Channel);
-                var connection = node.GetGuildConnection(ctx.Member.VoiceState.Guild);
-                try {
-                    if (connection == null)
-                    {
-                        var lavalinkerror = new DiscordEmbedBuilder
-                        {
-                            Title = "Something went wrong while trying to connect to Lavalink",
-                            Color = new DiscordColor(0xFF0000)
-                        };
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
-                        return;
-                    }
-                    LavalinkLoadResult loadResult = null;
-                    if (urltype == "YouTube")
-                    {
-                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
-                    }
-                    else if (urltype == "SoundCloud")
-                    {
-                        loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.SoundCloud);
-                    }
-                    var track = loadResult.Tracks.First();
-                    if (connection.CurrentState.CurrentTrack == null)
-                    {
-                        DateTime nextTrackTime = DateTime.UtcNow;
-                        String parseNextTrackTime = nextTrackTime.Add(track.Length).ToString();
-                        JObject trackTime = new JObject(new JProperty("time", parseNextTrackTime));
-                        if(File.Exists(file))
-                        {
-                            File.Delete(file);
-                        }
-                        string timeData = JsonConvert.SerializeObject(trackTime, Formatting.Indented);
-                        File.WriteAllText(file, timeData);
-                        var playingembed = new DiscordEmbedBuilder
-                        {
-                            Title = $"Now playing {track.Title}",
-                            Description = $"{track.Uri}",
-                            Color = new DiscordColor(0x0080FF)
-                        };
-                        if (urltype == "YouTube")
-                        {
-                            playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
-                        }
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                        await connection.PlayAsync(track);
-                    }
-                    else
-                    {
-                        String fileData = File.ReadAllText(file);
-                        JObject jsonData = JObject.Parse(fileData);
-                        DateTime thisTrack = DateTime.Parse((string)jsonData["time"]);
-                        jsonData["time"] = thisTrack.Add(track.Length);
-                        string timeData = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                        File.WriteAllText(file, timeData);
-                        var playingembed = new DiscordEmbedBuilder
-                        {
-                            Title = "Added to queue...",
-                            Description = $"{track.Title}",
-                            Color = new DiscordColor(0x0080FF)
-                        };
-                        if (urltype == "YouTube")
-                        {
-                            playingembed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
-                        }
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                        while (DateTime.UtcNow < thisTrack)
-                        {
-                            Thread.Sleep(1000);
-                        }
-                        await connection.PlayAsync(track);
-                    };
-                }
-                catch (Exception ex)
-                {
-                    var errorEM = new DiscordEmbedBuilder
-                    {
-                        Title = "Something Went Wrong...",
-                        Color = new DiscordColor(0xFF0000)
-                    };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(errorEM));
-                    await connection.DisconnectAsync();
-                    Console.WriteLine(ex);
-                    return;
-                }*/
         }
 
         [SlashCommand("stop", "Stop playing and leave the voice channel")]
