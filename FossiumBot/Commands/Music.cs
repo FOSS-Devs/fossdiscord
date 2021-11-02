@@ -127,7 +127,7 @@ namespace FossiumBot.Commands
                         await connection.PlayAsync(track);
                         var playingembed = new DiscordEmbedBuilder
                         {
-                            Title = "Now Playing",
+                            Title = "Now playing",
                             Description = $"{track.Title}",
                             Color = new DiscordColor(0x0080FF)
                         };
