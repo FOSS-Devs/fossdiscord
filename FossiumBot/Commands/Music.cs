@@ -133,7 +133,7 @@ namespace FossiumBot.Commands
                         };
                         if (urltype == "YouTube")
                         {
-                            playingembed.WithThumbnail((string)playlistCurrent["playlist"][$"{lastplaybackIndex}"]["thumbnail"]);
+                            playingembed.WithThumbnail((string)playlistCurrent["playlist"][$"{i}"]["thumbnail"]);
                         }
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                         DateTime nextTrackTime = DateTime.UtcNow.Add(track.Length);
