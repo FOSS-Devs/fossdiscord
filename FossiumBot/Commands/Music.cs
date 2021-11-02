@@ -106,6 +106,7 @@ namespace FossiumBot.Commands
                 {
                     playingembed.WithThumbnail(thumbnail);
                 }
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                 return;
             }
             await node.ConnectAsync(vstat.Channel);
