@@ -94,8 +94,6 @@ namespace FossiumBot.Commands
                 string read = File.ReadAllText(file);
                 JObject jsonData = JObject.Parse(read);
                 jsonData["playlist"][$"{jsonData["playlist"].Count() + 1}"] = new JObject(new JProperty("title", track.Title), new JProperty("urltype", urltype), new JProperty("url", url), new JProperty("time", track.Length), new JProperty("thumbnail", thumbnail));
-                DateTime currentTrack = DateTime.Parse((string)jsonData["tracktime"]["time"]);
-                jsonData["tracktime"]["time"] = currentTrack.Add(track.Length);
                 string playlistAdd = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
                 File.WriteAllText(file, playlistAdd);
                 return;
