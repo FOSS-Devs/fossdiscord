@@ -955,11 +955,10 @@ namespace FossiumBot.Commands
         [SlashCommand("reactionroles", "Reaction roles")]
         public async Task ReactionrolesCommand(InteractionContext ctx, [Option("text", "The text in the message, new line with \"\\n\"")]string text, [Option("channel", "The channel to make the reaction roles message")] DiscordChannel channel)
         {
-            ulong rolecount = 1;
             DiscordEmoji discordemoji = null;
             DiscordRole discordrole = null;
-            List<DiscordEmoji> discordemojis = new List<DiscordEmoji>();
-            List<DiscordRole> discordroles = new List<DiscordRole>();
+            List<String> discordemojis = new List<String>();
+            List<ulong> discordroles = new List<ulong>();
             InteractivityExtension interactivity = ctx.Client.GetInteractivity();
                 var addrole = new DiscordEmbedBuilder
                 {
@@ -989,29 +988,19 @@ namespace FossiumBot.Commands
                         var emptyembed = new DiscordEmbedBuilder
                         {
                             Title = $"Oops...",
-                            Description = $"Please add at least one role\nRestart the command to try again",
+                            Description = $"Please add at least one role\nPlease re-run the command",
                             Color = new DiscordColor(0xFF0000)
                         };
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(emptyembed));
                         return;
                     }
-                    else
-                    {
-                        break;
-                    }
+                    break;
                 }
 
                 var syntaxmatch = Regex.Match(response.Result.Content, @"\d* \| [a-z_\-A-Z]*");
 
                 if (!Regex.IsMatch(response.Result.Content, @"\d* \| [a-z_\-A-Z]*"))
                 {
-                    var syntaxembed = new DiscordEmbedBuilder
-                    {
-                        Title = $"Wrong syntax",
-                        Description = $"Syntax: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
-                        Color = new DiscordColor(0xFF0000)
-                    };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(syntaxembed));
                     continue;
                 }
 
@@ -1020,10 +1009,24 @@ namespace FossiumBot.Commands
 
                 string[] responsesplit = response.Result.Content.Split(" | ");
                 //Console.WriteLine(responsesplit[0]);
-                discordemoji = DiscordEmoji.FromName(ctx.Client, $":{responsesplit[1]}:");
-                discordrole = ctx.Guild.GetRole(ulong.Parse(responsesplit[0]));
-                discordemojis.Add(DiscordEmoji.FromName(ctx.Client, $":{responsesplit[1]}:"));
-                discordroles.Add(ctx.Guild.GetRole(ulong.Parse(responsesplit[0])));
+                try
+                {
+                    discordemoji = DiscordEmoji.FromName(ctx.Client, $":{responsesplit[1]}:");
+                    discordrole = ctx.Guild.GetRole(ulong.Parse(responsesplit[0]));
+                }
+                catch
+                {
+                    var errorembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Oops...",
+                        Description = $"That is not a valid role and/or emoji\nPlease re-run the command",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(errorembed));
+                    return;
+                }
+                discordemojis.Add(DiscordEmoji.FromName(ctx.Client, $":{responsesplit[1]}:").GetDiscordName());
+                discordroles.Add(ctx.Guild.GetRole(ulong.Parse(responsesplit[0])).Id);
 
                 var addedembed = new DiscordEmbedBuilder
                 {
@@ -1035,21 +1038,21 @@ namespace FossiumBot.Commands
             }
             text = text.Replace("\\n", "\r\n");
             var msg = await channel.SendMessageAsync(text);
-            DiscordEmoji[] discordemojisarray = discordemojis.ToArray();
-            DiscordRole[] discordrolesarray = discordroles.ToArray();
+            String[] discordemojisarray = discordemojis.ToArray();
+
             ulong repeatforeach = 0;
-            foreach (var DiscordEmoji in discordemojis)
+            foreach (String emoji in discordemojis)
             {
-                await msg.CreateReactionAsync(discordemojisarray[repeatforeach]);
-                repeatforeach = repeatforeach + 1;
+                await msg.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, $"{discordemojisarray[repeatforeach]}"));
+                repeatforeach++;
             }
 
             JObject reactionrolesConfig =
                     new JObject(
                         new JProperty("reactionroles",
                         new JObject {
-                                    new JProperty("emojis", $"{discordrolesarray}"),
-                                    new JProperty("roles", $"{discordemojisarray}")
+                                    new JProperty("emojis", $"{string.Join(", ", discordemojis)}"),
+                                    new JProperty("roles", $"{string.Join(", ", discordroles)}")
                                 }
                         )
                     );

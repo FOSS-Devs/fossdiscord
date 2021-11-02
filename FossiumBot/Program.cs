@@ -39,7 +39,7 @@ namespace FossiumBot
                 Console.WriteLine("Starting the bot...");
             }
 
-            JObject cfgjson = JObject.Parse(File.ReadAllText("config.json"));
+            JObject cfgjson = JObject.Parse(await File.ReadAllTextAsync("config.json"));
 
             var discord = new DiscordClient(new DiscordConfiguration()
             {
@@ -228,7 +228,7 @@ namespace FossiumBot
                             )
                         );
                     string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText(jsonfile, dataWrite);
+                    await File.WriteAllTextAsync(jsonfile, dataWrite);
                     await Task.CompletedTask;
                 }
 
@@ -271,7 +271,7 @@ namespace FossiumBot
                             )
                         );
                     string dataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText(jsonfile, dataWrite);
+                    await File.WriteAllTextAsync(jsonfile, dataWrite);
                 }
                 await Task.CompletedTask;
             };
@@ -299,7 +299,7 @@ namespace FossiumBot
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guilds");
                 string file = $"Settings/guilds/{e.Guild.Id}.json";
-                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
                 if((string)jsonData["config"]["loggingchannelid"] == "null" || e.Message.Author == null || discord.CurrentUser.Id == e.Message.Author.Id)
                 {
                     return;
@@ -337,7 +337,7 @@ namespace FossiumBot
                     {
                         return;
                     }
-                    JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                    JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
                     if ((string)jsonData["config"]["loggingchannelid"] == "null")
                     {
                         return;
@@ -366,7 +366,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
@@ -394,7 +394,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
@@ -425,7 +425,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
@@ -452,7 +452,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
@@ -499,7 +499,7 @@ namespace FossiumBot
                 {
                     return;
                 }
-                JObject jsonData = JObject.Parse(File.ReadAllText(file));
+                JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
                 if ((string)jsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
@@ -527,7 +527,7 @@ namespace FossiumBot
                     return;
                 }
 
-                string json = File.ReadAllText(file);
+                string json = await File.ReadAllTextAsync(file);
                 dynamic jsonData = JsonConvert.DeserializeObject(json);
                     if (jsonData["config"]["welcomer"] == "off")
                     {
@@ -554,43 +554,51 @@ namespace FossiumBot
                         await welcomerchannel.SendMessageAsync(custommessagereplaced);
                     }   
             };
-            //commands.CommandErrored += async (s, e) =>
-            //{
-            //    if (e.Exception is CommandNotFoundException)
-            //    {
-            //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "");
-            //        var commandnotfoundembed = new DiscordEmbedBuilder
-            //        {
-            //            Title = "Oops...",
-            //            Description = $"The command `{messagecommand}` was not found",
-            //            Color = new DiscordColor(0xFF0000)
-            //        };
-            //        await e.Context.RespondAsync(commandnotfoundembed);
-            //        return;
-            //    }
-            //    else if (e.Exception.Message == "Could not find a suitable overload for the command.")
-            //    {
-            //        string messagecommand = e.Context.Message.Content.Replace(cfgjson["prefix"].ToString(), "").Split(" ")[0].ToString();
-            //        var overloadembed = new DiscordEmbedBuilder
-            //        {
-            //            Title = "Oops...",
-            //            Description = $"One or more arguments are not needed or missing\nRun `{cfgjson["prefix"]}help {messagecommand}` to see all the arguments",
-            //            Color = new DiscordColor(0xFF0000)
-            //        };
-            //        await e.Context.RespondAsync(overloadembed);
-            //        return;
-            //    }
-            //    var embed = new DiscordEmbedBuilder
-            //    {
-            //        Title = "Oops...",
-            //        Description = $"Something went wrong:\n`{e.Exception.Message}`",
-            //        Color = new DiscordColor(0xFF0000)
-            //    };
-            //    await e.Context.RespondAsync(embed);
-            //};
+            discord.MessageReactionAdded += async (s, e) =>
+            {
+                if (e.User.IsBot)
+                {
+                    return;
+                }
+                if (!File.Exists(@$"Settings/reactionroles/{e.Guild.Id}-{e.Channel.Id}-{e.Message.Id}.json"))
+                {
+                    return;
+                }
+        
+                JObject jsonData =
+                    JObject.Parse(
+                        await File.ReadAllTextAsync(
+                            @$"Settings/reactionroles/{e.Guild.Id}-{e.Channel.Id}-{e.Message.Id}.json"));
+                string[] splitreactionroles = jsonData["reactionroles"]["roles"].ToString().Split(", ");
+                string[] splitreactionemojis = jsonData["reactionroles"]["emojis"].ToString().Split(", ");
+
+                if (Array.IndexOf(splitreactionemojis, e.Emoji.GetDiscordName()) == -1)
+                {
+                    return;
+                }
+                
+                string reactionrole = splitreactionroles[Array.IndexOf(splitreactionemojis, e.Emoji.GetDiscordName())];
+                DiscordRole role = e.Guild.GetRole(ulong.Parse(reactionrole));
+                DiscordMember member = (DiscordMember)e.User;
+                try
+                {
+                    await member.GrantRoleAsync(role);
+                }
+                catch
+                {
+                    var errorembed = new DiscordEmbedBuilder
+                    {
+                        Title = $"Oops...",
+                        Description = $"Reaction roles message ID: {e.Message.Id}\nI don't have the permission to give role `{role.Name}` to `{e.User.Username}#{e.User.Discriminator}`",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await e.Guild.Owner.SendMessageAsync(errorembed);
+                }
+
+                await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+            };
 
             discord.UseInteractivity();
-
             var slash = discord.UseSlashCommands();
             //slash.RegisterCommands<Fun>(848464241219338250);
             slash.RegisterCommands<Fun>();
@@ -611,11 +619,7 @@ namespace FossiumBot
                 Name = $"for commands | {localversion}",
                 ActivityType = ActivityType.Watching
             };
-            //Process LavalinkProcess = new Process();
-            //LavalinkProcess.StartInfo.UseShellExecute = false;
-            //LavalinkProcess.StartInfo.FileName = "java";
-            //LavalinkProcess.StartInfo.Arguments = "-jar Lavalink/Lavalink.jar";
-            //LavalinkProcess.Start();
+
             var localendpoint = new ConnectionEndpoint
             {
                 Hostname = "127.0.0.1",
@@ -707,7 +711,7 @@ namespace FossiumBot
                     RestEndpoint = mainendpoint,
                     SocketEndpoint = mainendpoint
                 };
-
+            
                 try
                 {
                     await tcpClient.ConnectAsync(mainendpoint.Hostname, mainendpoint.Port);
@@ -730,7 +734,7 @@ namespace FossiumBot
                         RestEndpoint = fallbackendpoint,
                         SocketEndpoint = fallbackendpoint
                     };
-
+            
                     try
                     {
                         await tcpClient.ConnectAsync(fallbackendpoint.Hostname, fallbackendpoint.Port);
@@ -751,8 +755,7 @@ namespace FossiumBot
                     }
                 }
             }
-            // For the uptime command
-            
+
             await Task.Delay(-1);
         }
 
