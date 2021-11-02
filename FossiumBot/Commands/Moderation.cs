@@ -964,7 +964,7 @@ namespace FossiumBot.Commands
                 var addrole = new DiscordEmbedBuilder
                 {
                     Title = "Reaction roles",
-                    Description = $"Add a role\nSyntax: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
+                    Description = $"To add a role: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(addrole));
@@ -993,7 +993,7 @@ namespace FossiumBot.Commands
                             Color = new DiscordColor(0xFF0000)
                         };
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(emptyembed));
-                        continue;
+                        return;
                     }
                     else
                     {
@@ -1027,39 +1027,34 @@ namespace FossiumBot.Commands
 
                 var addedembed = new DiscordEmbedBuilder
                 {
-                    Title = $"Added role `{discordrole.Name}` with emoij {discordemoji.Name}",
-                    Description = $"Syntax: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
+                    Title = $"Reaction roles",
+                    Description = $"Added role `{discordrole.Name}` with emoij {discordemoji.Name}\nSyntax: `<role id> | <emoji name>`, `done` or `cancel`\nTimeout in 30 seconds",
                     Color = new DiscordColor(0x0080FF)
                 };
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(addedembed));
-
-                //JObject reactionrolesConfig =
-                //        new JObject(
-                //            new JProperty("reactionroles",
-                //            new JObject {
-                //                    new JProperty($"{channel}", new JObject
-                //                    {
-                //                        new JProperty($"{rolecount}", new JObject
-                //                        {
-                //                            new JProperty($"emoji", $"{discordemoji}"),
-                //                            new JProperty($"role", $"{discordrole}")
-                //                        })
-                //                    }),
-                //                    }
-                //            )
-                //        );
-                //string reactionrolesWrite = JsonConvert.SerializeObject(reactionrolesConfig, Formatting.Indented);
-                //File.WriteAllText($"Settings/reactionroles/{ctx.Guild.Id}.json", reactionrolesWrite);
             }
             text = text.Replace("\\n", "\r\n");
             var msg = await channel.SendMessageAsync(text);
             DiscordEmoji[] discordemojisarray = discordemojis.ToArray();
+            DiscordRole[] discordrolesarray = discordroles.ToArray();
             ulong repeatforeach = 0;
             foreach (var DiscordEmoji in discordemojis)
             {
                 await msg.CreateReactionAsync(discordemojisarray[repeatforeach]);
                 repeatforeach = repeatforeach + 1;
             }
+
+            JObject reactionrolesConfig =
+                    new JObject(
+                        new JProperty("reactionroles",
+                        new JObject {
+                                    new JProperty("emojis", $"{discordrolesarray}"),
+                                    new JProperty("roles", $"{discordemojisarray}")
+                                }
+                        )
+                    );
+            string reactionrolesWrite = JsonConvert.SerializeObject(reactionrolesConfig, Formatting.Indented);
+            File.WriteAllText($"Settings/reactionroles/{ctx.Guild.Id}-{channel.Id}-{msg.Id}.json", reactionrolesWrite);
         }
     }
 }
