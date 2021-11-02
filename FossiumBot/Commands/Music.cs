@@ -314,16 +314,6 @@ namespace FossiumBot.Commands
             }
             if (connection == null)
             {
-                var lavalinkerror = new DiscordEmbedBuilder
-                {
-                    Title = "Something went wrong while trying to connect to Lavalink",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lavalinkerror));
-                return;
-            }
-            if (connection.CurrentState.CurrentTrack == null)
-            {
                 var nothingplayingembed = new DiscordEmbedBuilder
                 {
                     Title = "Nothing is playing",
