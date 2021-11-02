@@ -22,7 +22,7 @@ namespace FossiumBot.Commands
         {
             Directory.CreateDirectory(@"Data/");
             Directory.CreateDirectory(@"Data/playback/");
-            string file = $"Settings/playback/{ctx.Guild.Id}.json";
+            string file = $"Data/playback/{ctx.Guild.Id}.json";
             LavalinkLoadResult loadResult = null;
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
