@@ -600,20 +600,20 @@ namespace FossiumBot
 
             discord.UseInteractivity();
             var slash = discord.UseSlashCommands();
-            slash.RegisterCommands<Fun>(848464241219338250);
-            //slash.RegisterCommands<Fun>();
-            slash.RegisterCommands<Music>(848464241219338250);
-            //slash.RegisterCommands<Music>();
-            slash.RegisterCommands<Owner>(848464241219338250);
-            //slash.RegisterCommands<Owner>();
-            slash.RegisterCommands<Moderation>(848464241219338250);
-            //slash.RegisterCommands<Moderation>();
-            slash.RegisterCommands<Settings>(848464241219338250);
-            //slash.RegisterCommands<Settings>();
-            slash.RegisterCommands<Utils>(848464241219338250);
-            //slash.RegisterCommands<Utils>();
-            slash.RegisterCommands<Update>(848464241219338250);
-            //slash.RegisterCommands<Update>();
+            //slash.RegisterCommands<Fun>(848464241219338250);
+            slash.RegisterCommands<Fun>();
+            //slash.RegisterCommands<Music>(848464241219338250);
+            slash.RegisterCommands<Music>();
+            //slash.RegisterCommands<Owner>(848464241219338250);
+            slash.RegisterCommands<Owner>();
+            //slash.RegisterCommands<Moderation>(848464241219338250);
+            slash.RegisterCommands<Moderation>();
+            //slash.RegisterCommands<Settings>(848464241219338250);
+            slash.RegisterCommands<Settings>();
+            //slash.RegisterCommands<Utils>(848464241219338250);
+            slash.RegisterCommands<Utils>();
+            //slash.RegisterCommands<Update>(848464241219338250);
+            slash.RegisterCommands<Update>();
             DiscordActivity discordActivity = new DiscordActivity
             {
                 Name = $"for commands | {localversion}",
