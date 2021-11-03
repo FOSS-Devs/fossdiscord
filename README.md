@@ -19,6 +19,7 @@ The bot has lots of features, including but not limited to:
   - Kick, ban, softban
   - Purge
   - Autodelete
+  - Reactionroles
 - Utils
   - Avatar
   - Userinfo, serverinfo, emojiinfo,
