@@ -119,14 +119,20 @@ namespace FossiumBot.Commands
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
-        }
-        [SlashCommandGroup("welcomersettings", "A group with all the settings")]
-        public class WelcomersettingsGroup : ApplicationCommandModule
-        {
-            [SlashCommand("on", "Enable the welcomer")]
-            [SlashRequireUserPermissions(Permissions.Administrator)]
-            public async Task WelcomerOnCommand(InteractionContext ctx)
+
+            [SlashCommand("welcomertoggle", "Toggle the welcomer")]
+            public async Task WelcomertoggleCommand(InteractionContext ctx, [Option("option", "on, off, channel or custommessage")] string option)
             {
+                if (option.ToLower() != "on" || option.ToLower() != "off")
+                {
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Invalid option",
+                        Description = "Valid options: on or off",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                }
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guilds");
                 if (!File.Exists($"Settings/guilds/{ctx.Guild.Id}.json"))
@@ -149,57 +155,38 @@ namespace FossiumBot.Commands
 
                 string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
                 dynamic jsonData = JsonConvert.DeserializeObject(json);
-                jsonData["config"]["welcomer"] = "on";
-                string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
-                var em = new DiscordEmbedBuilder
+                if (option.ToLower() == "on")
                 {
-                    Title = $"Enabled the welcomer",
-                    Color = new DiscordColor(0x2ECC70)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-            }
-
-            [SlashCommand("off", "Disable the welcomer")]
-            [SlashRequireUserPermissions(Permissions.Administrator)]
-            public async Task WelcomerOffCommand(InteractionContext ctx)
-            {
-                Directory.CreateDirectory(@"Settings/");
-                Directory.CreateDirectory(@"Settings/guilds");
-                if (!File.Exists($"Settings/guilds/{ctx.Guild.Id}.json"))
-                {
-                    JObject newConfig =
-                        new JObject(
-                            new JProperty("config",
-                            new JObject {
-                                new JProperty("loggingchannelid", "null"),
-                                new JProperty("muterole", "null"),
-                                new JProperty("welcomer", "off"),
-                                new JProperty("welcomerchannel", "null"),
-                                new JProperty("welcomercustommessage", "null")
-                                    }
-                            )
-                        );
-                    string nonexistdataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
+                    jsonData["config"]["welcomer"] = "on";
                 }
-
-                string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
-                dynamic jsonData = JsonConvert.DeserializeObject(json);
-                jsonData["config"]["welcomer"] = "off";
-                string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
-                var em = new DiscordEmbedBuilder
+                else
                 {
-                    Title = $"Disabled the welcomer",
-                    Color = new DiscordColor(0xFF0000)
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                    jsonData["config"]["welcomer"] = "off";
+                }
+                string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+                await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
+                if (option.ToLower() == "on")
+                {
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Enabled the welcomer",
+                        Color = new DiscordColor(0x2ECC70)
+                    };
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                }
+                else
+                {
+                    var em = new DiscordEmbedBuilder
+                    {
+                        Title = $"Disabled the welcomer",
+                        Color = new DiscordColor(0x2ECC70)
+                    };
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                }
             }
 
-            [SlashCommand("channel", "Set the channel where the welcome message should be sent")]
-            [SlashRequireUserPermissions(Permissions.Administrator)]
-            public async Task WelcomerChannelCommand(InteractionContext ctx, [Option("channel", "The channel where the welcome message should be sent")] DiscordChannel channel)
+            [SlashCommand("welcomerchannel", "Set the channel the welcomer sends messages to")]
+            public async Task WelcomerchannelCommand(InteractionContext ctx, [Option("channel", "The channel to send the messages to")] DiscordChannel channel)
             {
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guilds");
@@ -234,28 +221,41 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
 
-            [SlashCommand("custommessage", "Set your own custom welcome message")]
-            [SlashRequireUserPermissions(Permissions.Administrator)]
-            public async Task WelcomerCustommessageCommand(InteractionContext ctx, [Option("custommessage", "Your own custom welcome message. Placeholders: {user}, {usermention}, {servername}")] string custommessage)
+            [SlashCommand("welcomercustommessage", "Set your own custom welcome message")]
+            public async Task WelcomercustommessageCommand(InteractionContext ctx, [Option("custommessage", "Your own custom welcome message. Placeholders: {user}, {usermention}, {servername}")] string custommessage)
             {
-                string file = $"Settings/guilds/{ctx.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
-                Directory.CreateDirectory(@"Settings/guilds/");
-                if (File.Exists(file))
+                Directory.CreateDirectory(@"Settings/guilds");
+                if (!File.Exists($"Settings/guilds/{ctx.Guild.Id}.json"))
                 {
-                    string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
-                    dynamic jsonData = JsonConvert.DeserializeObject(json);
-                    jsonData["config"]["welcomercustommessage"] = $"{custommessage}";
-                    string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
-                    var em = new DiscordEmbedBuilder
-                    {
-                        Title = $"The welcome message is now:",
-                        Description = $"`{custommessage}`",
-                        Color = new DiscordColor(0x2ECC70)
-                    };
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
+                    JObject newConfig =
+                        new JObject(
+                            new JProperty("config",
+                            new JObject {
+                                new JProperty("loggingchannelid", "null"),
+                                new JProperty("muterole", "null"),
+                                new JProperty("welcomer", "off"),
+                                new JProperty("welcomerchannel", "null"),
+                                new JProperty("welcomercustommessage", "null")
+                                    }
+                            )
+                        );
+                    string nonexistdataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
+                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
                 }
+
+                string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                dynamic jsonData = JsonConvert.DeserializeObject(json);
+                jsonData["config"]["welcomercustommessage"] = $"{custommessage}";
+                string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+                File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
+                var em = new DiscordEmbedBuilder
+                {
+                    Title = $"The welcome message is now:",
+                    Description = $"`{custommessage}`",
+                    Color = new DiscordColor(0x2ECC70)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
             }
         }
     }
