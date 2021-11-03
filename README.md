@@ -16,16 +16,16 @@ The bot has lots of features, including but not limited to:
 - Moderation
   - Warning system
   - Mute system
-  - Kick, ban, softban
+  - Kick, Ban, Softban
   - Purge
   - Autodelete
   - Reactionroles
 - Utils
   - Avatar
-  - Userinfo, serverinfo, emojiinfo,
-  - Poll, quickpoll
+  - Userinfo, Serverinfo, Emojiinfo,
+  - Poll, Quickpoll
 - Fun
-  - Dog, cat
+  - Dog, Cat
   - GitHub
   - Wikipedia
 - Music
