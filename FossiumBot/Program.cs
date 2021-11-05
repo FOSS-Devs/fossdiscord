@@ -627,7 +627,7 @@ namespace FossiumBot
             };
             var locallavalinkConfig = new LavalinkConfiguration
             {
-                Password = "whatdidyousay",
+                Password = "whatdidyousayagain",
                 RestEndpoint = localendpoint,
                 SocketEndpoint = localendpoint
             };
@@ -705,7 +705,7 @@ namespace FossiumBot
             catch
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("No local Lavalink instance found.\nIf you do, make sure the port is \"2333\" and the password is \"whatdidyousay\"");
+                Console.WriteLine("No local Lavalink instance found.\nIf you do, make sure the port is \"2333\" and the password is \"whatdidyousayagain\"");
                 Console.ForegroundColor = ConsoleColor.White;
                 var mainendpoint = new ConnectionEndpoint
                 {
