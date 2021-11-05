@@ -99,7 +99,7 @@ namespace FossiumBot.Commands
                         )
                     );
                 string playlistWrite = JsonConvert.SerializeObject(playlist, Formatting.Indented);
-                File.WriteAllText(file, playlistWrite);
+                await File.WriteAllTextAsync(file, playlistWrite);
             }
             else
             {
@@ -114,11 +114,11 @@ namespace FossiumBot.Commands
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(lavalinkerror));
                     return;
                 }
-                string read = File.ReadAllText(file);
+                string read = await File.ReadAllTextAsync(file);
                 JObject jsonData = JObject.Parse(read);
                 jsonData["playlist"][$"{jsonData["playlist"].Count() + 1}"] = new JObject(new JProperty("title", track.Title), new JProperty("urltype", urltype), new JProperty("url", url), new JProperty("time", track.Length), new JProperty("thumbnail", thumbnail));
                 string playlistAdd = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                File.WriteAllText(file, playlistAdd);
+                await File.WriteAllTextAsync(file, playlistAdd);
                 var newEmbed = new DiscordEmbedBuilder
                 {
                     Title = "Added to queue...",
@@ -137,13 +137,13 @@ namespace FossiumBot.Commands
             int lastplaybackIndex = 0;
             while (connection != null && File.Exists(file))
             {
-                string getPlaylist = File.ReadAllText(file);
+                string getPlaylist = await File.ReadAllTextAsync(file);
                 JObject playlistCurrent = JObject.Parse(getPlaylist);
                 if (lastplaybackIndex == 0)
                 {
-                    for (int i = 1; i <= JObject.Parse(File.ReadAllText(file))["playlist"].Count(); i++)
+                    for (int i = 1; i <= JObject.Parse(await File.ReadAllTextAsync(file))["playlist"].Count(); i++)
                     {
-                        getPlaylist = File.ReadAllText(file);
+                        getPlaylist = await File.ReadAllTextAsync(file);
                         playlistCurrent = JObject.Parse(getPlaylist);
                         url = playlistCurrent["playlist"][$"{i}"]["url"].ToString();
                         urltype = playlistCurrent["playlist"][$"{i}"]["urltype"].ToString();
@@ -179,7 +179,7 @@ namespace FossiumBot.Commands
                 }
                 else
                 {
-                    getPlaylist = File.ReadAllText(file);
+                    getPlaylist = await File.ReadAllTextAsync(file);
                     playlistCurrent = JObject.Parse(getPlaylist);
                     url = playlistCurrent["playlist"][$"{lastplaybackIndex}"]["url"].ToString();
                     urltype = playlistCurrent["playlist"][$"{lastplaybackIndex}"]["urltype"].ToString();
@@ -332,7 +332,7 @@ namespace FossiumBot.Commands
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lavalinkerror));
                 return;
             }
-            string read = File.ReadAllText(file);
+            string read = await File.ReadAllTextAsync(file);
             JObject jsonData = JObject.Parse(read);
             var embed = new DiscordEmbedBuilder
             {

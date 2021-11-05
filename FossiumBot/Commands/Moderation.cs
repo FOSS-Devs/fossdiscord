@@ -77,7 +77,7 @@ namespace FossiumBot.Commands
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/guilds");
             string file = $"Settings/guilds/{ctx.Guild.Id}.json";
-            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
                 return;
@@ -162,7 +162,7 @@ namespace FossiumBot.Commands
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/guilds");
             string file = $"Settings/guilds/{ctx.Guild.Id}.json";
-            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
                 return;
@@ -248,7 +248,7 @@ namespace FossiumBot.Commands
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/guilds");
             string file = $"Settings/guilds/{ctx.Guild.Id}.json";
-            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
                 return;
@@ -298,7 +298,7 @@ namespace FossiumBot.Commands
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/guilds");
             string file = $"Settings/guilds/{ctx.Guild.Id}.json";
-            JObject jsonData = JObject.Parse(File.ReadAllText(file));
+            JObject jsonData = JObject.Parse(await File.ReadAllTextAsync(file));
             if ((string)jsonData["config"]["loggingchannelid"] == "null")
             {
                 return;
@@ -395,7 +395,7 @@ namespace FossiumBot.Commands
                     Color = new DiscordColor(0xFFA500)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
-                File.Create(@$"Settings/lck/{channel.Id}.lck").Dispose();
+                await File.Create(@$"Settings/lck/{channel.Id}.lck").DisposeAsync();
                 while (File.Exists($"Settings/lck/{channel.Id}.lck"))
                 {
                     var messages = await channel.GetMessagesAsync();
@@ -471,7 +471,7 @@ namespace FossiumBot.Commands
                 if (File.Exists(file))
                 {
                     StreamReader readData = new StreamReader(file);
-                    string data = readData.ReadToEnd();
+                    string data = await readData.ReadToEndAsync();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
                     if (jsonData.GetValue($"{member.Id}") != null)
@@ -493,7 +493,7 @@ namespace FossiumBot.Commands
                         jsonData.Add(new JProperty($"{member.Id}", new JObject(new JProperty("1", reason))));
                     }
                     string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                    File.WriteAllText(file, dataWrite);
+                    await File.WriteAllTextAsync(file, dataWrite);
                     var firstEM = new DiscordEmbedBuilder
                     {
                         Title = $"`{member.DisplayName}` has been warned",
@@ -512,7 +512,7 @@ namespace FossiumBot.Commands
                         )
                     );
                     string dataWrite = JsonConvert.SerializeObject(overwrite, Formatting.Indented);
-                    File.WriteAllText(file, dataWrite);
+                    await File.WriteAllTextAsync(file, dataWrite);
                     var em = new DiscordEmbedBuilder
                     {
                         Title = $"`{member.DisplayName}` has been warned",
@@ -532,7 +532,7 @@ namespace FossiumBot.Commands
                         )
                     );
                 string dataWrite = JsonConvert.SerializeObject(overwrite, Formatting.Indented);
-                File.WriteAllText(file, dataWrite);
+                await File.WriteAllTextAsync(file, dataWrite);
                 var emNEW = new DiscordEmbedBuilder
                 {
                     Title = $"`{member.DisplayName}` has been warned",
@@ -544,7 +544,7 @@ namespace FossiumBot.Commands
             Directory.CreateDirectory(@"Settings/");
             Directory.CreateDirectory(@"Settings/guilds");
             string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
-            JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+            JObject loggingjsonData = JObject.Parse(await File.ReadAllTextAsync(loggingfile));
             if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
             {
                 return;
@@ -578,7 +578,7 @@ namespace FossiumBot.Commands
                 if (File.Exists(file))
                 {
                     StreamReader readData = new StreamReader(file);
-                    string data = readData.ReadToEnd();
+                    string data = await readData.ReadToEndAsync();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
                     if (jsonData.GetValue($"{member.Id}") != null && jsonData[$"{member.Id}"].Any())
@@ -668,7 +668,7 @@ namespace FossiumBot.Commands
                 try
                 {
                     StreamReader readData = new StreamReader(file);
-                    string data = readData.ReadToEnd();
+                    string data = await readData.ReadToEndAsync();
                     readData.Close();
                     JObject jsonData = JObject.Parse(data);
                     if(jsonData.GetValue($"{member.Id}") != null && jsonData[$"{member.Id}"].Any())
@@ -685,7 +685,7 @@ namespace FossiumBot.Commands
                                 jsonData[$"{member.Id}"][i].Parent.Remove();
                             }
                             string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                            File.WriteAllText(file, dataWrite);
+                            await File.WriteAllTextAsync(file, dataWrite);
                             var EM = new DiscordEmbedBuilder
                             {
                                 Title = $"Successfully removed all warnings for `{member.DisplayName}`",
@@ -696,7 +696,7 @@ namespace FossiumBot.Commands
                             Directory.CreateDirectory(@"Settings/");
                             Directory.CreateDirectory(@"Settings/guilds");
                             string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
-                            JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                            JObject loggingjsonData = JObject.Parse(await File.ReadAllTextAsync(loggingfile));
                             if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                             {
                                 return;
@@ -732,7 +732,7 @@ namespace FossiumBot.Commands
                         {
                             jsonData[$"{member.Id}"][$"{caseID}"].Parent.Remove();
                             string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                            File.WriteAllText(file, dataWrite);
+                            await File.WriteAllTextAsync(file, dataWrite);
                             var EM = new DiscordEmbedBuilder
                             {
                                 Title = $"Successfully removed `Case {caseID}` for `{member.DisplayName}`",
@@ -743,7 +743,7 @@ namespace FossiumBot.Commands
                             Directory.CreateDirectory(@"Settings/");
                             Directory.CreateDirectory(@"Settings/guilds");
                             string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
-                            JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                            JObject loggingjsonData = JObject.Parse(await File.ReadAllTextAsync(loggingfile));
                             if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                             {
                                 return;
@@ -822,7 +822,7 @@ namespace FossiumBot.Commands
             if (File.Exists(file))
             {
                 StreamReader readData = new StreamReader(file);
-                string data = readData.ReadToEnd();
+                string data = await readData.ReadToEndAsync();
                 readData.Close();
                 JObject jsonData = JObject.Parse(data);
                 if(jsonData["config"]["muterole"] != null)
@@ -843,7 +843,7 @@ namespace FossiumBot.Commands
                     Directory.CreateDirectory(@"Settings/");
                     Directory.CreateDirectory(@"Settings/guilds");
                     string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
-                    JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                    JObject loggingjsonData = JObject.Parse(await File.ReadAllTextAsync(loggingfile));
                     if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                     {
                         return;
@@ -888,7 +888,7 @@ namespace FossiumBot.Commands
             if (File.Exists(file))
             {
                 StreamReader readData = new StreamReader(file);
-                string data = readData.ReadToEnd();
+                string data = await readData.ReadToEndAsync();
                 readData.Close();
                 JObject jsonData = JObject.Parse(data);
                 ulong roleID = (ulong)jsonData["config"]["muterole"];
@@ -918,7 +918,7 @@ namespace FossiumBot.Commands
                 Directory.CreateDirectory(@"Settings/");
                 Directory.CreateDirectory(@"Settings/guilds");
                 string loggingfile = $"Settings/guilds/{ctx.Guild.Id}.json";
-                JObject loggingjsonData = JObject.Parse(File.ReadAllText(loggingfile));
+                JObject loggingjsonData = JObject.Parse(await File.ReadAllTextAsync(loggingfile));
                 if ((string)loggingjsonData["config"]["loggingchannelid"] == "null")
                 {
                     return;
@@ -1008,7 +1008,6 @@ namespace FossiumBot.Commands
                 Directory.CreateDirectory(@"Settings/reactionroles/");
 
                 string[] responsesplit = response.Result.Content.Split(" | ");
-                //Console.WriteLine(responsesplit[0]);
                 try
                 {
                     discordemoji = DiscordEmoji.FromName(ctx.Client, $":{responsesplit[1]}:");
@@ -1057,7 +1056,7 @@ namespace FossiumBot.Commands
                         )
                     );
             string reactionrolesWrite = JsonConvert.SerializeObject(reactionrolesConfig, Formatting.Indented);
-            File.WriteAllText($"Settings/reactionroles/{ctx.Guild.Id}-{channel.Id}-{msg.Id}.json", reactionrolesWrite);
+            await File.WriteAllTextAsync($"Settings/reactionroles/{ctx.Guild.Id}-{channel.Id}-{msg.Id}.json", reactionrolesWrite);
         }
     }
 }

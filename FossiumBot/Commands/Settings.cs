@@ -37,7 +37,7 @@ namespace FossiumBot.Commands
                             )
                         );
                     string nonexistdataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
+                    await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
                 }
                 string file = $"Settings/guilds/{ctx.Guild.Id}.json";
                 Directory.CreateDirectory(@"Settings/");
@@ -55,11 +55,11 @@ namespace FossiumBot.Commands
                 }
                 else if (loggingchannel == null && File.Exists(file))
                 {
-                    string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                    string json = await File.ReadAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json");
                     dynamic jsonData = JsonConvert.DeserializeObject(json);
                     jsonData["config"]["loggingchannelid"] = "null";
                     string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
+                    await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                     var disableembed = new DiscordEmbedBuilder
                     {
                         Title = $"Disabled logging",
@@ -70,11 +70,11 @@ namespace FossiumBot.Commands
                 }
                 else if (loggingchannel != null && File.Exists(file))
                 {
-                    string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                    string json = await File.ReadAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json");
                     dynamic jsonData = JsonConvert.DeserializeObject(json);
                     jsonData["config"]["loggingchannelid"] = $"{loggingchannel.Id}";
                     string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
+                    await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                 }
                 var embed = new DiscordEmbedBuilder
                 {
@@ -105,13 +105,13 @@ namespace FossiumBot.Commands
                             )
                         );
                     string nonexistdataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
+                    await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
                 }
-                string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                string json = await File.ReadAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json");
                 dynamic jsonData = JsonConvert.DeserializeObject(json);
                 jsonData["config"]["muterole"] = $"{muterole.Id}";
                 string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
+                await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                 var em = new DiscordEmbedBuilder
                 {
                     Title = $"`@{muterole.Name}` has been set as the mute role",
@@ -150,10 +150,10 @@ namespace FossiumBot.Commands
                             )
                         );
                     string nonexistdataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
+                    await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
                 }
 
-                string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                string json = await File.ReadAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json");
                 dynamic jsonData = JsonConvert.DeserializeObject(json);
                 if (option.ToLower() == "on")
                 {
@@ -205,14 +205,14 @@ namespace FossiumBot.Commands
                             )
                         );
                     string nonexistdataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
+                    await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
                 }
 
-                string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                string json = await File.ReadAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json");
                 dynamic jsonData = JsonConvert.DeserializeObject(json);
                 jsonData["config"]["welcomerchannel"] = $"{channel.Id}";
                 string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
+                await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                 var em = new DiscordEmbedBuilder
                 {
                     Title = $"{channel.Name} is now used to send welcome messages",
@@ -241,14 +241,14 @@ namespace FossiumBot.Commands
                             )
                         );
                     string nonexistdataWrite = JsonConvert.SerializeObject(newConfig, Formatting.Indented);
-                    File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
+                    await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", nonexistdataWrite);
                 }
 
-                string json = File.ReadAllText($"Settings/guilds/{ctx.Guild.Id}.json");
+                string json = await File.ReadAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json");
                 dynamic jsonData = JsonConvert.DeserializeObject(json);
                 jsonData["config"]["welcomercustommessage"] = $"{custommessage}";
                 string dataWrite = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-                File.WriteAllText($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
+                await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                 var em = new DiscordEmbedBuilder
                 {
                     Title = $"The welcome message is now:",
