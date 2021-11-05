@@ -679,6 +679,13 @@ namespace FossiumBot
                     goto Ask;
                 }
             }
+
+            //Remove some session specific files/dirs
+            if (Directory.Exists("Data/playback/"))
+            {
+                Directory.Delete("Data/playback/", true);
+            }
+
             Console.WriteLine("----------------------------------------");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Connected!");
