@@ -203,13 +203,13 @@ namespace FossiumBot.Commands
                         playingembed.WithThumbnail((string)playlistCurrent["playlist"][$"{lastplaybackIndex}"]["thumbnail"]);
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                    //DateTime nextTrackTime = DateTime.UtcNow.Add(track.Length);
+                    DateTime nextTrackTime = DateTime.UtcNow.Add(track.Length);
                     lastplaybackIndex += 1;
                     if (playlistCurrent["playlist"][$"{lastplaybackIndex}"] == null)
                     {
                         lastplaybackIndex = 0;
                     }
-                    Thread.Sleep(track.Length.Milliseconds);
+                    Thread.Sleep(nextTrackTime.Subtract(DateTime.UtcNow));
                 }
             }
         }
@@ -335,6 +335,7 @@ namespace FossiumBot.Commands
                 Title = "Current Playlist:",
                 Color = new DiscordColor(0x0080FF)
             };
+            //foreach()
             for (int i = 1; i <= jsonData["playlist"].Count(); i++)
             {
                 if (jsonData["playlist"].Any())
