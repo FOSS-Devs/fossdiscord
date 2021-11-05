@@ -702,12 +702,12 @@ namespace FossiumBot
                 Console.ForegroundColor = ConsoleColor.White;
                 var mainendpoint = new ConnectionEndpoint
                 {
-                    Hostname = "fossium-lavalink.glitch.me",
-                    Port = 4000
+                    Hostname = "fossiumbot-lavalink.herokuapp.com",
+                    Port = 80
                 };
                 var mainlavalinkConfig = new LavalinkConfiguration
                 {
-                    Password = "whatdidyousay",
+                    Password = "whatdidyousayagain",
                     RestEndpoint = mainendpoint,
                     SocketEndpoint = mainendpoint
                 };
