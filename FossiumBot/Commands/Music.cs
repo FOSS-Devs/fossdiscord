@@ -312,5 +312,50 @@ namespace FossiumBot.Commands
             }
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
+
+        [SlashCommand("playlist", "Show current playlist")]
+        public async Task PlaylistCommand(InteractionContext ctx)
+        {
+            var lava = ctx.Client.GetLavalink();
+            var node = lava.ConnectedNodes.Values.First();
+            var connection = node.GetGuildConnection(ctx.Member.Guild);
+            Directory.CreateDirectory(@"Data/");
+            Directory.CreateDirectory(@"Data/playback/");
+            string file = $"Data/playback/{ctx.Guild.Id}.json";
+            if (connection == null | !File.Exists(file))
+            {
+                var lavalinkerror = new DiscordEmbedBuilder
+                {
+                    Title = "Nothing is playing right now",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lavalinkerror));
+                return;
+            }
+            string read = File.ReadAllText(file);
+            JObject jsonData = JObject.Parse(read);
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = "Current Playlist:",
+                Color = new DiscordColor(0x0080FF)
+            };
+            for (int i = 1; i <= jsonData["playlist"].Count(); i++)
+            {
+                if (jsonData["playlist"].Any())
+                {
+                    string title = (string)jsonData["playlist"][$"{i}"]["title"];
+                    string length = (string)jsonData["playlist"][$"{i}"]["time"];
+                    string thumbnail = (string)jsonData["playlist"][$"{i}"]["thumbnail"];
+                    string urltype = (string)jsonData["playlist"][$"{i}"]["urltype"];
+                    string url = (string)jsonData["playlist"][$"{i}"]["url"];
+                    embed.AddField(title, $"Link: {url}\n{length}\n", false);
+                    if (i == 1)
+                    {
+                        embed.WithThumbnail(thumbnail);
+                    }
+                }
+            }
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+        }
     }
 }
