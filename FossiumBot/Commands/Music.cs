@@ -206,13 +206,13 @@ namespace FossiumBot.Commands
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     DateTime nextTrackTime = DateTime.UtcNow.Add(track.Length);
                     lastplaybackIndex += 1;
-                    if (playlistCurrent["playlist"][$"{lastplaybackIndex}"] == null)
-                    {
-                        lastplaybackIndex = 0;
-                    }
                     while (DateTime.UtcNow < nextTrackTime)
                     {
                         Thread.Sleep(1000);
+                    }
+                    if (playlistCurrent["playlist"][$"{lastplaybackIndex}"] == null)
+                    {
+                        lastplaybackIndex = 0;
                     }
                 } 
             }
