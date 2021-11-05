@@ -72,7 +72,7 @@ namespace FossiumBot.Commands
                 }
             }
             if (urltype == "YouTube")
-            { 
+            {
                 loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
             }
             else if (urltype == "SoundCloud")
@@ -86,7 +86,7 @@ namespace FossiumBot.Commands
                     new JObject(
                         new JProperty("playlist",
                             new JObject {
-                                new JProperty("1", 
+                                new JProperty("1",
                                     new JObject(
                                         new JProperty("title", track.Title),
                                         new JProperty("urltype", urltype),
@@ -141,7 +141,7 @@ namespace FossiumBot.Commands
                 JObject playlistCurrent = JObject.Parse(getPlaylist);
                 if (lastplaybackIndex == 0)
                 {
-                    for (int i = 1; i <= JObject.Parse(File.ReadAllText(file))["playlist"].Count(); i++)
+                    for (int i = 1; i <= playlistCurrent["playlist"].Count(); i++)
                     {
                         getPlaylist = File.ReadAllText(file);
                         playlistCurrent = JObject.Parse(getPlaylist);
@@ -173,8 +173,7 @@ namespace FossiumBot.Commands
                         {
                             Thread.Sleep(1000);
                         }
-
-                        lastplaybackIndex = (int) i;
+                        lastplaybackIndex = (int)i;
                     }
                 }
                 else
@@ -184,7 +183,7 @@ namespace FossiumBot.Commands
                     url = playlistCurrent["playlist"][$"{lastplaybackIndex}"]["url"].ToString();
                     urltype = playlistCurrent["playlist"][$"{lastplaybackIndex}"]["urltype"].ToString();
                     if (urltype == "YouTube")
-                    { 
+                    {
                         loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
                     }
                     else if (urltype == "SoundCloud")
@@ -210,11 +209,8 @@ namespace FossiumBot.Commands
                     {
                         lastplaybackIndex = 0;
                     }
-                    while (DateTime.UtcNow < nextTrackTime)
-                    {
-                        Thread.Sleep(1000);
-                    }
-                } 
+                    Thread.Sleep(nextTrackTime.Subtract(DateTime.UtcNow));
+                }
             }
         }
 
@@ -309,6 +305,52 @@ namespace FossiumBot.Commands
             if (youtubematch.Success)
             {
                 embed.WithThumbnail($"http://i3.ytimg.com/vi/{youtubematch.Groups[1].Value}/maxresdefault.jpg");
+            }
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+        }
+
+        [SlashCommand("playlist", "Show current playlist")]
+        public async Task PlaylistCommand(InteractionContext ctx)
+        {
+            var lava = ctx.Client.GetLavalink();
+            var node = lava.ConnectedNodes.Values.First();
+            var connection = node.GetGuildConnection(ctx.Member.Guild);
+            Directory.CreateDirectory(@"Data/");
+            Directory.CreateDirectory(@"Data/playback/");
+            string file = $"Data/playback/{ctx.Guild.Id}.json";
+            if (connection == null | !File.Exists(file))
+            {
+                var lavalinkerror = new DiscordEmbedBuilder
+                {
+                    Title = "Nothing is playing right now",
+                    Color = new DiscordColor(0xFF0000)
+                };
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(lavalinkerror));
+                return;
+            }
+            string read = File.ReadAllText(file);
+            JObject jsonData = JObject.Parse(read);
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = "Current Playlist:",
+                Color = new DiscordColor(0x0080FF)
+            };
+            //foreach()
+            for (int i = 1; i <= jsonData["playlist"].Count(); i++)
+            {
+                if (jsonData["playlist"].Any())
+                {
+                    string title = (string)jsonData["playlist"][$"{i}"]["title"];
+                    string length = (string)jsonData["playlist"][$"{i}"]["time"];
+                    string thumbnail = (string)jsonData["playlist"][$"{i}"]["thumbnail"];
+                    string urltype = (string)jsonData["playlist"][$"{i}"]["urltype"];
+                    string url = (string)jsonData["playlist"][$"{i}"]["url"];
+                    embed.AddField(title, $"Link: {url}\n{length}\n\n\n\n", false);
+                    if (i == 1)
+                    {
+                        embed.WithThumbnail(thumbnail);
+                    }
+                }
             }
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
