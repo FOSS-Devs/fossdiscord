@@ -169,6 +169,17 @@ namespace FossiumBot.Commands
                         }
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                         await Task.Delay(TimeSpan.FromMilliseconds(track.Length.TotalMilliseconds));
+                        getPlaylist = await File.ReadAllTextAsync(file);
+                        playlistCurrent = JObject.Parse(getPlaylist);
+                        if (playlistCurrent["playlist"][$"{i+1}"] == null)
+                        {
+                            await connection.DisconnectAsync();
+                            if (File.Exists(file))
+                            {
+                                File.Delete(file);
+                            }
+                            break;
+                        }
                         lastplaybackIndex = (int) i;
                     }
                 }
@@ -206,6 +217,11 @@ namespace FossiumBot.Commands
                     if (playlistCurrent["playlist"][$"{lastplaybackIndex}"] == null)
                     {
                         //lastplaybackIndex = 0;
+                        await connection.DisconnectAsync();
+                        if (File.Exists(file))
+                        {
+                            File.Delete(file);
+                        }
                         break;
                     }
                 } 
