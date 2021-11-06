@@ -24,7 +24,6 @@ namespace FossiumBot
 
         // For the uptime command
         public static DateTimeOffset StartTime = DateTime.Now;
-        private static LogLevel log;
 
         public InteractivityExtension Interactivity {  get; set; }
         static void Main(string[] args)
@@ -43,14 +42,6 @@ namespace FossiumBot
 
             JObject cfgjson = JObject.Parse(await File.ReadAllTextAsync("config.json"));
 
-            if(cfgjson["debug"].ToString() == "yes")
-            {
-                log = LogLevel.Debug;
-            }
-            else
-            {
-                log = LogLevel.None;
-            }
 
             var discord = new DiscordClient(new DiscordConfiguration()
             {
@@ -59,7 +50,7 @@ namespace FossiumBot
                 Intents = DiscordIntents.All,
 
                 // Remove this when making a release
-                MinimumLogLevel = log
+                MinimumLogLevel = LogLevel.Debug
             });
             //discord.ComponentInteractionCreated += async (s, e) =>
             //{
@@ -757,16 +748,6 @@ namespace FossiumBot
             string token = Console.ReadLine();
             Console.Write($"Is this correct? \"{token}\"\n(y)es\n(n)o\n");
             string confirmation = Console.ReadLine();
-            Console.Write("Debug mode: \n(y)es\n(n)o\n");
-            string debug = Console.ReadLine();
-            if (debug.ToLower() != "y" && debug.ToLower() != "yes")
-            {
-                debug = "no";
-            }
-            else
-            {
-                debug = "yes";
-            }
             if (confirmation.ToLower() != "y" && confirmation.ToLower() != "yes")
             {
                 Console.Clear();
@@ -775,8 +756,7 @@ namespace FossiumBot
             }
             Console.WriteLine("Writing config...");
             JObject data = new JObject(
-                new JProperty("token", $"{token}"),
-                new JProperty("debug", $"{debug}")
+                new JProperty("token", $"{token}")
                 );
             string configjson = JsonConvert.SerializeObject(data, Formatting.Indented);
             string path = @"config.json";
