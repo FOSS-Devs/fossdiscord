@@ -168,12 +168,7 @@ namespace FossiumBot.Commands
                             playingembed.WithThumbnail((string)playlistCurrent["playlist"][$"{i}"]["thumbnail"]);
                         }
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                        DateTime nextTrackTime = DateTime.UtcNow.Add(track.Length);
-                        while (DateTime.UtcNow < nextTrackTime)
-                        {
-                            Thread.Sleep(1000);
-                        }
-
+                        await Task.Delay(TimeSpan.FromMilliseconds(track.Length.TotalMilliseconds));
                         lastplaybackIndex = (int) i;
                     }
                 }
@@ -204,12 +199,8 @@ namespace FossiumBot.Commands
                         playingembed.WithThumbnail((string)playlistCurrent["playlist"][$"{lastplaybackIndex}"]["thumbnail"]);
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
-                    DateTime nextTrackTime = DateTime.UtcNow.Add(track.Length);
                     lastplaybackIndex += 1;
-                    while (DateTime.UtcNow < nextTrackTime)
-                    {
-                        Thread.Sleep(1000);
-                    }
+                    await Task.Delay(TimeSpan.FromMilliseconds(track.Length.TotalMilliseconds));
                     if (playlistCurrent["playlist"][$"{lastplaybackIndex}"] == null)
                     {
                         lastplaybackIndex = 0;
