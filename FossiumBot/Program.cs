@@ -588,15 +588,28 @@ namespace FossiumBot
                 }
                 catch
                 {
-                    var errorembed = new DiscordEmbedBuilder
+                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                    foreach (DiscordMember memberforeach in e.Guild.Members.Values)
                     {
-                        Title = $"Oops...",
-                        Description = $"Reaction roles message ID: {e.Message.Id}\nI don't have the permission to give role `{role.Name}` to `{e.User.Username}#{e.User.Discriminator}`",
-                        Color = new DiscordColor(0xFF0000)
-                    };
-                    await e.Guild.Owner.SendMessageAsync(errorembed);
+                        if (memberforeach.IsBot)
+                        {
+                            continue;
+                        }
+                        if (!memberforeach.Permissions.ToPermissionString().Contains("Manage roles"))
+                        {
+                            continue;
+                        }
+                        
+                        var errorembed = new DiscordEmbedBuilder
+                        {
+                            Title = $"Oops...",
+                            Description = $"Reaction roles message ID: {e.Message.Id}\nI don't have the permission to give role `{role.Name}` to `{e.User.Username}#{e.User.Discriminator}`",
+                            Color = new DiscordColor(0xFF0000)
+                        };
+                        await memberforeach.SendMessageAsync(errorembed);
+                        return;
+                    }
                 }
-
                 await e.Message.DeleteReactionAsync(e.Emoji, e.User);
             };
 
