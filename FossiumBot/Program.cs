@@ -3,6 +3,7 @@ using DSharpPlus.SlashCommands;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,6 +15,8 @@ using DSharpPlus.Lavalink;
 using DSharpPlus.Net;
 using FossiumBot.Commands;
 using System.Net.Sockets;
+using System.Runtime.InteropServices.ComTypes;
+using Emzi0767.Utilities;
 
 namespace FossiumBot
 {
@@ -588,15 +591,29 @@ namespace FossiumBot
                 }
                 catch
                 {
-                    var errorembed = new DiscordEmbedBuilder
+                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                    foreach (DiscordMember memberforeach in e.Guild.Members.Values)
                     {
-                        Title = $"Oops...",
-                        Description = $"Reaction roles message ID: {e.Message.Id}\nI don't have the permission to give role `{role.Name}` to `{e.User.Username}#{e.User.Discriminator}`",
-                        Color = new DiscordColor(0xFF0000)
-                    };
-                    await e.Guild.Owner.SendMessageAsync(errorembed);
+                        if (memberforeach.IsBot)
+                        {
+                            continue;
+                        }
+                        if (!memberforeach.Permissions.ToPermissionString().Contains("Manage roles"))
+                        {
+                            continue;
+                        }
+                        
+                        var errorembed = new DiscordEmbedBuilder
+                        {
+                            Title = $"Oops...",
+                            Description = $"Reaction roles message ID: {e.Message.Id}\nI don't have the permission to give role `{role.Name}` to `{e.User.Username}#{e.User.Discriminator}`",
+                            Color = new DiscordColor(0xFF0000)
+                        };
+                        await memberforeach.SendMessageAsync("This is for testing btw");
+                        await memberforeach.SendMessageAsync(errorembed);
+                        return;
+                    }
                 }
-
                 await e.Message.DeleteReactionAsync(e.Emoji, e.User);
             };
 

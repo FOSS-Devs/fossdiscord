@@ -969,15 +969,27 @@ namespace FossiumBot.Commands
             while (true)
             {
                 var response = await interactivity.WaitForMessageAsync(x => x.Channel == ctx.Channel && x.Author == ctx.User, TimeSpan.FromSeconds(30));
-                if (response.TimedOut || response.Result.Content.ToLower() == "cancel")
+                if (response.TimedOut)
                 {
-                    var error = new DiscordEmbedBuilder
+                    var errorembed = new DiscordEmbedBuilder
                     {
                         Title = "Oops...",
-                        Description = $"Timed out or cancelled",
+                        Description = $"Timed out",
                         Color = new DiscordColor(0xFF0000)
                     };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(error));
+                    await ctx.Channel.SendMessageAsync(errorembed);
+                    return;
+                }
+
+                if (response.Result.Content.ToLower() == "cancel")
+                {
+                    var errorembed = new DiscordEmbedBuilder
+                    {
+                        Title = "Oops...",
+                        Description = $"Cancelled",
+                        Color = new DiscordColor(0xFF0000)
+                    };
+                    await ctx.Channel.SendMessageAsync(errorembed);
                     return;
                 }
                 if (response.Result.Content.ToLower() == "done")
@@ -990,12 +1002,11 @@ namespace FossiumBot.Commands
                             Description = $"Please add at least one role",
                             Color = new DiscordColor(0xFF0000)
                         };
-                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(emptyembed));
+                        await ctx.Channel.SendMessageAsync(emptyembed);
                         continue;
                     }
                     break;
                 }
-
                 if (response.Result.Content.ToLower() == "list")
                 {
                     if (!discordroles.Any())
