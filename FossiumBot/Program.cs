@@ -751,9 +751,6 @@ namespace FossiumBot
             if (confirmation.ToLower() != "y" && confirmation.ToLower() != "yes")
             {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Wrong token given");
-                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Re-running config creator\n");
                 WriteConfig();
             }
