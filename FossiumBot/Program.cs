@@ -3,7 +3,6 @@ using DSharpPlus.SlashCommands;
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -15,8 +14,6 @@ using DSharpPlus.Lavalink;
 using DSharpPlus.Net;
 using FossiumBot.Commands;
 using System.Net.Sockets;
-using System.Runtime.InteropServices.ComTypes;
-using Emzi0767.Utilities;
 
 namespace FossiumBot
 {
