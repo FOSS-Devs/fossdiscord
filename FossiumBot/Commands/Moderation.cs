@@ -406,10 +406,9 @@ namespace FossiumBot.Commands
                         if (sysTime.Subtract(msgTime).TotalHours > short.Parse(time) && sysTime.Subtract(msgTime).TotalHours < 336)
                         {
                         await channel.DeleteMessageAsync(message);
-                        await Task.Delay(3000);
+                        await Task.Delay(10000);
                         }
                     }
-                    await Task.Delay(1000);
                 }
             }
             else
