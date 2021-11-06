@@ -205,7 +205,8 @@ namespace FossiumBot.Commands
                     playlistCurrent = JObject.Parse(getPlaylist);
                     if (playlistCurrent["playlist"][$"{lastplaybackIndex}"] == null)
                     {
-                        lastplaybackIndex = 0;
+                        //lastplaybackIndex = 0;
+                        break;
                     }
                 } 
             }
