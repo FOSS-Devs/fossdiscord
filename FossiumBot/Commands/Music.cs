@@ -340,7 +340,7 @@ namespace FossiumBot.Commands
                     string urltype = (string)jsonData["playlist"][$"{i}"]["urltype"];
                     string url = (string)jsonData["playlist"][$"{i}"]["url"];
                     embed.AddField(title, $"Link: {url}\n{length}\n", false);
-                    if (i == 1)
+                    if (title == connection.CurrentState.CurrentTrack.Title)
                     {
                         embed.WithThumbnail(thumbnail);
                     }
