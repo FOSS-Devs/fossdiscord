@@ -5,16 +5,10 @@
     <TargetFramework>net6.0</TargetFramework>
     <Authors>Fossium-Team</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>C:\Users\mxapr\source\repos\FossiumBot\LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <ApplicationIcon>../images/FossiumBot.ico</ApplicationIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-01040" />
