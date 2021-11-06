@@ -759,7 +759,7 @@ namespace FossiumBot
             string confirmation = Console.ReadLine();
             Console.Write("Debug mode: \n(y)es\n(n)o\n");
             string debug = Console.ReadLine();
-            if (debug.ToLower() != "y" || debug.ToLower() != "yes")
+            if (debug.ToLower() != "y" && debug.ToLower() != "yes")
             {
                 debug = "no";
             }
@@ -767,7 +767,7 @@ namespace FossiumBot
             {
                 debug = "yes";
             }
-            if (confirmation != "y")
+            if (confirmation.ToLower() != "y" && confirmation.ToLower() != "yes")
             {
                 Console.Clear();
                 Console.WriteLine("Re-running config creator\n");
