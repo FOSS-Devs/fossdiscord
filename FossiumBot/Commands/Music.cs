@@ -201,6 +201,8 @@ namespace FossiumBot.Commands
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     lastplaybackIndex += 1;
                     await Task.Delay(TimeSpan.FromMilliseconds(track.Length.TotalMilliseconds));
+                    getPlaylist = await File.ReadAllTextAsync(file);
+                    playlistCurrent = JObject.Parse(getPlaylist);
                     if (playlistCurrent["playlist"][$"{lastplaybackIndex}"] == null)
                     {
                         lastplaybackIndex = 0;
