@@ -606,7 +606,6 @@ namespace FossiumBot
                             Description = $"Reaction roles message ID: {e.Message.Id}\nI don't have the permission to give role `{role.Name}` to `{e.User.Username}#{e.User.Discriminator}`",
                             Color = new DiscordColor(0xFF0000)
                         };
-                        await memberforeach.SendMessageAsync("This is for testing btw");
                         await memberforeach.SendMessageAsync(errorembed);
                         return;
                     }
