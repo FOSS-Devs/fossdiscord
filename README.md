@@ -1,6 +1,6 @@
 ![FossiumBot](https://raw.githubusercontent.com/Fossium-Team/FossiumBot/main/images/FossiumBot_Full_White.png)
 # FossiumBot
-![Workflow](https://img.shields.io/github/workflow/status/Fossium-Team/FossiumBot/.NET) ![Issues](https://img.shields.io/github/issues/Fossium-Team/FossiumBot) ![License](https://img.shields.io/github/license/Fossium-Team/FossiumBot) ![Reddit](https://img.shields.io/reddit/subreddit-subscribers/Fossium?style=social) ![Latest Release]https://img.shields.io/github/v/release/Fossium-Team/FossiumBot)
+![Workflow](https://img.shields.io/github/workflow/status/Fossium-Team/FossiumBot/.NET) ![Issues](https://img.shields.io/github/issues/Fossium-Team/FossiumBot) ![License](https://img.shields.io/github/license/Fossium-Team/FossiumBot) ![Reddit](https://img.shields.io/reddit/subreddit-subscribers/Fossium?style=social) ![Latest Release](https://img.shields.io/github/v/release/Fossium-Team/FossiumBot)
 Welcome to the GitHub page of FossiumBot!
 The bot is written in C# using .NET and [DSharpPlus](https://dsharpplus.github.io).
 
