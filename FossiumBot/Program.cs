@@ -20,7 +20,7 @@ namespace FossiumBot
     class Program
     {
         // Set the local version, change when making a release
-        public static string localversion = "v1.1";
+        public static string localversion = "v1.2-Dev";
 
         // For the uptime command
         public static DateTimeOffset StartTime = DateTime.Now;
@@ -47,7 +47,10 @@ namespace FossiumBot
             {
                 Token = cfgjson["token"].ToString(),
                 TokenType = TokenType.Bot,
-                Intents = DiscordIntents.All
+                Intents = DiscordIntents.All,
+
+                // Remove this when making a release
+                MinimumLogLevel = LogLevel.Debug
             });
             //discord.ComponentInteractionCreated += async (s, e) =>
             //{
