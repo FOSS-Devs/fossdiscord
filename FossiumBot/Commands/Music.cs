@@ -16,7 +16,7 @@ namespace FossiumBot.Commands
     public class Music : ApplicationCommandModule
     {
         //int ffmpegpid = 0;
-        private JObject playlist = new JObject();
+        public JObject playlist = new JObject();
 
         [SlashCommand("play", "Play audio from a YouTube video")]
         public async Task PlayCommand(InteractionContext ctx, [Option("url", "YouTube video url")] string url)
@@ -34,7 +34,8 @@ namespace FossiumBot.Commands
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(voicestatenull));
                 return;
             }
-            string file = $"Data/playback/{ctx.Guild.Id}.json";
+            //string file = $"Data/playback/{ctx.Guild.Id}.json";
+            string file = $"Data/playback/{ctx.Guild.Id}.lck";
             LavalinkLoadResult loadResult = null;
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
@@ -99,6 +100,7 @@ namespace FossiumBot.Commands
                             }
                         )
                     );
+                File.Create(file).Dispose();
                 //string playlistWrite = JsonConvert.SerializeObject(playlist, Formatting.Indented);
                 //await File.WriteAllTextAsync(file, playlistWrite);
             }
@@ -117,7 +119,14 @@ namespace FossiumBot.Commands
                 }
                 //string read = await File.ReadAllTextAsync(file);
                 //JObject jsonData = JObject.Parse(read);
-                playlist[$"{ctx.Guild.Id}"]["playlist"][$"{playlist[$"{ctx.Guild.Id}"]["playlist"].Count() + 1}"] = new JObject(new JProperty("title", track.Title), new JProperty("urltype", urltype), new JProperty("url", url), new JProperty("time", track.Length), new JProperty("thumbnail", thumbnail));
+                playlist[$"{ctx.Guild.Id}"]["playlist"][$"{playlist[$"{ctx.Guild.Id}"]["playlist"].Count() + 1}"] =
+                        new JObject(
+                                new JProperty("title", track.Title),
+                                new JProperty("urltype", urltype),
+                                new JProperty("url", url),
+                                new JProperty("time", track.Length),
+                                new JProperty("thumbnail", thumbnail)
+                        );
                 //string playlistAdd = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
                 //await File.WriteAllTextAsync(file, playlistAdd);
                 var newEmbed = new DiscordEmbedBuilder
@@ -140,15 +149,15 @@ namespace FossiumBot.Commands
             {
                 //string getPlaylist = await File.ReadAllTextAsync(file);
                 //JObject playlistCurrent = JObject.Parse(getPlaylist);
-                JObject playlistCurrent = playlist;
+                //JObject playlistCurrent = playlist;
                 if (lastplaybackIndex == 0)
                 {
                     for (int i = 1; i <= playlist[$"{ctx.Guild.Id}"]["playlist"].Count(); i++)
                     {
                         //getPlaylist = await File.ReadAllTextAsync(file);
                         //playlistCurrent = JObject.Parse(getPlaylist);
-                        url = playlistCurrent[$"{ctx.Guild.Id}"]["playlist"][$"{i}"]["url"].ToString();
-                        urltype = playlistCurrent[$"{ctx.Guild.Id}"]["playlist"][$"{i}"]["urltype"].ToString();
+                        url = playlist[$"{ctx.Guild.Id}"]["playlist"][$"{i}"]["url"].ToString();
+                        urltype = playlist[$"{ctx.Guild.Id}"]["playlist"][$"{i}"]["urltype"].ToString();
                         if (urltype == "YouTube")
                         {
                             loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
@@ -167,7 +176,7 @@ namespace FossiumBot.Commands
                         };
                         if (urltype == "YouTube")
                         {
-                            playingembed.WithThumbnail((string)playlistCurrent[$"{ctx.Guild.Id}"]["playlist"][$"{i}"]["thumbnail"]);
+                            playingembed.WithThumbnail((string)playlist[$"{ctx.Guild.Id}"]["playlist"][$"{i}"]["thumbnail"]);
                         }
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                         await Task.Delay(TimeSpan.FromMilliseconds(track.Length.TotalMilliseconds));
@@ -188,9 +197,9 @@ namespace FossiumBot.Commands
                 else
                 {
                     //getPlaylist = await File.ReadAllTextAsync(file);
-                    playlistCurrent = playlist;
-                    url = playlistCurrent[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"]["url"].ToString();
-                    urltype = playlistCurrent[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"]["urltype"].ToString();
+                    //playlistCurrent = playlist;
+                    url = playlist[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"]["url"].ToString();
+                    urltype = playlist[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"]["urltype"].ToString();
                     if (urltype == "YouTube")
                     { 
                         loadResult = await node.Rest.GetTracksAsync(url, LavalinkSearchType.Youtube);
@@ -209,15 +218,15 @@ namespace FossiumBot.Commands
                     };
                     if (urltype == "YouTube")
                     {
-                        playingembed.WithThumbnail((string)playlistCurrent[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"]["thumbnail"]);
+                        playingembed.WithThumbnail((string)playlist[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"]["thumbnail"]);
                     }
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(playingembed));
                     lastplaybackIndex += 1;
                     await Task.Delay(TimeSpan.FromMilliseconds(track.Length.TotalMilliseconds));
                     //getPlaylist = await File.ReadAllTextAsync(file);
                     //playlistCurrent = JObject.Parse(getPlaylist);
-                    playlistCurrent = playlist;
-                    if (playlistCurrent[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"] == null)
+                    //playlistCurrent = playlist;
+                    if (playlist[$"{ctx.Guild.Id}"]["playlist"][$"{lastplaybackIndex}"] == null)
                     {
                         //lastplaybackIndex = 0;
                         await connection.DisconnectAsync();
@@ -237,7 +246,7 @@ namespace FossiumBot.Commands
             var lava = ctx.Client.GetLavalink();
             var node = lava.ConnectedNodes.Values.First();
             var connection = node.GetGuildConnection(ctx.Guild);
-            string file = $"Data/playback/{ctx.Guild.Id}.json";
+            string file = $"Data/playback/{ctx.Guild.Id}.lck";
             if (File.Exists(file))
             {
                 File.Delete(file);
