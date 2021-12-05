@@ -123,7 +123,7 @@ namespace FossiumBot.Commands
             [SlashCommand("welcomertoggle", "Toggle the welcomer")]
             public async Task WelcomertoggleCommand(InteractionContext ctx, [Option("option", "on, off, channel or custommessage")] string option)
             {
-                if (option.ToLower() != "on" || option.ToLower() != "off")
+                if (option.ToLower() != "on" && option.ToLower() != "off")
                 {
                     var em = new DiscordEmbedBuilder
                     {
@@ -215,7 +215,7 @@ namespace FossiumBot.Commands
                 await File.WriteAllTextAsync($"Settings/guilds/{ctx.Guild.Id}.json", dataWrite);
                 var em = new DiscordEmbedBuilder
                 {
-                    Title = $"{channel.Name} is now used to send welcome messages",
+                    Title = $"`{channel.Name}` is now used to send welcome messages",
                     Color = new DiscordColor(0x2ECC70)
                 };
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(em));
