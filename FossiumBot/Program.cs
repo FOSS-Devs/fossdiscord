@@ -311,7 +311,15 @@ namespace FossiumBot
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
-                    embed.AddField("Content", e.Message.Content);
+		    if (e.Message.Content.Length > 1024)
+		    {
+			string messagecontent = "Message too large"
+		    }
+		    else
+		    {
+			string messagecontent = e.Message.Content
+		    }
+                    embed.AddField("Content", messagecontent);
                     embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
                     await loggingchannel.SendMessageAsync(embed);
                     return;
@@ -347,8 +355,24 @@ namespace FossiumBot
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
-                    embed.AddField("Before", e.MessageBefore.Content);
-                    embed.AddField("After", e.Message.Content);
+		    if (e.MessageBefore.Content.Length > 1024)
+		    {
+			string messagecontentbefore = "Message too large"
+		    }
+		    else
+		    {
+			string messagecontentbefore = e.MessageBefore.Content
+		    }
+		    if (e.Message.Content.Length > 1024)
+		    {
+			string messagecontent = "Message too large"
+		    }
+		    else
+		    {
+			string messagecontent = e.Message.Content
+		    }
+                    embed.AddField("Before", messagecontentbefore);
+                    embed.AddField("After", messagecontent);
                     embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
                     await loggingchannel.SendMessageAsync(embed);
                 }
