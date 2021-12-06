@@ -313,11 +313,11 @@ namespace FossiumBot
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
 		    if (e.Message.Content.Length > 1024)
 		    {
-			string messagecontent = "Message too large"
+			string messagecontent = "Message too large";
 		    }
 		    else
 		    {
-			string messagecontent = e.Message.Content
+			string messagecontent = e.Message.Content;
 		    }
                     embed.AddField("Content", messagecontent);
                     embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
@@ -357,19 +357,19 @@ namespace FossiumBot
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
 		    if (e.MessageBefore.Content.Length > 1024)
 		    {
-			string messagecontentbefore = "Message too large"
+			string messagecontentbefore = "Message too large";
 		    }
 		    else
 		    {
-			string messagecontentbefore = e.MessageBefore.Content
+			string messagecontentbefore = e.MessageBefore.Content;
 		    }
 		    if (e.Message.Content.Length > 1024)
 		    {
-			string messagecontent = "Message too large"
+			string messagecontent = "Message too large";
 		    }
 		    else
 		    {
-			string messagecontent = e.Message.Content
+			string messagecontent = e.Message.Content;
 		    }
                     embed.AddField("Before", messagecontentbefore);
                     embed.AddField("After", messagecontent);
