@@ -311,13 +311,14 @@ namespace FossiumBot
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
+		    string messagecontent = String.Empty;
 		    if (e.Message.Content.Length > 1024)
 		    {
-			string messagecontent = "Message too large";
+			messagecontent = "Message too large";
 		    }
 		    else
 		    {
-			string messagecontent = e.Message.Content;
+			messagecontent = e.Message.Content;
 		    }
                     embed.AddField("Content", messagecontent);
                     embed.AddField("ID", $"```TOML\nUser = {e.Message.Author.Id}\nMessage = {e.Message.Id}\n```");
@@ -355,21 +356,23 @@ namespace FossiumBot
                     ulong loggingchannelid = (ulong)jsonData["config"]["loggingchannelid"];
                     DiscordChannel loggingchannel = e.Guild.GetChannel(loggingchannelid);
                     embed.WithAuthor($"{e.Message.Author.Username}#{e.Message.Author.Discriminator}", null, e.Message.Author.AvatarUrl);
+		    string messagecontent = String.Empty;
+		    string messagecontentbefore = String.Empty;
 		    if (e.MessageBefore.Content.Length > 1024)
 		    {
-			string messagecontentbefore = "Message too large";
+			messagecontentbefore = "Message too large";
 		    }
 		    else
 		    {
-			string messagecontentbefore = e.MessageBefore.Content;
+			messagecontentbefore = e.MessageBefore.Content;
 		    }
 		    if (e.Message.Content.Length > 1024)
 		    {
-			string messagecontent = "Message too large";
+			messagecontent = "Message too large";
 		    }
 		    else
 		    {
-			string messagecontent = e.Message.Content;
+			messagecontent = e.Message.Content;
 		    }
                     embed.AddField("Before", messagecontentbefore);
                     embed.AddField("After", messagecontent);
@@ -493,11 +496,11 @@ namespace FossiumBot
                 {
                     if(e.ChannelBefore.Topic == null)
                     {
-                        embed.AddField("Topic", $"**Before**: <none>\n**After**: `{e.ChannelAfter.Topic}`");
+                        embed.AddField("Topic", $"**Before**: none\n**After**: `{e.ChannelAfter.Topic}`");
                     }
                     else if(e.ChannelAfter.Topic == null)
                     {
-                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: <none>");
+                        embed.AddField("Topic", $"**Before**: `{e.ChannelBefore.Topic}`\n**After**: none");
                     }
                     else
                     {
