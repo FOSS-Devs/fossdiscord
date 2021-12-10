@@ -1,4 +1,7 @@
-﻿using DSharpPlus;
+// Copyright (c) 2021 Fossium-Team
+// See LICENSE in the project root for license information.
+
+using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using System;
 using System.IO;
