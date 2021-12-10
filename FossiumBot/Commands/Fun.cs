@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) 2021 Fossium-Team
+// See LICENSE in the project root for license information.
+
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
