@@ -222,7 +222,7 @@ namespace FossiumBot.Commands
             var embed = new DiscordEmbedBuilder
             {
                 Title = "Uptime",
-                Description = $"Online since <t:{onlinesince}:F>\n({uptime.Days} days, {uptime.Minutes} minutes and {uptime.Seconds} seconds)",
+                Description = $"Online since <t:{onlinesince}:F>\n({uptime.Days} day(s), {uptime.Minutes} minute(s) and {uptime.Seconds} second(s))",
                 Color = new DiscordColor(0x0080FF)
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
