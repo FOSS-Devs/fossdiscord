@@ -1,4 +1,5 @@
-# This bot is basically dead lol
+# Project archived
+# With Discord's changes (such as slash commands and bot permissions) Discord demotivated us to continue working on this bot and development will not continue
 ![FossiumBot](https://raw.githubusercontent.com/Fossium-Team/FossiumBot/main/images/FossiumBot_Full_White.png)
 # FossiumBot
 [![Workflow](https://img.shields.io/github/workflow/status/Fossium-Team/FossiumBot/.NET?style=flat-square)](https://github.com/Fossium-Team/FossiumBot/actions) [![Issues](https://img.shields.io/github/issues/Fossium-Team/FossiumBot?style=flat-square)](https://github.com/Fossium-Team/FossiumBot/issues) [![License](https://img.shields.io/github/license/Fossium-Team/FossiumBot?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html) [![Latest Release](https://img.shields.io/github/v/release/Fossium-Team/FossiumBot?style=flat-square)](https://github.com/Fossium-Team/FossiumBot/releases/latest) [![Reddit](https://img.shields.io/reddit/subreddit-subscribers/Fossium?style=flat-square)](https://reddit.com/r/Fossium)\
